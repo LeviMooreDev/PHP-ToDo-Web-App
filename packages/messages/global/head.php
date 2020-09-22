@@ -1,0 +1,1 @@
+<link rel="stylesheet" href="<?= getPackageWebsiteBase("messages") ?>/sweetalert2.min.css">

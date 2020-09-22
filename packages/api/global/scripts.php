@@ -1,0 +1,1 @@
+<script src="<?= getPackageWebsiteBase("api") ?>/core.js"></script>

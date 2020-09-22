@@ -1,0 +1,25 @@
+<IfModule mod_rewrite.c>
+
+    # Send all requests to the index.php file
+    RewriteEngine on
+
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^.*$ /index.php [L,QSA]
+
+    # Disable directory listing
+    Options All -Indexes
+</IfModule>
+
+# Deny access to files that starts with .
+<FilesMatch "^\.">
+    Deny from all
+</FilesMatch>
+
+# Deny access to all sql files
+<FilesMatch "\.(sql)$">
+	Deny from all
+</FilesMatch>
+
+# Instead of showing a 403 error page when trying to access protected files redirect to a 404 page
+ErrorDocument 403 /404
