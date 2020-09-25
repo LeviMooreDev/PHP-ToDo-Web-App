@@ -4,9 +4,10 @@ class Database
     private static mysqli $mysqli;
 
     private static string $_configFile;
-    public static function getConfigFile() : string
+    public static function getConfigFile(): string
     {
-        if(!isset(Database::$_configFile)){
+        if (!isset(Database::$_configFile))
+        {
             Database::$_configFile = Packages::serverPath("database") . "/database-config.php";
         }
 
@@ -15,12 +16,13 @@ class Database
 
     public static function connect()
     {
-        if(!isset(Database::$mysqli) || !Database::$mysqli->ping())
+        if (!isset(Database::$mysqli) || !Database::$mysqli->ping())
         {
             include(Database::getConfigFile());
 
             Database::$mysqli = new mysqli(DB_HOST, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
-            if (Database::$mysqli->connect_error){
+            if (Database::$mysqli->connect_error)
+            {
                 exit("Connection failed: " . Database::$mysqli->connect_error);
             }
         }
@@ -42,7 +44,9 @@ class Database
     public static function queries($queries)
     {
         Database::$mysqli->multi_query($queries);
-        while (Database::$mysqli->more_results() && Database::$mysqli->next_result()) {;
+        while (Database::$mysqli->more_results() && Database::$mysqli->next_result())
+        {
+            ;
         }
     }
     public static function queryFile($file)
@@ -56,7 +60,8 @@ class Database
     }
     public static function validatePOST($name)
     {
-        if (!isset($_POST[$name])) {
+        if (!isset($_POST[$name]))
+        {
             return null;
         }
         return Database::escape($_POST[$name]);

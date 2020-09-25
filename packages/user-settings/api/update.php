@@ -2,7 +2,8 @@
 include($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
 Functions::collect();
 
-if (!Authentication::Auth()) {
+if (!Authentication::Auth())
+{
     die();
 }
 

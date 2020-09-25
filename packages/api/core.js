@@ -3,17 +3,22 @@ class API
     static call(packageName, end, data, successCallback, errorCallback)
     {
         var url = `/packages/${packageName}/api/${end}.php`;
-        $.ajax({
+        $.ajax(
+        {
             type: 'POST',
             url: url,
             data: data,
-            success: function (responseJson) {
-                try {
+            success: function(responseJson)
+            {
+                try
+                {
                     var responseObject = JSON.parse(responseJson);
-                    if (responseObject["status"] == "OK") {
+                    if (responseObject["status"] == "OK")
+                    {
                         successCallback(responseObject["result"]);
                     }
-                    else {
+                    else
+                    {
                         errorCallback("Response did not contain a OK status.");
                         console.log(`Package: ${packageName}`);
                         console.log(`Endpoint: ${end}`);
@@ -22,7 +27,9 @@ class API
                         console.log(`Json: ${responseJson}`);
                         console.log(`Object: ${responseObject}`);
                     }
-                } catch (error) {
+                }
+                catch (error)
+                {
                     errorCallback("Unable to parse json.");
                     console.log(`Catch: ${error}`);
                     console.log(`Package: ${packageName}`);
@@ -33,7 +40,8 @@ class API
                     console.log(`Object: ${responseObject}`);
                 }
             },
-            error: function (xhr, ajaxOptions, thrownError) {
+            error: function(xhr, ajaxOptions, thrownError)
+            {
                 errorCallback("Ajax call failed.")
                 console.log(`Package: ${packageName}`);
                 console.log(`Endpoint: ${end}`);
@@ -45,23 +53,28 @@ class API
             }
         });
     }
-    
-    static validateForm(form) {
+
+    static validateForm(form)
+    {
         form = $(form);
 
-        form.find('input').each(function () {
+        form.find('input').each(function()
+        {
             $(this).removeClass("is-invalid");
         });
-    
-        form.find('input').each(function () {
-            if ($(this).prop('required')) {
-                if (!$(this).val()) {
+
+        form.find('input').each(function()
+        {
+            if ($(this).prop('required'))
+            {
+                if (!$(this).val())
+                {
                     $($(this)).addClass("is-invalid");
                     return false;
                 }
             }
         });
-    
+
         return true;
     }
 

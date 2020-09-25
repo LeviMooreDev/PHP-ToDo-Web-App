@@ -1,8 +1,10 @@
-API.call("authentication","logout", "",
-    function (result) {
+API.call("authentication", "logout", "",
+    function(result)
+    {
         window.location = "/";
     },
-    function (result) {
+    function(result)
+    {
         window.location = "/";
     }
 );

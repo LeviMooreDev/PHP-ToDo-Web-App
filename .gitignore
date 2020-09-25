@@ -1,4 +1,4 @@
 .vscode/
-
+.jsbeautifyrc
 /_database-settings.php
 database-settings.php

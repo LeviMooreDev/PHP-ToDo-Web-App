@@ -4,14 +4,15 @@
         <form id="form" action="javascript:submitForm()">
             <div class="card">
                 <h3 class="card-header">Setup</h3>
-                <?php if (Database::isReady()) : ?>
+                <?php if (Database::isReady()): ?>
                     <div class="card-body">
                         <p>The setup process has already been performed. If you want to run it again you need to delete the database config file before returning to this page.</p>
                     </div>
                     <div class="card-footer">
                         <a href="/" class="btn btn-primary">Go to home page</a>
                     </div>
-                <?php else : ?>
+                <?php
+                else: ?>
                     <div class="card-body">
                         <p>You need to setup your database before you can use the web app. You only have to do this the first time. Please enter your database and website login information below and click the setup button. When you click the setup button, your login information will be saved, and the necessary database tables will be created.</p>
 
@@ -36,7 +37,8 @@
                     <div class="card-footer">
                         <button name="submit" class="btn btn-primary" type="submit">Setup Database</button>
                     </div>
-                <?php endif; ?>
+                <?php
+                endif; ?>
             </div>
         </form>
     </div>

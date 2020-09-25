@@ -3,7 +3,7 @@ class Requirements
 {
     private const REQUIREMENTS_FILE_NAME = 'requirements.php';
 
-    public static function validate() : void
+    public static function validate(): void
     {
         $packages = Packages::all();
 
@@ -17,7 +17,7 @@ class Requirements
                 {
                     if (!in_array($requirement, $packages))
                     {
-                        die("Package '$requirement' is required by '$package'.");   
+                        die("Package '$requirement' is required by '$package'.");
                     }
                 }
             }

@@ -3,7 +3,7 @@ class Alert
     static success(text)
     {
         Swal.fire(
-            {
+        {
             position: 'top',
             icon: 'success',
             title: text,
@@ -15,7 +15,8 @@ class Alert
 
     static error(text)
     {
-        Swal.fire({
+        Swal.fire(
+        {
             position: 'top',
             icon: 'error',
             title: text,
@@ -24,17 +25,17 @@ class Alert
             toast: true
         });
     }
-    
+
     static ok(title, text)
     {
         Swal.fire(
-            {
+        {
             icon: '',
             title: title,
             text: text
         });
     }
-    
+
     static yesNo(text, yes, no)
     {
         Swal.fire(
@@ -44,13 +45,19 @@ class Alert
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes'
-        }).then((result) => {
-            if (result.value) {
-                if (yes) {
+        }).then((result) =>
+        {
+            if (result.value)
+            {
+                if (yes)
+                {
                     yes();
                 }
-            } else {
-                if (no) {
+            }
+            else
+            {
+                if (no)
+                {
                     no();
                 }
             }
@@ -62,7 +69,8 @@ class Alert
         {
             title: 'Working',
             timerProgressBar: true,
-            onBeforeOpen: () => {
+            onBeforeOpen: () =>
+            {
                 Swal.showLoading()
                 work();
             }

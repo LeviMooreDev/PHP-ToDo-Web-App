@@ -1,13 +1,13 @@
 function submitForm()
 {
-    if(!API.validateForm(document.getElementById("form")))
+    if (!API.validateForm(document.getElementById("form")))
     {
         Alert.error("Form validation failed.")
         return;
     }
-    
+
     API.call("authentication", "login", API.serializeForm(document.getElementById("form")),
-        function (result)
+        function(result)
         {
             if (result["success"] && result["success"] == true)
             {
@@ -16,7 +16,10 @@ function submitForm()
                     document.cookie = "authentication-remember-key=" + result["remember-key"] + "; expires=Fri, 31 Dec 9999 23:59:59 GMT";
                 }
                 Alert.success("Login success");
-                setTimeout(function () { window.location = "/"; }, 750);
+                setTimeout(function()
+                {
+                    window.location = "/";
+                }, 750);
             }
             else if (result["success"] == false)
             {
@@ -28,4 +31,4 @@ function submitForm()
             Alert.error("Something went wrong. See console (F12) for more info.");
         }
     );
-} 
+}

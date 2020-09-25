@@ -4,7 +4,7 @@ class Functions
     private const FUNCTIONS_FILE_NAME = 'functions.php';
     private const GLOBAL_FILE_NAME = 'global.php';
 
-    public static function collect() : void
+    public static function collect(): void
     {
         $packages = Packages::all();
 
@@ -18,7 +18,7 @@ class Functions
         }
     }
 
-    public static function global() : void
+    public static function global (): void
     {
         $packages = Packages::all();
 

@@ -4,9 +4,9 @@ class Routing
     private const ROUTING_FILE_NAME = 'routing.php';
 
     private static ?string $_url = null;
-    public static function url() : string
+    public static function url(): string
     {
-        if(Routing::$_url === null)
+        if (Routing::$_url === null)
         {
             Routing::$_url = substr(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH), 1);
 
@@ -22,9 +22,9 @@ class Routing
     }
 
     private static ?array $_all = null;
-    public static function all() : array
+    public static function all(): array
     {
-        if(Routing::$_all === null)
+        if (Routing::$_all === null)
         {
             Routing::$_all = [];
             $packages = Packages::all();
