@@ -1,11 +1,12 @@
 <?php
 return [
-    'theme',
-    'setup',
     '404',
-    'authentication',
+    'jquery',
     'api',
-    'messages',
-    'settings',
-    'app',
+    'alert',
+    'database',
+    'authentication',
+    'user-settings',
+    'theme',
+    'app'
 ];

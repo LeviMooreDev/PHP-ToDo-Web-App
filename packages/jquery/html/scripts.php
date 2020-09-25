@@ -1,0 +1,1 @@
+<script src="<?= Packages::httpPath("jquery") ?>/jquery.min.js"></script>

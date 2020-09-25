@@ -1,30 +1,36 @@
 <?php
-
-include_once($_SERVER['DOCUMENT_ROOT'] . "/core.php");
-connect();
+include_once($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
+Functions::collect();
+Database::connect();
 
 //Get login information.
-$password = validatePOST("password");
-$remember = validatePOST("remember");
+$password = Database::validatePOST("password");
+$remember = Database::validatePOST("remember");
 
 //Get password from database.
-$result = query("SELECT `password` FROM `authentication`");
+$result = Database::query("SELECT `password` FROM `authentication`");
+
 //If the password from the user matches the one from the database.
-if (password_verify($password, $result->fetch_row()[0])) {
+if (password_verify($password, $result->fetch_row()[0]))
+{
     //Logged the user in.
+    session_start();
     $_SESSION["logged_in"] = true;
 
     //Generate random remember login key.
     $rememberKey = generateRandomString();
+    
     //If the remember toggle was selected, added the newly generated key to the database.
-    if ($remember == true) {
+    if ($remember == true)
+    {
         //We are hashing the key and ip so they are not the same in the database.
         $keyHashed = hash("sha256", $rememberID);
         $ipHashed = hash("sha256", isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : $_SERVER['REMOTE_ADDR']);
+        
         //The expire is 14 days for now. 
         $date = new DateTime();
         $expire = $date->getTimestamp() + 86400 * 14;
-        query("INSERT INTO `authentication_remember_keys`(`key_`, `ip`, `expire`) VALUES ('$keyHashed', '$ipHashed', '$expire')");
+        Database::query("INSERT INTO `authentication_remember_keys`(`key_`, `ip`, `expire`) VALUES ('$keyHashed', '$ipHashed', '$expire')");
 
         $return["result"]["remember-key"] = $rememberKey;
     }
@@ -32,7 +38,8 @@ if (password_verify($password, $result->fetch_row()[0])) {
     $return["result"]["success"] = true;
 }
 //If the password was wrong output WRONG.
-else {
+else
+{
     $return["result"]["success"] = false;
 }
 $return["status"] = "OK";
