@@ -1,0 +1,175 @@
+{
+    "kind": "books#volumes",
+    "totalItems": 389,
+    "items": [
+        {
+            "kind": "books#volume",
+            "id": "TvEqDAAAQBAJ",
+            "etag": "vdkcGJ32eZc",
+            "selfLink": "https://www.googleapis.com/books/v1/volumes/TvEqDAAAQBAJ",
+            "volumeInfo": {
+                "title": "12 Rules for Life",
+                "subtitle": "An Antidote to Chaos",
+                "authors": [
+                    "Jordan B. Peterson"
+                ],
+                "publisher": "Random House Canada",
+                "publishedDate": "2018-01-23",
+                "description": "#1 NATIONAL BESTSELLER #1 INTERNATIONAL BESTSELLER What does everyone in the modern world need to know? Renowned psychologist Jordan B. Peterson's answer to this most difficult of questions uniquely combines the hard-won truths of ancient tradition with the stunning revelations of cutting-edge scientific research. Humorous, surprising and informative, Dr. Peterson tells us why skateboarding boys and girls must be left alone, what terrible fate awaits those who criticize too easily, and why you should always pet a cat when you meet one on the street. What does the nervous system of the lowly lobster have to tell us about standing up straight (with our shoulders back) and about success in life? Why did ancient Egyptians worship the capacity to pay careful attention as the highest of gods? What dreadful paths do people tread when they become resentful, arrogant and vengeful? Dr. Peterson journeys broadly, discussing discipline, freedom, adventure and responsibility, distilling the world's wisdom into 12 practical and profound rules for life. 12 Rules for Life shatters the modern commonplaces of science, faith and human nature, while transforming and ennobling the mind and spirit of its readers.",
+                "industryIdentifiers": [
+                    {
+                        "type": "ISBN_13",
+                        "identifier": "9780345816047"
+                    },
+                    {
+                        "type": "ISBN_10",
+                        "identifier": "0345816048"
+                    }
+                ],
+                "readingModes": {
+                    "text": true,
+                    "image": false
+                },
+                "pageCount": 320,
+                "printType": "BOOK",
+                "categories": [
+                    "Psychology"
+                ],
+                "averageRating": 3.5,
+                "ratingsCount": 21,
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": true,
+                "contentVersion": "1.17.14.0.preview.2",
+                "panelizationSummary": {
+                    "containsEpubBubbles": false,
+                    "containsImageBubbles": false
+                },
+                "imageLinks": {
+                    "smallThumbnail": "http://books.google.com/books/content?id=TvEqDAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+                    "thumbnail": "http://books.google.com/books/content?id=TvEqDAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+                },
+                "language": "en",
+                "previewLink": "http://books.google.dk/books?id=TvEqDAAAQBAJ&printsec=frontcover&dq=12+Rules+for+Life&hl=&as_pt=BOOKS&cd=1&source=gbs_api",
+                "infoLink": "https://play.google.com/store/books/details?id=TvEqDAAAQBAJ&source=gbs_api",
+                "canonicalVolumeLink": "https://play.google.com/store/books/details?id=TvEqDAAAQBAJ"
+            },
+            "saleInfo": {
+                "country": "DK",
+                "saleability": "FOR_SALE",
+                "isEbook": true,
+                "listPrice": {
+                    "amount": 179.61,
+                    "currencyCode": "DKK"
+                },
+                "retailPrice": {
+                    "amount": 125.73,
+                    "currencyCode": "DKK"
+                },
+                "buyLink": "https://play.google.com/store/books/details?id=TvEqDAAAQBAJ&rdid=book-TvEqDAAAQBAJ&rdot=1&source=gbs_api",
+                "offers": [
+                    {
+                        "finskyOfferType": 1,
+                        "listPrice": {
+                            "amountInMicros": 179610000,
+                            "currencyCode": "DKK"
+                        },
+                        "retailPrice": {
+                            "amountInMicros": 125730000,
+                            "currencyCode": "DKK"
+                        }
+                    }
+                ]
+            },
+            "accessInfo": {
+                "country": "DK",
+                "viewability": "PARTIAL",
+                "embeddable": true,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED_FOR_ACCESSIBILITY",
+                "epub": {
+                    "isAvailable": true,
+                    "acsTokenLink": "http://books.google.dk/books/download/12_Rules_for_Life-sample-epub.acsm?id=TvEqDAAAQBAJ&format=epub&output=acs4_fulfillment_token&dl_type=sample&source=gbs_api"
+                },
+                "pdf": {
+                    "isAvailable": false
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=TvEqDAAAQBAJ&hl=&as_pt=BOOKS&printsec=frontcover&source=gbs_api",
+                "accessViewStatus": "SAMPLE",
+                "quoteSharingAllowed": false
+            },
+            "searchInfo": {
+                "textSnippet": "Dr. Peterson journeys broadly, discussing discipline, freedom, adventure and responsibility, distilling the world&#39;s wisdom into 12 practical and profound rules for life. 12 Rules for Life shatters the modern commonplaces of science, faith ..."
+            }
+        },
+        {
+            "kind": "books#volume",
+            "id": "iQPAzQEACAAJ",
+            "etag": "JTXwNswBpCk",
+            "selfLink": "https://www.googleapis.com/books/v1/volumes/iQPAzQEACAAJ",
+            "volumeInfo": {
+                "title": "Summary of 12 Rules for Life",
+                "subtitle": "An Antidote to Chaos by Jordan B. Peterson: Fireside Reads",
+                "authors": [
+                    "Fireside Reads"
+                ],
+                "publishedDate": "2020-08-04",
+                "description": "Learn the Invaluable Lessons from 12 Rules for Life: An Antidote to Chaos by Jordan B. Peterson and Apply it into Your Life Without Missing Out! What's it worth to you to have just ONE good idea applied to your life? In many cases, it may mean expanded paychecks, better vitality, and magical relationships. Here's an Introduction of What You're About to Discover in this Premium Summary of 12 Rules for Life: An Antidote to Chaos by Jordan B. Peterson: Jordan Peterson has released his second book after the stunning success of his first book, Maps of Meaning: Architecture of Belief. The book, entitled 12 Rules for Life: An Antidote to Chaos, is written as a self-help book. It serves as a guide book that suggests to readers what steps one has to take to have a productive and peaceful life. Peterson discusses the guides to life more profoundly and philosophically. The discussion took off from the question of what everyone needs to know about the modern world. Peterson provides his answers to this question by combining ancient belief with current scientific research. The book provides readers with fresh ideas about the stale discussion about life, faith, and man's place in nature. This book is not the usual self-help book, but a multi-disciplinary book that widens people's perspective in dealing with life. Just like the first book, 12 Rules for Life: An Antidote to Chaos, provided readers of wisdom that is profound in meaning but practical in application. Peterson has captured the hearts and minds of the readers. It continues to amaze readers. The audiobook of 12 Rules for Life: An Antidote to Chaos has retained its number one spot on Canadian Audible, and number three on US Audible. It holds the top spot in the nonfiction category of The Globe and Mail and Toronto Star bestsellers lists in Canada. Based on the compilation of Bookmanager, it was placed fourth among the bestselling books in Canada. The book's phenomenal success is overwhelming that it is considered in Toronto as the biggest success story. Plus, - Executive \"Snapshot\" Summary of 12 Rules for Life: An Antidote to Chaos - Background Story and History of 12 Rules for Life: An Antidote to Chaos for a Much Richer Reading Experience - Key Lessons Extracted from 12 Rules for Life: An Antidote to Chaos and Exercises to Apply it into your Life - Immediately! - About the Hero of the Book: Jordan B. Peterson - Tantalizing Trivia Questions for Better Retention Scroll Up and Buy Now! 100% Guaranteed You'll Find Thousands of Dollars Worth of Ideas in This Book or Your Money Back Faster You Order - Faster You'll Have it in Your Hands! *Please note: This is a summary and workbook meant to supplement and not replace the original book.",
+                "industryIdentifiers": [
+                    {
+                        "type": "ISBN_10",
+                        "identifier": "1715257871"
+                    },
+                    {
+                        "type": "ISBN_13",
+                        "identifier": "9781715257873"
+                    }
+                ],
+                "readingModes": {
+                    "text": false,
+                    "image": false
+                },
+                "pageCount": 64,
+                "printType": "BOOK",
+                "maturityRating": "NOT_MATURE",
+                "allowAnonLogging": false,
+                "contentVersion": "preview-1.0.0",
+                "panelizationSummary": {
+                    "containsEpubBubbles": false,
+                    "containsImageBubbles": false
+                },
+                "imageLinks": {
+                    "smallThumbnail": "http://books.google.com/books/content?id=iQPAzQEACAAJ&printsec=frontcover&img=1&zoom=5&source=gbs_api",
+                    "thumbnail": "http://books.google.com/books/content?id=iQPAzQEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api"
+                },
+                "language": "en",
+                "previewLink": "http://books.google.dk/books?id=iQPAzQEACAAJ&dq=12+Rules+for+Life&hl=&as_pt=BOOKS&cd=2&source=gbs_api",
+                "infoLink": "http://books.google.dk/books?id=iQPAzQEACAAJ&dq=12+Rules+for+Life&hl=&as_pt=BOOKS&source=gbs_api",
+                "canonicalVolumeLink": "https://books.google.com/books/about/Summary_of_12_Rules_for_Life.html?hl=&id=iQPAzQEACAAJ"
+            },
+            "saleInfo": {
+                "country": "DK",
+                "saleability": "NOT_FOR_SALE",
+                "isEbook": false
+            },
+            "accessInfo": {
+                "country": "DK",
+                "viewability": "NO_PAGES",
+                "embeddable": false,
+                "publicDomain": false,
+                "textToSpeechPermission": "ALLOWED",
+                "epub": {
+                    "isAvailable": false
+                },
+                "pdf": {
+                    "isAvailable": false
+                },
+                "webReaderLink": "http://play.google.com/books/reader?id=iQPAzQEACAAJ&hl=&as_pt=BOOKS&printsec=frontcover&source=gbs_api",
+                "accessViewStatus": "NONE",
+                "quoteSharingAllowed": false
+            },
+            "searchInfo": {
+                "textSnippet": "Based on the compilation of Bookmanager, it was placed fourth among the bestselling books in Canada. The book&#39;s phenomenal success is overwhelming that it is considered in Toronto as the biggest success story."
+            }
+        }
+    ]
+}
