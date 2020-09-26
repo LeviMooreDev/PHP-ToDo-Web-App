@@ -22,6 +22,7 @@ class UserSettings
                     }
                     return $value;
                 }
+                return $default;
             }
             else
             {

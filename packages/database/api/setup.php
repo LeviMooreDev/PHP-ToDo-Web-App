@@ -47,7 +47,7 @@ else
         //Create database tables.
         Database::connect();
 
-        $packages = Packages::all();
+        $packages = Packages::names();
         foreach ($packages as &$package)
         {
             $file = Packages::serverPath($package) . "/database/setup.sql";

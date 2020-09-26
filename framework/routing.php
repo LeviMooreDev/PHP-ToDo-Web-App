@@ -27,7 +27,7 @@ class Routing
         if (Routing::$_all === null)
         {
             Routing::$_all = [];
-            $packages = Packages::all();
+            $packages = Packages::names();
 
             foreach ($packages as &$package)
             {

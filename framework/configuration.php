@@ -10,7 +10,7 @@ class Configuration
         if (Configuration::$_default === null)
         {
             Configuration::$_default = [];
-            $packages = Packages::all();
+            $packages = Packages::names();
 
             foreach ($packages as &$package)
             {

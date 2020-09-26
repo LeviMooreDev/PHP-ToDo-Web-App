@@ -6,7 +6,7 @@ class Functions
 
     public static function collect(): void
     {
-        $packages = Packages::all();
+        $packages = Packages::names();
 
         foreach ($packages as &$package)
         {
@@ -20,7 +20,7 @@ class Functions
 
     public static function global (): void
     {
-        $packages = Packages::all();
+        $packages = Packages::names();
 
         foreach ($packages as &$package)
         {

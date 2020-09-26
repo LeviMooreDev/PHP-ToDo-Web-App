@@ -10,7 +10,7 @@ if (Packages::exist("authentication"))
     }
 }
 
-$packages = Packages::all();
+$packages = Packages::names();
 foreach ($packages as &$package)
 {
     $file = Packages::serverPath($package) . "/user-settings/setup.php";

@@ -17,7 +17,7 @@ class Page
         <head>
 <?php
         //html style
-        $packages = Packages::all();
+        $packages = Packages::names();
         foreach ($packages as &$package)
         {
             foreach (Page::HTML_HEADER_FILE_NAMES as &$fileName)
@@ -39,8 +39,6 @@ class Page
         </head>
         <body>
 <?php
-        $packages = Packages::all();
-
         //html before content
         foreach ($packages as &$package)
         {
