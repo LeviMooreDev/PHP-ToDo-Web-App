@@ -1,24 +1,20 @@
 <?php
-global $config;
-global $pageName;
-
-$menuItems = [
-    [
-        'name' => "Home",
-        'icon' => "network-wired",
-        'url' => "home"
-    ],
-    [
-        'name' => "settings",
-        'icon' => "cog",
-        'url' => "settings"
-    ],
-    [
-        'name' => "logout",
-        'icon' => "door-open",
-        'url' => "auth/logout"
-    ]
-];
+$sidebarItems = [];
+foreach (Packages::names() as $package)
+{
+    $file = Packages::serverPath($package) . "/theme/sidebar.php";
+    if (file_exists($file))
+    {
+        $items = include($file);
+        foreach ($items as $item)
+        {
+            array_push($sidebarItems, $item);
+        }
+    }
+}
+usort($sidebarItems, function($a, $b) {
+    return $a['order'] <=> $b['order'];
+});
 
 $alwaysShowSidebar = UserSettings::get("theme", "always-show-sidebar", true);
 
@@ -28,9 +24,9 @@ if (Configuration::get("sidebar") === true)
     <aside id="nav-sidebar" class="<?= $alwaysShowSidebar === true ? "sidebar-always-show" : "" ?>">
         <ul>
             <?php
-            foreach ($menuItems as $item) : ?>
+            foreach ($sidebarItems as $item) : ?>
                 <li>
-                    <a href="/<?= $item["url"] ?>" class="nav-link <?php if ($pageName == $item["name"]) echo "active"; ?>">
+                    <a href="/<?= $item["url"] ?>" class="nav-link">
                         <i class="nav-icon fas fa-<?= $item["icon"] ?>"></i>
                         <p class="nav-name"><?= ucfirst($item["name"]); ?></p>
                     </a>
