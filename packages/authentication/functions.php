@@ -30,4 +30,13 @@ class Authentication
 
         return false;
     }
+
+    static function Auth403()
+    {
+        if (!Authentication::Auth())
+        {
+            header('HTTP/1.0 403 Forbidden');
+            die();
+        }
+    }
 }
