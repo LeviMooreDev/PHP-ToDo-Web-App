@@ -7,6 +7,5 @@ return [
     'database' => "1.0",
     'authentication' => "1.0",
     'user-settings' => "1.0",
-    'theme' => "1.0",
-    'app' => "1.0"
+    'theme' => "1.0"
 ];
