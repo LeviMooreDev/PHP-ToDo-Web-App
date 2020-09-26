@@ -9,54 +9,79 @@ $(document).ready(function()
     {
         e.preventDefault();
 
-        if ($(':file').get(0).files.length === 0)
+        var progress = $("#progress-bar");
+        var files = $('#files').get(0).files;
+        var count = files.length;
+
+        //check if no files are selected
+        if (count === 0)
         {
             Alert.error("No file selected.");
             return;
         }
 
-        var data = new FormData(this);
-        var progress = $("#progress-bar");
+        //check for unsupported files
+        var supportedFormat = ['pdf'];
+        for (var i = 0; i < count; i++)
+        {
+            var type = files[i]["name"].split('.').pop();
+            if ($.inArray(type, supportedFormat) < 0)
+            {
+                Alert.error("Format " + type + " not supported. Use " + supportedFormat.join(', '));
+                return;
+            }
+        }
+
+        //prepare data
+        var data = new FormData();
+        for (var i = 0; i < count; i++)
+        {
+            data.append("files[]", files[i]);
+        }
+        
+        //call upload api
         API.upload("book-hub", "upload", data, progress,
             function(result)
             {
+                //if successful
                 if (result["success"] == true)
                 {
-                    Alert.success("File upload was a success.");
-                    console.log(result["message"]);
-                    $(':submit').removeAttr("disabled");
-                    $(':file').removeAttr("disabled");
-
-                    var filename = $('#file').val().split('\\').pop();
-                    var tbody = $("#uploadedFiles tbody");
-                    tbody.append("<tr><td>" + filename + "</td></tr>");
-                    tbody.find('tr').sort(function(a, b)
-                    {
-                        return $('td:first', a).text().localeCompare($('td:first', b).text());
-                    }).appendTo(tbody);
+                    Alert.success(result["message"]);
                     
-                    $('#file').val(null);
+                    //add uploaded files to table
+                    result["uploaded"].forEach(element =>
+                    {
+                        var filename = element.split('\\').pop();
+                        var tbody = $("#uploadedFiles tbody");
+                        //add
+                        tbody.append("<tr><td>" + filename + "</td></tr>");
+                        //sort
+                        tbody.find('tr').sort(function(a, b)
+                        {
+                            return $('td:first', a).text().localeCompare($('td:first', b).text());
+                        }).appendTo(tbody);
+                    });
+
+                    enableForm();
+                    clearForm();
                 }
+                //if unsuccessful
                 else if (result["success"] == false)
                 {
                     Alert.error(result["message"]);
-                    console.log(result["message"]);
-                    $(':submit').removeAttr("disabled");
-                    $(':file').removeAttr("disabled");
-                    $('#file').val(null);
+                    enableForm();
+                    clearForm();
                 }
             },
             function(result) //failed
             {
                 Alert.error("Something went wrong. See console (F12) for more info.");
-                $(':submit').removeAttr("disabled");
-                $(':file').removeAttr("disabled");
-                $('#file').val(null);
+                enableForm();
+                clearForm();
             }
         );
 
-        $(':submit').attr("disabled", "disabled");
-        $(':file').attr("disabled", "disabled");
+        disableForm();
     });
 
     $('#file').on('change', function()
@@ -71,4 +96,20 @@ $(document).ready(function()
 
     $("#progress-bar").width('0%');
     $("#progress-bar").html('0%');
+
+
+    function disableForm()
+    {
+        $('#submit').attr("disabled", "disabled");
+        $('#files').attr("disabled", "disabled");
+    }
+    function enableForm()
+    {
+        $('#submit').removeAttr("disabled");
+        $('#files').removeAttr("disabled");
+    }
+    function clearForm()
+    {
+        $('#files').val(null);
+    }
 });

@@ -5,8 +5,8 @@
             <form id="form" enctype="multipart/form-data" action="javascript:upload()">
 
                 <div class="form-group">
-                    <input type="submit" class="btn btn-primary float-right" value="Upload" name="submit">
-                    <input type="file" name="file" id="file" accept=".pdf" required>
+                    <input type="submit" class="btn btn-primary float-right" value="Upload" name="submit" id="submit">
+                    <input type="file" name="files[]" id="files" accept=".pdf" multiple required>
                 </div>
 
                 <div class="progress"><div class="progress-bar" id="progress-bar"></div></div>
