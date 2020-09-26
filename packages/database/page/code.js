@@ -8,7 +8,7 @@ function submitForm()
 
     Alert.working(() =>
     {
-        API.call("database", "setup", API.serializeForm(document.getElementById("form")),
+        API.simple("database", "setup", API.serializeForm(document.getElementById("form")),
             function(result) //success
             {
                 if (result["success"])

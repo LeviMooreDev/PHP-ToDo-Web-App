@@ -6,7 +6,7 @@ function submitForm()
         return;
     }
 
-    API.call("authentication", "set-password", API.serializeForm(document.getElementById("form")),
+    API.simple("authentication", "set-password", API.serializeForm(document.getElementById("form")),
         function(result)
         {
             if (result["success"])

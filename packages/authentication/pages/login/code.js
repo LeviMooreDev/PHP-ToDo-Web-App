@@ -6,7 +6,7 @@ function submitForm()
         return;
     }
 
-    API.call("authentication", "login", API.serializeForm(document.getElementById("form")),
+    API.simple("authentication", "login", API.serializeForm(document.getElementById("form")),
         function(result)
         {
             if (result["success"] && result["success"] == true)

@@ -1,4 +1,4 @@
-API.call("authentication", "logout", "",
+API.simple("authentication", "logout", "",
     function(result)
     {
         window.location = "/";

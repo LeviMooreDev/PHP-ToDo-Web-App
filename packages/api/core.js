@@ -1,6 +1,6 @@
 class API
 {
-    static call(packageName, end, data, successCallback, errorCallback)
+    static simple(packageName, end, data, successCallback, errorCallback)
     {
         var url = `/packages/${packageName}/api/${end}.php`;
         $.ajax(
