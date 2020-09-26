@@ -4,10 +4,7 @@ Functions::collect();
 
 if (Packages::exist("authentication"))
 {
-    if (!Authentication::Auth())
-    {
-        die();
-    }
+    Authentication::Auth403();
 }
 
 Database::connect();
