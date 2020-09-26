@@ -21,6 +21,11 @@ class Packages
         return "/packages/$name";
     }
 
+    public static function exist($name)
+    {
+        return in_array($name, Packages::all());
+    }
+
     public static function validate(): void
     {
         $packages = Packages::all();
