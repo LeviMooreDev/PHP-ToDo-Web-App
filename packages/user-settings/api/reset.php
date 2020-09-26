@@ -2,9 +2,12 @@
 include($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
 Functions::collect();
 
-if (!Authentication::Auth())
+if (Packages::exist("authentication"))
 {
-    die();
+    if (!Authentication::Auth())
+    {
+        die();
+    }
 }
 
 $packages = Packages::all();
