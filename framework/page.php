@@ -17,8 +17,7 @@ class Page
         <head>
 <?php
         //html style
-        $packages = Packages::names();
-        foreach ($packages as &$package)
+        foreach (Packages::names() as &$package)
         {
             foreach (Page::HTML_HEADER_FILE_NAMES as &$fileName)
             {
@@ -40,7 +39,7 @@ class Page
         <body>
 <?php
         //html before content
-        foreach ($packages as &$package)
+        foreach (Packages::names() as &$package)
         {
             foreach (Page::HTML_BEFORE_CONTENT_FILE_NAMES as &$fileName)
             {
@@ -63,7 +62,7 @@ class Page
         }
 
         //html after content
-        foreach ($packages as &$package)
+        foreach (Packages::names() as &$package)
         {
             foreach (Page::HTML_AFTER_CONTENT_FILE_NAMES as &$fileName)
             {
@@ -76,7 +75,7 @@ class Page
         }
 
         //html scripts
-        foreach ($packages as &$package)
+        foreach (Packages::names() as &$package)
         {
             foreach (Page::HTML_SCRIPTS_FILE_NAMES as &$fileName)
             {
