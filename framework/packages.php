@@ -24,7 +24,7 @@ class Packages
             Packages::$_names = [];
             foreach (Packages::all() as $name => $version)
             {
-                array_push(Packages::$_names, $name);
+                Packages::$_names[] = $name;
             }
         }
 
