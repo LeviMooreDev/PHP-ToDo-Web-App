@@ -49,6 +49,7 @@ if ($count != 0)
         {
             //file path 
             $fileName = basename($_FILES["files"]["name"][$i]);
+            $fileName = Helper::escapeFileName($fileName);
             $targetFilePath = $targetFolder . $fileName;
 
             //if the file has not already been uploaded
