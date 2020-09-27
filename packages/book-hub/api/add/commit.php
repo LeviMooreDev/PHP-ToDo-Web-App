@@ -48,7 +48,8 @@ if (isset($_POST["name"]))
                     rename($uploadFile, $commitFile);
 
                     $return["result"]["success"] = true;
-                    $return["result"]["message"] = "Committed. Book id $id";
+                    $return["result"]["message"] = "Committed";
+                    $return["result"]["id"] = $id;
                 }
                 else
                 {
