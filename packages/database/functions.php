@@ -43,11 +43,18 @@ class Database
     }
     public static function queries($queries)
     {
+        $result;
         Database::$mysqli->multi_query($queries);
-        while (Database::$mysqli->more_results() && Database::$mysqli->next_result())
+        do
         {
-            ;
-        }
+            Database::$mysqli->next_result();
+            $result = Database::$mysqli->use_result();
+            if (Database::$mysqli->more_results())
+            {
+                continue;
+            }
+        } while (false);
+        return $result;
     }
     public static function queryFile($file)
     {
