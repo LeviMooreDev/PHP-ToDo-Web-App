@@ -2,6 +2,7 @@
     width: 100%;
     max-width: 800px;
 }
-#delete-th{
-    width: 60px;
+.button-col{
+    width: 42px;
+    padding: 5px !important;
 }

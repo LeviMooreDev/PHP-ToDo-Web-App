@@ -3,7 +3,6 @@
         <h3 class="card-header">Add Books</h3>
         <div class="card-body">
             <form id="form" enctype="multipart/form-data" action="javascript:upload()">
-
                 <div class="form-group">
                     <input type="submit" class="btn btn-primary float-right" value="Upload" name="submit" id="submit">
                     <input type="file" name="files[]" id="files" accept=".pdf" multiple required>
@@ -17,7 +16,8 @@
             <thead>
                 <tr>
                     <th>Uploaded files</th>
-                    <th id="delete-th"></th>
+                    <th class="button-col"></th>
+                    <th class="button-col"></th>
                 </tr>
             </thead>
             <tbody id="uploadedFiles-body">

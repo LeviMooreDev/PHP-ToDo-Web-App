@@ -125,7 +125,12 @@ function addUploadedFileToList(name)
         <td>
             ${name.split('\\').pop()}
         </td>
-        <td>
+        <td class="button-col">
+            <button class="btn btn-primary" onClick="commit(this, '${name}')">
+                <i class="fas fa-plus"></i>
+            </button>
+        </td>
+        <td class="button-col">
             <button class="btn btn-danger" onClick="remove(this, '${name}')">
                 <i class="fas fa-trash-alt"></i>
             </button>
@@ -166,6 +171,32 @@ function remove(listElement, name)
         name: name
     };
     API.simple("book-hub", "add/delete", data,
+        function (result)
+        {
+            if (result["success"] == true)
+            {
+                Alert.success(result["message"]);
+                $(listElement).parent().parent().remove();
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function (result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            Alert.error(result["message"]);
+        }
+    );
+}
+
+function commit(listElement, name)
+{
+    var data = {
+        name: name
+    };
+    API.simple("book-hub", "add/commit", data,
         function (result)
         {
             if (result["success"] == true)
