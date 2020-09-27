@@ -31,7 +31,7 @@ if ($count != 0)
         if (!in_array($fileType, $allowTypes))
         {
             $return["result"]["success"] = false;
-            $return["result"]["message"] = "File format $fileType not supported.";
+            $return["result"]["message"] = "File format $fileType not supported";
             $stop = true;
         }
     }
@@ -64,7 +64,7 @@ if ($count != 0)
                 else
                 {
                     $return["result"]["success"] = false;
-                    $return["result"]["message"] = "Unable to upload files. Server side error.";
+                    $return["result"]["message"] = "Unable to upload files. Server side error";
                     $stop = true;
                 }
             }
@@ -78,7 +78,7 @@ if ($count != 0)
             //check if no files were uploaded (all already existed)
             if (sizeof($uploaded) == 0)
             {
-                $return["result"]["message"] = "Files already uploaded.";
+                $return["result"]["message"] = "Files already uploaded";
             }
         }
         //if unsuccessful remove all files that were uploaded before the error happened
@@ -99,7 +99,7 @@ if ($count != 0)
 else
 {
     $return["result"]["success"] = false;
-    $return["result"]["message"] = "Files are missing.";
+    $return["result"]["message"] = "Files are missing";
 }
 
 $return["status"] = "OK";
