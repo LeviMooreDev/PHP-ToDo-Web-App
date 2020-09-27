@@ -103,7 +103,7 @@ function upload()
     disableForm();
 }
 
-function commit(name)
+function commit(name, goToEdit)
 {
     var data = {
         name: name
@@ -118,6 +118,14 @@ function commit(name)
                 var index = uploadedList.indexOf(name);
                 uploadedList.splice(index, 1);
                 updateList();
+
+                if (goToEdit)
+                {
+                    setTimeout(function()
+                    {
+                        window.location = "/books/edit?id=" + result["id"];
+                    }, 500);
+                }
             }
             else if (result["success"] == false)
             {
@@ -220,12 +228,12 @@ function updateList()
                 ${name.split('\\').pop()}
             </td>
             <td class="button-col">
-                <button class="btn btn-primary" data-toggle="tooltip" title="Commit" onClick="commit('${name}')">
+                <button class="btn btn-primary" data-toggle="tooltip" title="Commit" onClick="commit('${name}', false)">
                     <i class="fas fa-plus"></i>
                 </button>
             </td>
             <td class="button-col">
-                <button class="btn btn-primary" data-toggle="tooltip" title="Commit and edit" onClick="commitAndEdit('${name}')">
+                <button class="btn btn-primary" data-toggle="tooltip" title="Commit and edit" onClick="commit('${name}', true)">
                     <i class="fas fa-edit"></i>
                 </button>
             </td>
