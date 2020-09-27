@@ -2,6 +2,7 @@ class API
 {
     static simple(packageName, end, data, successCallback, errorCallback)
     {
+        var debug = true;
         var url = `/packages/${packageName}/api/${end}.php`;
         $.ajax(
         {
@@ -20,42 +21,42 @@ class API
                     else
                     {
                         errorCallback("Response did not contain a OK status.");
-                        console.log(`Package: ${packageName}`);
-                        console.log(`Endpoint: ${end}`);
-                        console.log(`URL: ${url}`);
-                        console.log(`Data: ${data}`);
+                    }
+                    if (debug)
+                    {
                         console.log(`Json: ${responseJson}`);
-                        console.log(`Object: ${responseObject}`);
                     }
                 }
                 catch (error)
                 {
                     errorCallback("Unable to parse json.");
-                    console.log(`Catch: ${error}`);
-                    console.log(`Package: ${packageName}`);
-                    console.log(`Endpoint: ${end}`);
-                    console.log(`URL: ${url}`);
-                    console.log(`Data: ${data}`);
-                    console.log(`Json: ${responseJson}`);
-                    console.log(`Object: ${responseObject}`);
+                    if (debug)
+                    {
+                        console.log(`Catch: ${error}`);
+                    }
                 }
             },
             error: function(xhr, ajaxOptions, thrownError)
             {
                 errorCallback("Ajax call failed.")
-                console.log(`Package: ${packageName}`);
-                console.log(`Endpoint: ${end}`);
-                console.log(`URL: ${url}`);
-                console.log(`Data: ${data}`);
-                console.log(`Status code: ${xhr.status}`);
-                console.log(`Status text: ${xhr.statusText}`);
-                console.log(`Thrown: ${thrownError}`);
+                if (debug)
+                {
+                    console.log(`Status code: ${xhr.status}`);
+                    console.log(`Status text: ${xhr.statusText}`);
+                    console.log(`Thrown: ${thrownError}`);
+                }
             }
         });
+        if (debug)
+        {
+            console.log(`URL: ${url}`);
+            console.log(`Data: ${data}`);
+        }
     }
 
     static upload(packageName, end, data, progress, successCallback, errorCallback)
     {
+        var debug = true;
         if (!(progress instanceof jQuery))
         {
             progress = $(progress);
@@ -80,7 +81,7 @@ class API
                     {
                         var percentComplete = Math.floor(((e.loaded / e.total) * 100));
                         $(progress).width(percentComplete + '%');
-                        $(progress).html(percentComplete+'%');
+                        $(progress).html(percentComplete + '%');
                     }
                 }, false);
                 return xhr;
@@ -97,38 +98,37 @@ class API
                     else
                     {
                         errorCallback("Response did not contain a OK status.");
-                        console.log(`Package: ${packageName}`);
-                        console.log(`Endpoint: ${end}`);
-                        console.log(`URL: ${url}`);
-                        console.log(`Data: ${data}`);
+                    }
+                    if (debug)
+                    {
                         console.log(`Json: ${responseJson}`);
-                        console.log(`Object: ${responseObject}`);
                     }
                 }
                 catch (error)
                 {
                     errorCallback("Unable to parse json.");
-                    console.log(`Catch: ${error}`);
-                    console.log(`Package: ${packageName}`);
-                    console.log(`Endpoint: ${end}`);
-                    console.log(`URL: ${url}`);
-                    console.log(`Data: ${data}`);
-                    console.log(`Json: ${responseJson}`);
-                    console.log(`Object: ${responseObject}`);
+                    if (debug)
+                    {
+                        console.log(`Catch: ${error}`);
+                    }
                 }
             },
             error: function(xhr, ajaxOptions, thrownError)
             {
                 errorCallback("Ajax call failed.")
-                console.log(`Package: ${packageName}`);
-                console.log(`Endpoint: ${end}`);
-                console.log(`URL: ${url}`);
-                console.log(`Data: ${data}`);
-                console.log(`Status code: ${xhr.status}`);
-                console.log(`Status text: ${xhr.statusText}`);
-                console.log(`Thrown: ${thrownError}`);
+                if (debug)
+                {
+                    console.log(`Status code: ${xhr.status}`);
+                    console.log(`Status text: ${xhr.statusText}`);
+                    console.log(`Thrown: ${thrownError}`);
+                }
             }
         });
+        if (debug)
+        {
+            console.log(`URL: ${url}`);
+            console.log(`Data: ${data}`);
+        }
     }
 
 
