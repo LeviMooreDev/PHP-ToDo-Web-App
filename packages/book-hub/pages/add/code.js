@@ -20,18 +20,6 @@ $(document).ready(function()
             return;
         }
 
-        //check for unsupported files
-        var supportedFormat = ['pdf'];
-        for (var i = 0; i < count; i++)
-        {
-            var type = files[i]["name"].split('.').pop();
-            if ($.inArray(type, supportedFormat) < 0)
-            {
-                Alert.error("Format " + type + " not supported. Use " + supportedFormat.join(', '));
-                return;
-            }
-        }
-
         //prepare data
         var data = new FormData();
         for (var i = 0; i < count; i++)
@@ -84,13 +72,35 @@ $(document).ready(function()
         disableForm();
     });
 
-    $('#file').on('change', function()
+    $('#files').on('change', function()
     {
-        var file = this.files[0];
-        if (file.type != "application/pdf")
+        var files = $('#files').get(0).files;
+        var count = files.length;
+
+        //check for unsupported files
+        var supportedFormat = ['pdf'];
+        for (var i = 0; i < count; i++)
         {
-            Alert.error("Only PDF files.");
-            $('#file').val(null);
+            var type = files[i]["name"].split('.').pop();
+            if ($.inArray(type, supportedFormat) < 0)
+            {
+                Alert.error("Format " + type + " not supported. Use " + supportedFormat.join(', '));
+                clearForm();
+                return;
+            }
+        }
+
+        //file size
+        var totalSize = 0;
+        var maxMB = 100;
+        for (var i = 0; i < count; i++)
+        {
+            totalSize += files[i]["size"];
+        }
+        if(totalSize > 1048576 * maxMB)
+        {
+            Alert.error("Files are too big. Can only upload a combined " + maxMB + "MB");
+            clearForm();
         }
     });
 
