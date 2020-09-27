@@ -23,6 +23,9 @@
             <tbody id="uploadedFiles-body">
             </tbody>
         </table>
+        <button id="commit-all" class="btn btn-primary float-right">
+            Commit All
+        </button>
         </div>
     </div>
 </div>
@@ -31,4 +34,4 @@ $uploadFolder = Packages::serverPath("book-hub") . "/uploads/";
 $files = array_diff(scandir($uploadFolder), array('..', '.'));
 sort($files);
 $json = json_encode($files);
-echo "<script>var uploadedServerList = $json;</script>";
+echo "<script>var uploadedList = $json;</script>";

@@ -3,32 +3,28 @@ $(document).ready(function()
     $("#form").on('submit', function(e)
     {
         e.preventDefault();
-        submit();
+        upload();
     });
 
-    $('#files').on('change', function()
-    {
-        filesSelectUpdate();
-    });
+    $('#files').on('change', filesSelectUpdate);
+
+    $('#commit-all').on('click', commitAll);
 
     ready();
 });
 
 function ready()
 {
+    $('[data-toggle="tooltip"]').tooltip();
+
     //reset progress bar
     $("#progress-bar").width('0%');
     $("#progress-bar").html('0%');
 
-    //add already uploaded files to list
-    uploadedServerList.forEach(item =>
-    {
-        addUploadedFileToList(item);
-    });
-    sortUploadedFilesList();
+    updateList();
 }
 
-function submit()
+function upload()
 {
     var progress = $("#progress-bar");
     var files = $('#files').get(0).files;
@@ -60,9 +56,9 @@ function submit()
                 //add uploaded files to table
                 result["uploaded"].forEach(item =>
                 {
-                    addUploadedFileToList(item);
+                    uploadedList.push(item);
                 });
-                sortUploadedFilesList();
+                updateList();
 
                 enableForm();
                 clearForm();
@@ -84,6 +80,72 @@ function submit()
     );
 
     disableForm();
+}
+
+function commit(name)
+{
+    var data = {
+        name: name
+    };
+    API.simple("book-hub", "add/commit", data,
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                Alert.success(result["message"]);
+
+                var index = uploadedList.indexOf(name);
+                uploadedList.splice(index, 1);
+                updateList();
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            Alert.error(result["message"]);
+        }
+    );
+}
+
+function commitAll()
+{
+    uploadedList.forEach(name =>
+    {
+        commit(name);
+    });
+}
+
+function remove(name)
+{
+    var data = {
+        name: name
+    };
+    API.simple("book-hub", "add/delete", data,
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                Alert.success(result["message"]);
+
+                var index = uploadedList.indexOf(name);
+                uploadedList.splice(index, 1);
+                updateList();
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            Alert.error(result["message"]);
+        }
+    );
 }
 
 function filesSelectUpdate()
@@ -118,34 +180,51 @@ function filesSelectUpdate()
     }
 }
 
-function addUploadedFileToList(name)
+function updateList()
 {
-    $("#uploadedFiles tbody").append(`
-    <tr>
-        <td>
-            ${name.split('\\').pop()}
-        </td>
-        <td class="button-col">
-            <button class="btn btn-primary" onClick="commit(this, '${name}')">
-                <i class="fas fa-plus"></i>
-            </button>
-        </td>
-        <td class="button-col">
-            <button class="btn btn-danger" onClick="remove(this, '${name}')">
-                <i class="fas fa-trash-alt"></i>
-            </button>
-        </td>
-    </tr>
-    `);
-}
-
-function sortUploadedFilesList()
-{
-    var tbody = $("#uploadedFiles tbody");
-    tbody.find('tr').sort(function(a, b)
+    uploadedList.sort(
+        function(a, b)
+        {
+            if (a.toLowerCase() < b.toLowerCase()) return -1;
+            if (a.toLowerCase() > b.toLowerCase()) return 1;
+            return 0;
+        }
+    );
+    $("#uploadedFiles tbody").html("");
+    uploadedList.forEach(name =>
     {
-        return $('td:first', a).text().localeCompare($('td:first', b).text());
-    }).appendTo(tbody);
+        $("#uploadedFiles tbody").append(`
+        <tr>
+            <td>
+                ${name.split('\\').pop()}
+            </td>
+            <td class="button-col">
+                <button class="btn btn-primary" data-toggle="tooltip" title="Commit" onClick="commit('${name}')">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </td>
+            <td class="button-col">
+                <button class="btn btn-primary" data-toggle="tooltip" title="Commit and edit" onClick="commitAndEdit('${name}')">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </td>
+            <td class="button-col">
+                <button class="btn btn-danger" data-toggle="tooltip" title="Delete" onClick="remove('${name}')">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </td>
+        </tr>
+        `);
+    });
+
+    if (uploadedList.length == 0)
+    {
+        $('#commit-all').attr("disabled", "disabled");
+    }
+    else
+    {
+        $('#commit-all').removeAttr("disabled");
+    }
 }
 
 function disableForm()
@@ -163,56 +242,4 @@ function enableForm()
 function clearForm()
 {
     $('#files').val(null);
-}
-
-function remove(listElement, name)
-{
-    var data = {
-        name: name
-    };
-    API.simple("book-hub", "add/delete", data,
-        function (result)
-        {
-            if (result["success"] == true)
-            {
-                Alert.success(result["message"]);
-                $(listElement).parent().parent().remove();
-            }
-            else if (result["success"] == false)
-            {
-                Alert.error(result["message"]);
-            }
-        },
-        function (result)
-        {
-            Alert.error("Something went wrong. See console (F12) for more info.");
-            Alert.error(result["message"]);
-        }
-    );
-}
-
-function commit(listElement, name)
-{
-    var data = {
-        name: name
-    };
-    API.simple("book-hub", "add/commit", data,
-        function (result)
-        {
-            if (result["success"] == true)
-            {
-                Alert.success(result["message"]);
-                $(listElement).parent().parent().remove();
-            }
-            else if (result["success"] == false)
-            {
-                Alert.error(result["message"]);
-            }
-        },
-        function (result)
-        {
-            Alert.error("Something went wrong. See console (F12) for more info.");
-            Alert.error(result["message"]);
-        }
-    );
 }
