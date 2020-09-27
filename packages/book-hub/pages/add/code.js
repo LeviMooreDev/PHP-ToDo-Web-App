@@ -28,7 +28,7 @@ $(document).ready(function()
         }
         
         //call upload api
-        API.upload("book-hub", "upload", data, progress,
+        API.upload("book-hub", "add/upload", data, progress,
             function(result)
             {
                 //if successful
