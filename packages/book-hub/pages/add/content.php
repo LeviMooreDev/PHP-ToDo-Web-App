@@ -21,7 +21,6 @@
                 </tr>
             </thead>
             <tbody id="uploadedFiles-body">
-
             </tbody>
         </table>
         </div>
@@ -29,6 +28,7 @@
 </div>
 <?php
 $uploadFolder = Packages::serverPath("book-hub") . "/uploads/";
-$files = sort(array_diff(scandir($uploadFolder), array('..', '.')));
+$files = array_diff(scandir($uploadFolder), array('..', '.'));
+sort($files);
 $json = json_encode($files);
 echo "<script>var uploadedServerList = $json;</script>";
