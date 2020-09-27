@@ -1,3 +1,5 @@
+var uploadedList = [];
+
 $(document).ready(function()
 {
     $("#form").on('submit', function(e)
@@ -21,7 +23,26 @@ function ready()
     $("#progress-bar").width('0%');
     $("#progress-bar").html('0%');
 
-    updateList();
+    //get uploaded files
+    API.simple("book-hub", "add/uploaded", "",
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                uploadedList = result["files"];
+                updateList();
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error("Unable to get list of uploaded files");
+            }
+        },
+        function(result) //failed
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
 }
 
 function upload()
