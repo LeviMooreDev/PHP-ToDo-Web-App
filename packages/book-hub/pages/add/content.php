@@ -17,22 +17,18 @@
             <thead>
                 <tr>
                     <th>Uploaded files</th>
+                    <th id="delete-th"></th>
                 </tr>
             </thead>
             <tbody id="uploadedFiles-body">
-            <?php
-            $uploadFolder = Packages::serverPath("book-hub") . "/uploads/";
-            $files = array_diff(scandir($uploadFolder), array('..', '.'));
-            sort($files);
-            foreach ($files as $file)
-            {
-                echo "<tr>";
-                echo "<td>$file</td>";
-                echo "</tr>";
-            }
-            ?>
+                
             </tbody>
         </table>
         </div>
     </div>
 </div>
+<?php
+$uploadFolder = Packages::serverPath("book-hub") . "/uploads/";
+$files = sort(array_diff(scandir($uploadFolder), array('..', '.'));
+$json = json_encode($files);
+echo "<script>var uploadedServerList = $json;</script>";

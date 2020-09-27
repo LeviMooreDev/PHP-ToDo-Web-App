@@ -37,18 +37,11 @@ $(document).ready(function()
                     Alert.success(result["message"]);
                     
                     //add uploaded files to table
-                    result["uploaded"].forEach(element =>
+                    result["uploaded"].forEach(item =>
                     {
-                        var filename = element.split('\\').pop();
-                        var tbody = $("#uploadedFiles tbody");
-                        //add
-                        tbody.append("<tr><td>" + filename + "</td></tr>");
-                        //sort
-                        tbody.find('tr').sort(function(a, b)
-                        {
-                            return $('td:first', a).text().localeCompare($('td:first', b).text());
-                        }).appendTo(tbody);
+                        addUploadedFileToList(item);
                     });
+                    sortUploadedFilesList();
 
                     enableForm();
                     clearForm();
@@ -104,9 +97,18 @@ $(document).ready(function()
         }
     });
 
-    $("#progress-bar").width('0%');
-    $("#progress-bar").html('0%');
-
+    function addUploadedFileToList(name)
+    {
+        $("#uploadedFiles tbody").append("<tr><td>" + name.split('\\').pop() + "</td></tr>");
+    }
+    function sortUploadedFilesList()
+    {
+        var tbody = $("#uploadedFiles tbody");
+        tbody.find('tr').sort(function(a, b)
+        {
+            return $('td:first', a).text().localeCompare($('td:first', b).text());
+        }).appendTo(tbody);
+    }
 
     function disableForm()
     {
@@ -122,4 +124,14 @@ $(document).ready(function()
     {
         $('#files').val(null);
     }
+
+    //reset progress bar
+    $("#progress-bar").width('0%');
+    $("#progress-bar").html('0%');
+
+    //add already uploaded files to list
+    uploadedServerList.forEach(item => {
+        addUploadedFileToList(item);
+    });
+    sortUploadedFilesList();
 });
