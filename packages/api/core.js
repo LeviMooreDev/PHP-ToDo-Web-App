@@ -9,11 +9,10 @@ class API
             type: 'POST',
             url: url,
             data: data,
-            success: function(responseJson)
+            success: function(responseObject)
             {
                 try
                 {
-                    var responseObject = JSON.parse(responseJson);
                     if (responseObject["status"] == "OK")
                     {
                         successCallback(responseObject["result"]);
@@ -21,10 +20,6 @@ class API
                     else
                     {
                         errorCallback("Response did not contain a OK status.");
-                    }
-                    if (debug)
-                    {
-                        console.log(`Json: ${responseJson}`);
                     }
                 }
                 catch (error)
@@ -34,6 +29,10 @@ class API
                     {
                         console.log(`Catch: ${error}`);
                     }
+                }
+                if (debug)
+                {
+                    console.log(`Json: ${JSON.stringify(responseObject)}`);
                 }
             },
             error: function(xhr, ajaxOptions, thrownError)
@@ -86,11 +85,10 @@ class API
                 }, false);
                 return xhr;
             },
-            success: function(responseJson)
+            success: function(responseObject)
             {
                 try
                 {
-                    var responseObject = JSON.parse(responseJson);
                     if (responseObject["status"] == "OK")
                     {
                         successCallback(responseObject["result"]);
@@ -98,10 +96,6 @@ class API
                     else
                     {
                         errorCallback("Response did not contain a OK status.");
-                    }
-                    if (debug)
-                    {
-                        console.log(`Json: ${responseJson}`);
                     }
                 }
                 catch (error)
@@ -111,6 +105,10 @@ class API
                     {
                         console.log(`Catch: ${error}`);
                     }
+                }
+                if (debug)
+                {
+                    console.log(`Json: ${JSON.stringify(responseObject)}`);
                 }
             },
             error: function(xhr, ajaxOptions, thrownError)

@@ -24,7 +24,7 @@ function ready()
     $("#progress-bar").html('0%');
 
     //get uploaded files
-    API.simple("book-hub", "add/uploaded", "",
+    API.simple("book-hub", "upload/list", "",
         function(result)
         {
             if (result["success"] == true)
@@ -66,7 +66,7 @@ function upload()
     }
 
     //call upload api
-    API.upload("book-hub", "add/upload", data, progress,
+    API.upload("book-hub", "upload/upload", data, progress,
         function(result)
         {
             //if successful
@@ -108,7 +108,7 @@ function commit(name, goToEdit)
     var data = {
         name: name
     };
-    API.simple("book-hub", "add/commit", data,
+    API.simple("book-hub", "upload/commit", data,
         function(result)
         {
             if (result["success"] == true)
@@ -153,7 +153,7 @@ function remove(name)
     var data = {
         name: name
     };
-    API.simple("book-hub", "add/delete", data,
+    API.simple("book-hub", "upload/delete", data,
         function(result)
         {
             if (result["success"] == true)

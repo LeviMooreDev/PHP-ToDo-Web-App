@@ -1,4 +1,6 @@
 <?php
+header('Content-Type: application/json');
+
 include_once($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
 Functions::collect();
 Database::connect();
