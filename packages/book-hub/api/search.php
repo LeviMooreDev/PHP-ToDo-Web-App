@@ -28,8 +28,6 @@ foreach($googleAPIResult->items as $item)
     $book["date"] = $item->volumeInfo->publishedDate;
     $book["identifiers"] = $item->volumeInfo->industryIdentifiers;
     $book["thumbnail"] = $item->volumeInfo->imageLinks->thumbnail;
-    $book["language"] = $item->volumeInfo->language;
-    $book["store-link"] = $item->volumeInfo->infoLink;
     $result[] = $book;
 }
 
