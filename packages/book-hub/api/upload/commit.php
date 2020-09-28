@@ -36,12 +36,12 @@ if (isset($_POST["name"]))
                 $commitFile = "$booksFolder$fileName $postfix.$fileType";
             }
             rename($uploadFile, $commitFile);
-            $commitFileName = pathinfo($commitFile)['filename'];
-            $commitFilePath = $commitFileName . ".$fileType";
+            Database::connect();
+            $commitFileName = Database::escape(pathinfo($commitFile)['filename']);
+            $commitFilePath = Database::escape($commitFileName . ".$fileType");
 
             $id;
             $sql = "INSERT INTO `book-hub`(`title`, `file`) VALUES ('$commitFileName', '$commitFilePath'); SELECT LAST_INSERT_ID();";
-            Database::connect();
             $result = Database::queries($sql);
 
             if ($result->field_count == 1 && $result->num_rows == 0)
