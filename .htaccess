@@ -21,5 +21,10 @@
 	Deny from all
 </FilesMatch>
 
+# Deny access to all pdf files
+<FilesMatch "\.(pdf)$">
+	Deny from all
+</FilesMatch>
+
 # Instead of showing a 403 error page when trying to access protected files redirect to a 404 page
 ErrorDocument 403 /404
