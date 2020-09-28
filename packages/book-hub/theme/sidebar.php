@@ -7,9 +7,15 @@ return [
         "order" => 1,
     ],
     [
-        'name' => "Book Add",
+        'name' => "Upload Books",
         'icon' => "book-medical",
-        'url' => "books/add",
+        'url' => "books/upload",
         "order" => 2,
+    ],
+    [
+        'name' => "Repair Books",
+        'icon' => "hammer",
+        'url' => "books/repair",
+        "order" => 3,
     ]
 ];
