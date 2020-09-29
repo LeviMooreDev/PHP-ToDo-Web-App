@@ -3,13 +3,13 @@
     max-width: 800px;
 }
 
-button {
+.card button {
     min-width: 100px;
     margin-left: 10px;
 }
 
 @media only screen and (max-width: 630px) {
-    button {
+    .card button {
         margin-left: 0px;
         margin-bottom: 10px;
         width: 100%;
@@ -18,4 +18,28 @@ button {
     #right-buttons {
         width: 100%;
     }
+}
+
+#rowSplit .col {
+    min-width: 300px;
+}
+
+#cover {
+    border: solid 1px black;
+    object-fit: contain;
+}
+
+#cover,
+#cover-root {
+    width: 100%;
+    max-width: 300px;
+}
+
+#cover-file {
+    border: none;
+    padding: 0px;
+}
+
+#cover-file-group {
+    margin-top: 5px;
 }
