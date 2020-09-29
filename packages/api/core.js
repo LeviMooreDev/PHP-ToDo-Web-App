@@ -73,16 +73,20 @@ class API
             processData: false,
             xhr: function()
             {
-                var xhr = new window.XMLHttpRequest();
-                xhr.upload.addEventListener("progress", function(e)
+                if (progress != null)
                 {
-                    if (e.lengthComputable)
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function(e)
                     {
-                        var percentComplete = Math.floor(((e.loaded / e.total) * 100));
-                        $(progress).width(percentComplete + '%');
-                        $(progress).html(percentComplete + '%');
-                    }
-                }, false);
+                        if (e.lengthComputable)
+                        {
+                            var percentComplete = Math.floor(((e.loaded / e.total) * 100));
+                            $(progress).width(percentComplete + '%');
+                            $(progress).html(percentComplete + '%');
+                        }
+                    }, false);
+
+                }
                 return xhr;
             },
             success: function(responseObject)
