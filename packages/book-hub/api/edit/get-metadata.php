@@ -11,6 +11,8 @@ if (Packages::exist("authentication"))
 
 if (isset($_POST["id"]))
 {
+    $booksFolder = Packages::serverPath("book-hub") . "/books/";
+
     Database::connect();
     $id = Database::escape($_POST["id"]);
     $sql = "SELECT * FROM `book-hub` WHERE `id`=$id";
@@ -18,6 +20,15 @@ if (isset($_POST["id"]))
     if ($result->num_rows === 1)
     {
         $return["result"]["metadata"] = $result->fetch_assoc();
+        $coverFileServer = Packages::serverPath("book-hub") . "/books/" . $return["result"]["metadata"]["file"] . ".jpg";
+        if (file_exists($coverFileServer))
+        {
+            $return["result"]["metadata"]["cover"] = Packages::httpPath("book-hub") . "/books/" . $return["result"]["metadata"]["file"] . ".jpg";
+        }
+        else
+        {
+            $return["result"]["metadata"]["cover"] = Packages::httpPath("book-hub") . "/cover-placeholder.png";
+        }
         $return["result"]["success"] = true;
     }
     else
@@ -25,7 +36,7 @@ if (isset($_POST["id"]))
         $return["result"]["success"] = false;
         $return["result"]["message"] = "Unable to find book with id $id";
     }
-    
+
 }
 else
 {
