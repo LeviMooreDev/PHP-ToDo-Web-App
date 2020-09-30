@@ -138,7 +138,7 @@ function uploadCover()
 
 function autoFill()
 {
-
+    $('#autoFillModal').modal('show');
 }
 
 function download()
