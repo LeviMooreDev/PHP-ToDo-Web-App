@@ -17,13 +17,14 @@ if (isset($_POST["id"]))
 {
     Database::connect();
     $id = Database::escape($_POST["id"]);
-    $sql = "SELECT `file` FROM `book-hub` WHERE `id`=$id";
-    $result = Database::query($sql);
+    $result = Database::query("SELECT `file` FROM `book-hub` WHERE `id`=$id");
     if ($result->num_rows === 1)
     {
         $filePath = $booksFolder . $result->fetch_assoc()["file"] . ".jpg";
         if (file_exists($filePath))
         {
+            Database::query("UPDATE `book-hub` SET `update_timestamp`=CURRENT_TIMESTAMP() WHERE `id`=$id");
+
             chmod($filePath, 0777);
             unlink($filePath);
             $return["result"]["success"] = true;

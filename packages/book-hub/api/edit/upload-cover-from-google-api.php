@@ -33,6 +33,8 @@ if (isset($_POST["id"]))
             {
                 if (is_array(getimagesize($fileServer)))
                 {
+                    Database::query("UPDATE `book-hub` SET `update_timestamp`=CURRENT_TIMESTAMP() WHERE `id`=$id");
+
                     $return["result"]["success"] = true;
                     $return["result"]["file"] = $fileHTTP;
                     $return["result"]["message"] = "Upload successful";
