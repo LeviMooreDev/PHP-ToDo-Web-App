@@ -158,7 +158,7 @@ function deleteCover()
 function setCoverSrc(url)
 {
     $("#cover").attr("src", "");
-    $("#cover").attr("src", url);
+    $("#cover").attr("src", url + "?t=" + new Date().getTime());
 }
 
 function uploadCover()
@@ -481,7 +481,7 @@ class AutoFill
                     {
                         if (result["success"] == true)
                         {
-                            setCoverSrc(cover);
+                            setCoverSrc(result["file"]);
                         }
                         else if (result["success"] == false)
                         {
