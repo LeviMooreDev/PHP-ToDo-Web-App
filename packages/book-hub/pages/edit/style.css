@@ -43,3 +43,26 @@
 #cover-file-group {
     margin-top: 5px;
 }
+
+
+#auto-fill-cover {
+    border: solid 1px black;
+    object-fit: contain;
+    width: 230px;
+    height: 310px;
+}
+
+#auto-fill-search-button {
+    height: 37px;
+    width: 37px;
+    margin-left: 10px;
+}
+
+.auto-fill-page-button {
+    width: 35px;
+    height: 35px;
+}
+
+#auto-fill-search-apply {
+    margin-right: 10px;
+}

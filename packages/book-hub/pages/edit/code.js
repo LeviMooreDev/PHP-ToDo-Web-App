@@ -10,7 +10,9 @@ $(document).ready(function()
     $('#save').on('click', save);
     $('#delete').on('click', deleteBook);
     $('#download').on('click', download);
-    $('#auto-fill').on('click', autoFill);
+    $('#auto-fill').on('click', AutoFill.open);
+    $('#auto-fill-search-button').on('click', AutoFill.search);
+    $('#auto-fill-apply').on('click', AutoFill.apply);
     $('input[name="isbn13"]').on('change', onIsbn13Change);
     $('input[name="isbn10"]').on('change', onIsbn10Change);
     $('#cover-file').on('change', onCoverFileChange);
@@ -57,13 +59,18 @@ function load()
                 $('input[name="categories"]').val(metadate["categories"]);
                 $('input[name="publisher"]').val(metadate["publisher"]);
                 $('input[name="date"]').val(metadate["date"]);
-                $('input[name="isbn13"]').val(parseInt(metadate["isbn13"]));
-                $('input[name="isbn10"]').val(parseInt(metadate["isbn10"]));
+                if (metadate["isbn13"] !== null)
+                {
+                    $('input[name="isbn13"]').val(parseInt(metadate["isbn13"]));
+                }
+                if (metadate["isbn10"] !== null)
+                {
+                    $('input[name="isbn10"]').val(parseInt(metadate["isbn10"]));
+                }
                 $('#added').html("Added: " + metadate["created_timestamp"]);
                 $('#updated').html("Updated: " + metadate["update_timestamp"]);
                 $('#file').html("File: " + metadate["file"]);
                 $("#cover").attr("src", metadate["cover"]);
-                $("#cover-id").attr("value", metadate["id"]);
 
                 enableForm();
             }
@@ -87,7 +94,6 @@ function deleteBook()
 
 function uploadCover()
 {
-    var id = $('#cover-id').val();
     var files = $('#cover-file').get(0).files;
     var progress = $("#progress-bar");
     if (!id)
@@ -134,11 +140,6 @@ function uploadCover()
             clearCoverSelect();
         }
     );
-}
-
-function autoFill()
-{
-    $('#autoFillModal').modal('show');
 }
 
 function download()
@@ -250,5 +251,126 @@ function iframePostFormDownload(url)
             $('#form' + $(this).data('time')).remove();
             $(this).remove();
         });
+    }
+}
+
+
+class AutoFill
+{
+    static searchResults = [];
+    static pageIndex = 0;
+
+    static open()
+    {
+        var isbn13 = $('input[name="isbn13"]').val();
+        var isbn10 = $('input[name="isbn10"]').val();
+        var title = $('input[name="title"]').val();
+        var query;
+        if (isbn13)
+        {
+            query = isbn13;
+        }
+        else if (isbn10)
+        {
+            query = isbn10;
+        }
+        else
+        {
+            query = title;
+        }
+        $('#auto-fill-search-query').val(query);
+        if (query)
+        {
+            //AutoFill.search();
+        }
+        $('#autoFillModal').modal('show');
+    }
+
+    static search()
+    {
+        Alert.working(() =>
+        {
+            var data = {
+                query: $('#auto-fill-search-query').val()
+            };
+            API.simple("book-hub", "edit/search-metadata", data,
+                function(result)
+                {
+                    if (result["success"] == true)
+                    {
+                        Alert.success("Search successful");
+                        AutoFill.searchResults = result["metadata"];
+                        AutoFill.pageIndex = 0;
+                        AutoFill.updatePage();
+                    }
+                    else if (result["success"] == false)
+                    {
+                        Alert.error(result["message"]);
+                    }
+                },
+                function(result)
+                {
+                    Alert.error("Something went wrong. See console (F12) for more info.");
+                    console.log(result);
+                }
+            );
+        });
+    }
+
+    static updatePage()
+    {
+        $("#auto-fill-page-buttons").html("");
+        for (let i = 0; i < AutoFill.searchResults.length; i++)
+        {
+            $("#auto-fill-page-buttons").append(`
+            <button class="btn btn-${i == AutoFill.pageIndex ? "primary" : "secondary"} auto-fill-page-button" onclick="AutoFill.clickPageButton(${i})">${i}</button>
+            `);
+        }
+        var body = $("#auto-fill-body");
+
+        AutoFill.updatePageTextElement("title", AutoFill.searchResults[AutoFill.pageIndex].title);
+        AutoFill.updatePageTextElement("subtitle", AutoFill.searchResults[AutoFill.pageIndex].subtitle);
+        AutoFill.updatePageTextElement("categories", AutoFill.searchResults[AutoFill.pageIndex].categories);
+        AutoFill.updatePageTextElement("description", AutoFill.searchResults[AutoFill.pageIndex].description);
+        AutoFill.updatePageTextElement("authors", AutoFill.searchResults[AutoFill.pageIndex].authors);
+        AutoFill.updatePageTextElement("publisher", AutoFill.searchResults[AutoFill.pageIndex].publisher);
+        AutoFill.updatePageTextElement("date", AutoFill.searchResults[AutoFill.pageIndex].date);
+        AutoFill.updatePageTextElement("isbn13", AutoFill.searchResults[AutoFill.pageIndex].isbn13);
+        AutoFill.updatePageTextElement("isbn10", AutoFill.searchResults[AutoFill.pageIndex].isbn10);
+        AutoFill.updatePageTextElement("cover", AutoFill.searchResults[AutoFill.pageIndex].cover);
+        AutoFill.updatePageTextElement("title", AutoFill.searchResults[AutoFill.pageIndex].title);
+
+        var cover = AutoFill.searchResults[AutoFill.pageIndex].cover;
+        if (cover)
+        {
+            $("#auto-fill-cover").attr("src", cover);
+        }
+        else
+        {
+            $("#auto-fill-cover").attr("src", "/packages/book-hub/cover-placeholder.png");
+        }
+    }
+
+    static updatePageTextElement(name, value)
+    {
+        if (value)
+        {
+            $("#auto-fill-" + name).html(value);
+        }
+        else
+        {
+            $("#auto-fill-" + name).html("N/A");
+        }
+    }
+
+    static clickPageButton(index)
+    {
+        AutoFill.pageIndex = index;
+        AutoFill.updatePage();
+    }
+
+    static apply(index)
+    {
+
     }
 }

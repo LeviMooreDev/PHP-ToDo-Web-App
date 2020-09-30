@@ -54,7 +54,6 @@
                                 <img id="cover">
                                 <form id="form" enctype="multipart/form-data">
                                     <div id="cover-file-group" class="input-group">
-                                        <input id="cover-id" type="text" name="id" required hidden>
                                         <input id="cover-file" type="file" name="file" class="form-control width100" accept=".jpg, .png, .jpeg, .png, .gif, .bmp" required>
                                         <span class="input-group-btn">
                                             <button class="btn btn-secondary btn-sm">Upload</button>
@@ -86,22 +85,55 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="autoFillModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
+<div class="modal fade" id="autoFillModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="form-group w-100">
+                    <div class="input-group">
+                        <input id="auto-fill-search-query" type="search" class="form-control" placeholder="search title or ISBN">
+                        <span class="input-group-btn">
+                            <button type="button" id="auto-fill-search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div id="auto-fill-body" class="modal-body">
+
+                <div class="row">
+                    <div class="col col-md-4">
+                        <img id="auto-fill-cover" src="/packages/book-hub/cover-placeholder.png">
+                    </div>
+                    <div class="col col-md-8">
+                        <p><b>Title:</b> <span id="auto-fill-title">N/A</span></p>
+                        <p><b>Subtitle:</b> <span id="auto-fill-subtitle">N/A</span></p>
+                        <p><b>Categories:</b> <span id="auto-fill-categories">N/A</span></p>
+                        <p><b>Authors:</b> <span id="auto-fill-authors">N/A</span></p>
+                        <p><b>Publisher:</b> <span id="auto-fill-publisher">N/A</span></p>
+                        <p><b>Date:</b> <span id="auto-fill-date">N/A</span></p>
+                        <p><b>ISBN13:</b> <span id="auto-fill-isbn13">N/A</span></p>
+                        <p><b>ISBN10:</b> <span id="auto-fill-isbn10">N/A</span></p>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col col-md-12">
+                        <p><b>Description:</b> <span id="auto-fill-description">N/A</span></p>
+                    </div>
+                </div>
+
+                <!-- <p>Cover: <span id="auto-fill-cover">NONE</span></p> -->
+            </div>
+            <div class="modal-footer">
+                <div class="row w-100">
+                    <div id="auto-fill-page-buttons" class="col col-md-6">
+                    </div>
+                    <div class="col col-md-6 d-flex justify-content-end">
+                        <button id="auto-fill-search-apply" class="btn btn-primary">Apply</button>
+                        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
     </div>
-  </div>
+</div>
