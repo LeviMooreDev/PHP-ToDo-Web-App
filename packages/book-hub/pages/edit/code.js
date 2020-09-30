@@ -10,9 +10,6 @@ $(document).ready(function()
     $('#save').on('click', save);
     $('#delete').on('click', deleteBook);
     $('#download').on('click', download);
-    $('#auto-fill').on('click', AutoFill.open);
-    $('#auto-fill-search-button').on('click', AutoFill.search);
-    $('#auto-fill-apply').on('click', AutoFill.apply);
     $('input[name="isbn13"]').on('change', onIsbn13Change);
     $('input[name="isbn10"]').on('change', onIsbn10Change);
     $('#cover-file').on('change', onCoverFileChange);
@@ -24,7 +21,6 @@ $(document).ready(function()
 function ready()
 {
     id = getUrlParameter("id");
-    disableForm();
     load();
     onResize();
     $("#progress-bar").width('0%');
@@ -40,11 +36,48 @@ function onResize()
 
 function save()
 {
+    var title = $('input[name="title"]').val().trim();
+    if (!title || title == null || title == "")
+    {
+        Alert.error("Title is missing");
+        return;
+    }
 
+    var data = {
+        id: id,
+        title: title,
+        subtitle: $('input[name="subtitle"]').val(),
+        description: $('textarea[name="description"]').val(),
+        authors: $('input[name="authors"]').val(),
+        categories: $('input[name="categories"]').val(),
+        publisher: $('input[name="publisher"]').val(),
+        date: $('input[name="date"]').val(),
+        isbn13: $('input[name="isbn13"]').val(),
+        isbn10: $('input[name="isbn10"]').val()
+    }
+    API.simple("book-hub", "edit/save", data,
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                Alert.success(result["message"]);
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
 }
 
 function load()
 {
+    disableForm();
     var data = {
         id: id
     };
@@ -53,26 +86,26 @@ function load()
         {
             if (result["success"] == true)
             {
-                var metadate = result["metadata"];
-                $('input[name="title"]').val(metadate["title"]);
-                $('input[name="subtitle"]').val(metadate["subtitle"]);
-                $('textarea[name="description"]').val(metadate["description"]);
-                $('input[name="authors"]').val(metadate["authors"]);
-                $('input[name="categories"]').val(metadate["categories"]);
-                $('input[name="publisher"]').val(metadate["publisher"]);
-                $('input[name="date"]').val(metadate["date"]);
-                if (metadate["isbn13"] !== null)
+                var metadata = result["metadata"];
+                $('input[name="title"]').val(metadata["title"]);
+                $('input[name="subtitle"]').val(metadata["subtitle"]);
+                $('textarea[name="description"]').val(metadata["description"]);
+                $('input[name="authors"]').val(metadata["authors"]);
+                $('input[name="categories"]').val(metadata["categories"]);
+                $('input[name="publisher"]').val(metadata["publisher"]);
+                $('input[name="date"]').val(metadata["date"]);
+                $('#added').html("Added: " + metadata["created_timestamp"]);
+                $('#updated').html("Updated: " + metadata["update_timestamp"]);
+                $('#file').html("File: " + metadata["file"]);
+                $("#cover").attr("src", metadata["cover"]);
+                if (metadata["isbn13"] !== null)
                 {
-                    $('input[name="isbn13"]').val(parseInt(metadate["isbn13"]));
+                    $('input[name="isbn13"]').val(parseInt(metadata["isbn13"]));
                 }
-                if (metadate["isbn10"] !== null)
+                if (metadata["isbn10"] !== null)
                 {
-                    $('input[name="isbn10"]').val(parseInt(metadate["isbn10"]));
+                    $('input[name="isbn10"]').val(parseInt(metadata["isbn10"]));
                 }
-                $('#added').html("Added: " + metadate["created_timestamp"]);
-                $('#updated').html("Updated: " + metadate["update_timestamp"]);
-                $('#file').html("File: " + metadate["file"]);
-                $("#cover").attr("src", metadate["cover"]);
 
                 enableForm();
             }
@@ -98,11 +131,6 @@ function uploadCover()
 {
     var files = $('#cover-file').get(0).files;
     var progress = $("#progress-bar");
-    if (!id)
-    {
-        Alert.error("Id missing");
-        return false;
-    }
     if (files.length == 0)
     {
         Alert.error("No cover file selected");
@@ -149,6 +177,36 @@ function download()
     var iDownload = new iframePostFormDownload("http://books.levimoore.dk/packages/book-hub/api/download.php");
     iDownload.addParameter('id', id);
     iDownload.send();
+}
+
+function iframePostFormDownload(url)
+{
+    //https://stackoverflow.com/questions/3599670/ajax-file-download-using-jquery-php
+    //Trafalmadorian
+    var object = this;
+    object.time = new Date().getTime();
+    object.form = $('<form action="' + url + '" target="iframe' + object.time + '" method="post" style="display:none;" id="form' + object.time + '" name="form' + object.time + '"></form>');
+
+    object.addParameter = function(parameter, value)
+    {
+        $("<input type='hidden' />")
+            .attr("name", parameter)
+            .attr("value", value)
+            .appendTo(object.form);
+    }
+
+    object.send = function()
+    {
+        var iframe = $('<iframe data-time="' + object.time + '" style="display:none;" id="iframe' + object.time + '"></iframe>');
+        $("body").append(iframe);
+        $("body").append(object.form);
+        object.form.submit();
+        iframe.load(function()
+        {
+            $('#form' + $(this).data('time')).remove();
+            $(this).remove();
+        });
+    }
 }
 
 function getUrlParameter(sParam)
@@ -226,37 +284,6 @@ function onCoverFileChange()
     }
 }
 
-//https://stackoverflow.com/questions/3599670/ajax-file-download-using-jquery-php
-//Trafalmadorian
-function iframePostFormDownload(url)
-{
-    var object = this;
-    object.time = new Date().getTime();
-    object.form = $('<form action="' + url + '" target="iframe' + object.time + '" method="post" style="display:none;" id="form' + object.time + '" name="form' + object.time + '"></form>');
-
-    object.addParameter = function(parameter, value)
-    {
-        $("<input type='hidden' />")
-            .attr("name", parameter)
-            .attr("value", value)
-            .appendTo(object.form);
-    }
-
-    object.send = function()
-    {
-        var iframe = $('<iframe data-time="' + object.time + '" style="display:none;" id="iframe' + object.time + '"></iframe>');
-        $("body").append(iframe);
-        $("body").append(object.form);
-        object.form.submit();
-        iframe.load(function()
-        {
-            $('#form' + $(this).data('time')).remove();
-            $(this).remove();
-        });
-    }
-}
-
-
 class AutoFill
 {
     static searchResults = [];
@@ -264,6 +291,9 @@ class AutoFill
 
     static ready()
     {
+        $('#auto-fill').on('click', AutoFill.open);
+        $('#auto-fill-search-button').on('click', AutoFill.search);
+        $('#auto-fill-apply').on('click', AutoFill.apply);
         AutoFill.updatePage();
     }
 
@@ -281,13 +311,13 @@ class AutoFill
         {
             query = isbn10;
         }
-        else
+        else if (title)
         {
             query = title;
         }
-        $('#auto-fill-search-query').val(query);
         if (query && AutoFill.searchResults.length == 0)
         {
+            $('#auto-fill-search-query').val(query);
             AutoFill.search();
         }
         $('#autoFillModal').modal('show');
@@ -337,17 +367,11 @@ class AutoFill
         if (AutoFill.searchResults.length == 0)
         {
             $("#auto-fill-search-apply").attr("disabled", "disabled");
-            AutoFill.updatePageTextElement("title", null);
-            AutoFill.updatePageTextElement("subtitle", null);
-            AutoFill.updatePageTextElement("categories", null);
-            AutoFill.updatePageTextElement("description", null);
-            AutoFill.updatePageTextElement("authors", null);
-            AutoFill.updatePageTextElement("publisher", null);
-            AutoFill.updatePageTextElement("date", null);
-            AutoFill.updatePageTextElement("isbn13", null);
-            AutoFill.updatePageTextElement("isbn10", null);
-            AutoFill.updatePageTextElement("cover", null);
-            AutoFill.updatePageTextElement("title", null);
+            var elements = ["title", "subtitle", "categories", "description", "authors", "publisher", "date", "isbn13", "isbn10", "cover", "title"];
+            elements.forEach(element =>
+            {
+                AutoFill.updatePageTextElement(element, null);
+            });
         }
         else
         {
@@ -355,22 +379,22 @@ class AutoFill
             {
                 for (let i = 0; i < AutoFill.searchResults.length; i++)
                 {
-                    $("#auto-fill-page-buttons").append(`
-                <button class="btn btn-${i == AutoFill.pageIndex ? "primary" : "secondary"} auto-fill-page-button" onclick="AutoFill.clickPageButton(${i})">${i}</button>
-                `);
+                    $("#auto-fill-page-buttons").append(`<button class="btn btn-${i == AutoFill.pageIndex ? "primary" : "secondary"} auto-fill-page-button" onclick="AutoFill.clickPageButton(${i})">${i}</button>`);
                 }
             }
-            AutoFill.updatePageTextElement("title", AutoFill.searchResults[AutoFill.pageIndex].title);
-            AutoFill.updatePageTextElement("subtitle", AutoFill.searchResults[AutoFill.pageIndex].subtitle);
-            AutoFill.updatePageTextElement("categories", AutoFill.searchResults[AutoFill.pageIndex].categories);
-            AutoFill.updatePageTextElement("description", AutoFill.searchResults[AutoFill.pageIndex].description);
-            AutoFill.updatePageTextElement("authors", AutoFill.searchResults[AutoFill.pageIndex].authors);
-            AutoFill.updatePageTextElement("publisher", AutoFill.searchResults[AutoFill.pageIndex].publisher);
-            AutoFill.updatePageTextElement("date", AutoFill.searchResults[AutoFill.pageIndex].date);
-            AutoFill.updatePageTextElement("isbn13", AutoFill.searchResults[AutoFill.pageIndex].isbn13);
-            AutoFill.updatePageTextElement("isbn10", AutoFill.searchResults[AutoFill.pageIndex].isbn10);
-            AutoFill.updatePageTextElement("cover", AutoFill.searchResults[AutoFill.pageIndex].cover);
-            AutoFill.updatePageTextElement("title", AutoFill.searchResults[AutoFill.pageIndex].title);
+
+            var data = AutoFill.searchResults[AutoFill.pageIndex];
+            AutoFill.updatePageTextElement("title", data.title);
+            AutoFill.updatePageTextElement("subtitle", data.subtitle);
+            AutoFill.updatePageTextElement("categories", data.categories);
+            AutoFill.updatePageTextElement("description", data.description);
+            AutoFill.updatePageTextElement("authors", data.authors);
+            AutoFill.updatePageTextElement("publisher", data.publisher);
+            AutoFill.updatePageTextElement("date", data.date);
+            AutoFill.updatePageTextElement("isbn13", data.isbn13);
+            AutoFill.updatePageTextElement("isbn10", data.isbn10);
+            AutoFill.updatePageTextElement("cover", data.cover);
+            AutoFill.updatePageTextElement("title", data.title);
 
             var cover = AutoFill.searchResults[AutoFill.pageIndex].cover;
             if (cover)
@@ -385,7 +409,6 @@ class AutoFill
             $("#auto-fill-search-apply").removeAttr("disabled");
         }
     }
-
     static updatePageTextElement(name, value)
     {
         if (value)
@@ -398,14 +421,64 @@ class AutoFill
         }
     }
 
+    static apply()
+    {
+        Alert.working(() =>
+        {
+            var data = AutoFill.searchResults[AutoFill.pageIndex];
+            $('input[name="title"]').val(data.title);
+            $('input[name="subtitle"]').val(data.subtitle);
+            $('textarea[name="description"]').val(data.description);
+            $('input[name="authors"]').val(data.authors);
+            $('input[name="categories"]').val(data.categories);
+            $('input[name="publisher"]').val(data.publisher);
+            $('input[name="date"]').val(data.date);
+            $('input[name="isbn13"]').val(data.isbn13);
+            $('input[name="isbn10"]').val(data.isbn10);
+            var cover = data.cover;
+            if (cover != null)
+            {
+                var data = {
+                    id: id,
+                    url: cover
+                }
+                API.simple("book-hub", "edit/upload-cover-from-google-api", data,
+                    function(result)
+                    {
+                        if (result["success"] == true)
+                        {
+                            $("#cover").attr("src", cover);
+                        }
+                        else if (result["success"] == false)
+                        {
+                            Alert.error("Unable to apply cover. Other metadata is still applied");
+                            console.log(result["message"]);
+                        }
+                        AutoFill.saveApplied();
+                    },
+                    function(result)
+                    {
+                        Alert.error("Unable to apply cover. Other metadata is still applied");
+                        console.log(result["message"]);
+                        AutoFill.saveApplied();
+                    }
+                );
+            }
+            else
+            {
+                AutoFill.saveApplied();
+            }
+        });
+    }
+    static saveApplied()
+    {
+        save();
+        $('#autoFillModal').modal('hide');
+    }
+
     static clickPageButton(index)
     {
         AutoFill.pageIndex = index;
         AutoFill.updatePage();
-    }
-
-    static apply(index)
-    {
-
     }
 }

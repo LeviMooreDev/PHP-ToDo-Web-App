@@ -31,7 +31,6 @@ if (isset($_POST["id"]))
                 if ($result->num_rows === 1)
                 {
                     $targetFilePath = $booksFolder . $result->fetch_assoc()["file"] . ".jpg";
-                    //$return["result"]["hej"] = $file;
                     if (convertImage($file["type"], $file["tmp_name"], $targetFilePath) === true)
                     {
                         if (file_exists($targetFilePath))
