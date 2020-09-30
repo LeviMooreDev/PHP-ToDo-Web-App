@@ -27,48 +27,55 @@ if (isset($_POST["query"]))
 
     $googleAPIResult = json_decode(file_get_contents($googleUrl));
 
-    $metadata = [];
-    foreach ($googleAPIResult->items as $item)
+    if ($googleAPIResult->totalItems > 0)
     {
-        $book = [];
-        $book["title"] = $item->volumeInfo->title;
-        $book["subtitle"] = $item->volumeInfo->subtitle;
-        $book["categories"] = $item->volumeInfo->categories;
-        if ($book["categories"] !== null)
+        foreach ($googleAPIResult->items as $item)
         {
-            $book["categories"] = implode(", ", $item->volumeInfo->categories);
-        }
-        $book["description"] = $item->volumeInfo->description;
-        $book["authors"] = $item->volumeInfo->authors;
-        if ($book["authors"] !== null)
-        {
-            $book["authors"] = implode(", ", $item->volumeInfo->authors);
-        }
-        $book["publisher"] = $item->volumeInfo->publisher;
-        $book["date"] = $item->volumeInfo->publishedDate;
-        $book["isbn13"] = null;
-        $book["isbn10"] = null;
-        if(isset($item->volumeInfo->industryIdentifiers))
-        {
-            foreach ($item->volumeInfo->industryIdentifiers as $industryIdentifier)
+            $book = [];
+            $book["title"] = $item->volumeInfo->title;
+            $book["subtitle"] = $item->volumeInfo->subtitle;
+            $book["categories"] = $item->volumeInfo->categories;
+            if ($book["categories"] !== null)
             {
-                if ($industryIdentifier->type == "ISBN_13")
+                $book["categories"] = implode(", ", $item->volumeInfo->categories);
+            }
+            $book["description"] = $item->volumeInfo->description;
+            $book["authors"] = $item->volumeInfo->authors;
+            if ($book["authors"] !== null)
+            {
+                $book["authors"] = implode(", ", $item->volumeInfo->authors);
+            }
+            $book["publisher"] = $item->volumeInfo->publisher;
+            $book["date"] = $item->volumeInfo->publishedDate;
+            $book["isbn13"] = null;
+            $book["isbn10"] = null;
+            if (isset($item->volumeInfo->industryIdentifiers))
+            {
+                foreach ($item->volumeInfo->industryIdentifiers as $industryIdentifier)
                 {
-                    $book["isbn13"] = $industryIdentifier->identifier;
-                }
-                if ($industryIdentifier->type == "ISBN_10")
-                {
-                    $book["isbn10"] = $industryIdentifier->identifier;
+                    if ($industryIdentifier->type == "ISBN_13")
+                    {
+                        $book["isbn13"] = $industryIdentifier->identifier;
+                    }
+                    if ($industryIdentifier->type == "ISBN_10")
+                    {
+                        $book["isbn10"] = $industryIdentifier->identifier;
+                    }
                 }
             }
+            $book["cover"] = $item->volumeInfo->imageLinks->thumbnail;
+            $metadata[] = $book;
         }
-        $book["cover"] = $item->volumeInfo->imageLinks->thumbnail;
-        $metadata[] = $book;
+        $return["result"]["success"] = true;
+        $return["result"]["message"] = "Search successful";
+        $return["result"]["metadata"] = $metadata;
     }
-
-    $return["result"]["success"] = true;
-    $return["result"]["message"] = "Search successful";
-    $return["result"]["metadata"] = $metadata;
+    else
+    {
+        $return["result"]["success"] = true;
+        $return["result"]["message"] = "Can't find any books";
+        $return["result"]["metadata"] = $metadata = [];
+    }
 }
 else
 {

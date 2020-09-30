@@ -29,6 +29,8 @@ function ready()
     onResize();
     $("#progress-bar").width('0%');
     $("#progress-bar").html('0%');
+
+    AutoFill.ready();
 }
 
 function onResize()
@@ -260,6 +262,11 @@ class AutoFill
     static searchResults = [];
     static pageIndex = 0;
 
+    static ready()
+    {
+        AutoFill.updatePage();
+    }
+
     static open()
     {
         var isbn13 = $('input[name="isbn13"]').val();
@@ -279,9 +286,9 @@ class AutoFill
             query = title;
         }
         $('#auto-fill-search-query').val(query);
-        if (query)
+        if (query && AutoFill.searchResults.length == 0)
         {
-            //AutoFill.search();
+            AutoFill.search();
         }
         $('#autoFillModal').modal('show');
     }
@@ -298,7 +305,14 @@ class AutoFill
                 {
                     if (result["success"] == true)
                     {
-                        Alert.success("Search successful");
+                        if (result["metadata"].length != 0)
+                        {
+                            Alert.success(result["message"]);
+                        }
+                        else
+                        {
+                            Alert.error(result["message"]);
+                        }
                         AutoFill.searchResults = result["metadata"];
                         AutoFill.pageIndex = 0;
                         AutoFill.updatePage();
@@ -320,34 +334,55 @@ class AutoFill
     static updatePage()
     {
         $("#auto-fill-page-buttons").html("");
-        for (let i = 0; i < AutoFill.searchResults.length; i++)
+        if (AutoFill.searchResults.length == 0)
         {
-            $("#auto-fill-page-buttons").append(`
-            <button class="btn btn-${i == AutoFill.pageIndex ? "primary" : "secondary"} auto-fill-page-button" onclick="AutoFill.clickPageButton(${i})">${i}</button>
-            `);
-        }
-        var body = $("#auto-fill-body");
-
-        AutoFill.updatePageTextElement("title", AutoFill.searchResults[AutoFill.pageIndex].title);
-        AutoFill.updatePageTextElement("subtitle", AutoFill.searchResults[AutoFill.pageIndex].subtitle);
-        AutoFill.updatePageTextElement("categories", AutoFill.searchResults[AutoFill.pageIndex].categories);
-        AutoFill.updatePageTextElement("description", AutoFill.searchResults[AutoFill.pageIndex].description);
-        AutoFill.updatePageTextElement("authors", AutoFill.searchResults[AutoFill.pageIndex].authors);
-        AutoFill.updatePageTextElement("publisher", AutoFill.searchResults[AutoFill.pageIndex].publisher);
-        AutoFill.updatePageTextElement("date", AutoFill.searchResults[AutoFill.pageIndex].date);
-        AutoFill.updatePageTextElement("isbn13", AutoFill.searchResults[AutoFill.pageIndex].isbn13);
-        AutoFill.updatePageTextElement("isbn10", AutoFill.searchResults[AutoFill.pageIndex].isbn10);
-        AutoFill.updatePageTextElement("cover", AutoFill.searchResults[AutoFill.pageIndex].cover);
-        AutoFill.updatePageTextElement("title", AutoFill.searchResults[AutoFill.pageIndex].title);
-
-        var cover = AutoFill.searchResults[AutoFill.pageIndex].cover;
-        if (cover)
-        {
-            $("#auto-fill-cover").attr("src", cover);
+            $("#auto-fill-search-apply").attr("disabled", "disabled");
+            AutoFill.updatePageTextElement("title", null);
+            AutoFill.updatePageTextElement("subtitle", null);
+            AutoFill.updatePageTextElement("categories", null);
+            AutoFill.updatePageTextElement("description", null);
+            AutoFill.updatePageTextElement("authors", null);
+            AutoFill.updatePageTextElement("publisher", null);
+            AutoFill.updatePageTextElement("date", null);
+            AutoFill.updatePageTextElement("isbn13", null);
+            AutoFill.updatePageTextElement("isbn10", null);
+            AutoFill.updatePageTextElement("cover", null);
+            AutoFill.updatePageTextElement("title", null);
         }
         else
         {
-            $("#auto-fill-cover").attr("src", "/packages/book-hub/cover-placeholder.png");
+            if (AutoFill.searchResults.length > 1)
+            {
+                for (let i = 0; i < AutoFill.searchResults.length; i++)
+                {
+                    $("#auto-fill-page-buttons").append(`
+                <button class="btn btn-${i == AutoFill.pageIndex ? "primary" : "secondary"} auto-fill-page-button" onclick="AutoFill.clickPageButton(${i})">${i}</button>
+                `);
+                }
+            }
+            AutoFill.updatePageTextElement("title", AutoFill.searchResults[AutoFill.pageIndex].title);
+            AutoFill.updatePageTextElement("subtitle", AutoFill.searchResults[AutoFill.pageIndex].subtitle);
+            AutoFill.updatePageTextElement("categories", AutoFill.searchResults[AutoFill.pageIndex].categories);
+            AutoFill.updatePageTextElement("description", AutoFill.searchResults[AutoFill.pageIndex].description);
+            AutoFill.updatePageTextElement("authors", AutoFill.searchResults[AutoFill.pageIndex].authors);
+            AutoFill.updatePageTextElement("publisher", AutoFill.searchResults[AutoFill.pageIndex].publisher);
+            AutoFill.updatePageTextElement("date", AutoFill.searchResults[AutoFill.pageIndex].date);
+            AutoFill.updatePageTextElement("isbn13", AutoFill.searchResults[AutoFill.pageIndex].isbn13);
+            AutoFill.updatePageTextElement("isbn10", AutoFill.searchResults[AutoFill.pageIndex].isbn10);
+            AutoFill.updatePageTextElement("cover", AutoFill.searchResults[AutoFill.pageIndex].cover);
+            AutoFill.updatePageTextElement("title", AutoFill.searchResults[AutoFill.pageIndex].title);
+
+            var cover = AutoFill.searchResults[AutoFill.pageIndex].cover;
+            if (cover)
+            {
+                $("#auto-fill-cover").attr("src", cover);
+            }
+            else
+            {
+                $("#auto-fill-cover").attr("src", "/packages/book-hub/cover-placeholder.png");
+            }
+
+            $("#auto-fill-search-apply").removeAttr("disabled");
         }
     }
 
