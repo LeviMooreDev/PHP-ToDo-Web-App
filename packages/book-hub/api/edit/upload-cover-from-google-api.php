@@ -13,9 +13,6 @@ if (Packages::exist("authentication"))
 //create upload folder
 $booksFolder = Packages::serverPath("book-hub") . "/books/";
 
-$_POST["id"] = 231;
-$_POST["url"] = "http://books.google.com/books/content?id=aVz_BgAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api";
-
 if (isset($_POST["id"]))
 {
     if (isset($_POST["url"]))
