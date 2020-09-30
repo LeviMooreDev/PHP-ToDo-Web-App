@@ -56,26 +56,6 @@ if (isset($_POST["id"]))
             $return["result"]["success"] = false;
             $return["result"]["message"] = "Unable to find book with id $id";
         }
-
-    // $file = $_FILES["file"];
-    // $fileType = pathinfo(basename($file["name"]), PATHINFO_EXTENSION);
-    // if (in_array($fileType, $allowTypes))
-    // {
-    //     if (is_array(getimagesize($file["tmp_name"])))
-    //     {
-
-    //     }
-    //     else
-    //     {
-    //         $return["result"]["success"] = false;
-    //         $return["result"]["message"] = "File data does not match an image";
-    //     }
-    // }
-    // else
-    // {
-    //     $return["result"]["success"] = false;
-    //     $return["result"]["message"] = "File format $fileType not supported";
-    // }
     }
     else
     {
