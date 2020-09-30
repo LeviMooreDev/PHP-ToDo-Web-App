@@ -21,7 +21,7 @@ if (isset($_POST["query"]))
     else
     {
         $lang = "en";
-        $limit = 3;
+        $limit = 5;
         $googleUrl = "https://www.googleapis.com/books/v1/volumes?langRestrict=$lang&maxResults=$limit&printType=BOOKS&q=" . urlencode($query);
     }
 
