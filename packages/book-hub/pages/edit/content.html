@@ -52,14 +52,13 @@
                                 <label>Cover</label>
                                 <br>
                                 <img id="cover">
-                                <form id="form" enctype="multipart/form-data">
-                                    <div id="cover-file-group" class="input-group">
-                                        <input id="cover-file" type="file" name="file" class="form-control width100" accept=".jpg, .png, .jpeg, .png, .gif, .bmp" required>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-secondary btn-sm">Upload</button>
-                                        </span>
-                                    </div>
-                                </form>
+                                <div id="cover-file-group" class="input-group">
+                                    <input id="cover-file" type="file" name="file" class="form-control width100" accept=".jpg, .png, .jpeg, .png, .gif, .bmp" required>
+                                    <span class="input-group-btn">
+                                        <button type="button" id="cover-upload" class="btn btn-secondary btn-sm">Upload</button>
+                                        <button type="button" id="cover-delete" class="btn btn-secondary btn-sm">X</button>
+                                    </span>
+                                </div>
                                 <div class="progress">
                                     <div class="progress-bar" id="progress-bar"></div>
                                 </div>
@@ -70,11 +69,13 @@
             </form>
 
             <br>
-            <button id="save" class="btn btn-primary float-left">Save</button>
-            <div id="right-buttons" class="float-right">
-                <button id="auto-fill" class="btn btn-primary">Auto Fill</button>
-                <button id="download" class="btn btn-primary">Download</button>
-                <button id="delete" class="btn btn-danger">Delete</button>
+            <div id="bot-buttons">
+                <button id="save" class="btn btn-primary float-left">Save</button>
+                <div id="right-buttons" class="float-right">
+                    <button id="auto-fill" class="btn btn-primary">Auto Fill</button>
+                    <button id="download" class="btn btn-primary">Download</button>
+                    <button id="delete" class="btn btn-danger">Delete</button>
+                </div>
             </div>
         </div>
         <div class="card-footer">
@@ -84,7 +85,7 @@
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Auto fill -->
 <div class="modal fade" id="autoFillModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">

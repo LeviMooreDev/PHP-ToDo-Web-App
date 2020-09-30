@@ -26,22 +26,24 @@ if (isset($_POST["id"]))
         $result = Database::query($sql);
         if ($result->num_rows === 1)
         {
-            $url = $_POST["url"];
-            $image = file_get_contents($url);
-            $targetFilePath = $booksFolder . $result->fetch_assoc()["file"] . ".jpg";
-            file_put_contents($targetFilePath, $image);
+            $fileName = $result->fetch_assoc()["file"];
+            $fileServer = Packages::serverPath("book-hub") . "/books/$fileName.jpg";
+            $fileHTTP = Packages::httpPath("book-hub") . "/books/$fileName.jpg";
+            $image = file_get_contents($_POST["url"]);
+            file_put_contents($fileServer, $image);
 
-            if (file_exists($targetFilePath))
+            if (file_exists($fileServer))
             {
-                if (is_array(getimagesize($targetFilePath)))
+                if (is_array(getimagesize($fileServer)))
                 {
                     $return["result"]["success"] = true;
+                    $return["result"]["file"] = $fileHTTP;
                     $return["result"]["message"] = "Upload successful";
                 }
                 else
                 {
-                    chmod($targetFilePath, 0777);
-                    unlink($targetFilePath);
+                    chmod($fileServer, 0777);
+                    unlink($fileServer);
                     $return["result"]["success"] = false;
                     $return["result"]["message"] = "Cover data does not match an image. Server side error #2";
                 }

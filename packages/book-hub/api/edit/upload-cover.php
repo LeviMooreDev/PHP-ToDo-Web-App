@@ -11,7 +11,6 @@ if (Packages::exist("authentication"))
 }
 
 //create upload folder
-$booksFolder = Packages::serverPath("book-hub") . "/books/";
 $allowTypes = array("jpg", "jpeg", "png", "gif", "bmp");
 
 if (isset($_POST["id"]))
@@ -30,12 +29,15 @@ if (isset($_POST["id"]))
                 $result = Database::query($sql);
                 if ($result->num_rows === 1)
                 {
-                    $targetFilePath = $booksFolder . $result->fetch_assoc()["file"] . ".jpg";
-                    if (convertImage($file["type"], $file["tmp_name"], $targetFilePath) === true)
+                    $fileName = $result->fetch_assoc()["file"];
+                    $fileServer = Packages::serverPath("book-hub") . "/books/$fileName.jpg";
+                    $fileHTTP = Packages::httpPath("book-hub") . "/books/$fileName.jpg";
+                    if (convertImage($file["type"], $file["tmp_name"], $fileServer) === true)
                     {
-                        if (file_exists($targetFilePath))
+                        if (file_exists($fileServer))
                         {
                             $return["result"]["success"] = true;
+                            $return["result"]["file"] = $fileHTTP;
                             $return["result"]["message"] = "Upload successful";
                         }
                         else

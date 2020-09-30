@@ -1,18 +1,19 @@
 var id;
+var coverPlaceholder = "/packages/book-hub/cover-placeholder.png";
 
 $(document).ready(function()
 {
-    $("#cover-form").on('submit', function(e)
-    {
-        e.preventDefault();
-        uploadCover();
-    });
+    $('input[name="isbn13"]').on('change', onIsbn13Change);
+    $('input[name="isbn10"]').on('change', onIsbn10Change);
+
     $('#save').on('click', save);
     $('#delete').on('click', deleteBook);
     $('#download').on('click', download);
-    $('input[name="isbn13"]').on('change', onIsbn13Change);
-    $('input[name="isbn10"]').on('change', onIsbn10Change);
+
     $('#cover-file').on('change', onCoverFileChange);
+    $('#cover-upload').on('click', uploadCover);
+    $('#cover-delete').on('click', deleteCover);
+
     $(window).resize(onResize);
 
     ready();
@@ -55,7 +56,7 @@ function save()
         isbn13: $('input[name="isbn13"]').val(),
         isbn10: $('input[name="isbn10"]').val()
     }
-    API.simple("book-hub", "edit/save", data,
+    API.simple("book-hub", "edit/save-metadata", data,
         function(result)
         {
             if (result["success"] == true)
@@ -97,7 +98,7 @@ function load()
                 $('#added').html("Added: " + metadata["created_timestamp"]);
                 $('#updated').html("Updated: " + metadata["update_timestamp"]);
                 $('#file').html("File: " + metadata["file"]);
-                $("#cover").attr("src", metadata["cover"]);
+                setCoverSrc(metadata["cover"]);
                 if (metadata["isbn13"] !== null)
                 {
                     $('input[name="isbn13"]').val(parseInt(metadata["isbn13"]));
@@ -127,6 +128,39 @@ function deleteBook()
 
 }
 
+function deleteCover()
+{
+    var data = 
+    {
+        id: id
+    };
+    API.simple("book-hub", "edit/delete-cover", data,
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                Alert.success(result["message"]);
+                setCoverSrc(coverPlaceholder);
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function(result) //failed
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+}
+
+function setCoverSrc(url)
+{
+    $("#cover").attr("src", "");
+    $("#cover").attr("src", url);
+}
+
 function uploadCover()
 {
     var files = $('#cover-file').get(0).files;
@@ -153,21 +187,21 @@ function uploadCover()
             if (result["success"] == true)
             {
                 Alert.success(result["message"]);
-                clearCoverSelect();
-                load();
+                setCoverSrc(result["file"]);
             }
             else if (result["success"] == false)
             {
                 Alert.error(result["message"]);
-                enableForm();
-                clearCoverSelect();
             }
+            clearCoverSelect();
+            enableForm();
         },
         function(result) //failed
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
-            enableForm();
+            console.log(result);
             clearCoverSelect();
+            enableForm();
         }
     );
 }
@@ -403,7 +437,7 @@ class AutoFill
             }
             else
             {
-                $("#auto-fill-cover").attr("src", "/packages/book-hub/cover-placeholder.png");
+                $("#auto-fill-cover").attr("src", coverPlaceholder);
             }
 
             $("#auto-fill-search-apply").removeAttr("disabled");
@@ -447,7 +481,7 @@ class AutoFill
                     {
                         if (result["success"] == true)
                         {
-                            $("#cover").attr("src", cover);
+                            setCoverSrc(cover);
                         }
                         else if (result["success"] == false)
                         {
