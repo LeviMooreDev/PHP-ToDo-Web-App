@@ -4,7 +4,7 @@ Functions::collect();
 
 if (Packages::exist("authentication"))
 {
-    //Authentication::Auth403();
+    Authentication::Auth403();
 }
 Core::createFolder(Core::booksFolderServer());
 
