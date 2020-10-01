@@ -413,7 +413,7 @@ class AutoFill
             {
                 for (let i = 0; i < AutoFill.searchResults.length; i++)
                 {
-                    $("#auto-fill-page-buttons").append(`<button class="btn btn-${i == AutoFill.pageIndex ? "primary" : "secondary"} auto-fill-page-button" onclick="AutoFill.clickPageButton(${i})">${i}</button>`);
+                    $("#auto-fill-page-buttons").append(`<button class="btn btn-${i == AutoFill.pageIndex ? "primary" : "secondary"} auto-fill-page-button" onclick="AutoFill.clickPageButton(${i})">${i + 1}</button>`);
                 }
             }
 
