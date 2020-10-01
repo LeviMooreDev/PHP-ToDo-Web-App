@@ -8,6 +8,7 @@ $(document).ready(function()
 
     $('#save').on('click', save);
     $('#delete').on('click', deleteBook);
+    $('#original-title').on('click', originalTitle);
     $('#download').on('click', download);
 
     $('#cover-file').on('change', onCoverFileChange);
@@ -358,6 +359,35 @@ function onCoverFileChange()
         Alert.error("File is too big. Max cover size is " + maxMB + "MB");
         clearCoverSelect();
     }
+}
+
+function originalTitle()
+{
+    disableForm();
+    var data = {
+        id: id
+    };
+    API.simple("book-hub", "edit/original-title", data,
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                Alert.success(result["message"]);
+                $('input[name="title"]').val(result["title"]);
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+            enableForm();
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+            enableForm();
+        }
+    );
 }
 
 class AutoFill
