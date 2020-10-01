@@ -130,27 +130,36 @@ function deleteBook()
 
 function deleteCover()
 {
-    var data = 
-    {
-        id: id
-    };
-    API.simple("book-hub", "edit/delete-cover", data,
-        function(result)
+    Alert.yesNo("Are you sure you want to remove the cover?",
+        function()
         {
-            if (result["success"] == true)
+            var data = 
             {
-                Alert.success(result["message"]);
-                setCoverSrc(coverPlaceholder);
-            }
-            else if (result["success"] == false)
-            {
-                Alert.error(result["message"]);
-            }
+                id: id
+            };
+            API.simple("book-hub", "edit/delete-cover", data,
+                function(result)
+                {
+                    if (result["success"] == true)
+                    {
+                        Alert.success(result["message"]);
+                        setCoverSrc(coverPlaceholder);
+                    }
+                    else if (result["success"] == false)
+                    {
+                        Alert.error(result["message"]);
+                    }
+                },
+                function(result) //failed
+                {
+                    Alert.error("Something went wrong. See console (F12) for more info.");
+                    console.log(result);
+                }
+            );
         },
-        function(result) //failed
+        function()
         {
-            Alert.error("Something went wrong. See console (F12) for more info.");
-            console.log(result);
+
         }
     );
 }
