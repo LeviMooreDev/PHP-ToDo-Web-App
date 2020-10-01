@@ -28,6 +28,17 @@ if (!empty($postFile))
             Core::createFolder(Core::bookFolderPathServer($id));
             rename($uploadFilePath, $bookFile);
 
+            $fileWrite = fopen(Core::originalFileNamePathServer($id), "w");
+            if ($fileWrite !== false)
+            {
+                fwrite($fileWrite, $fileName);
+                fclose($fileWrite);
+            }
+            else
+            {
+                Core::deleteBookFolder($id);
+            }
+
             Core::result("id", $id);
             Core::success("Committed");
         }
