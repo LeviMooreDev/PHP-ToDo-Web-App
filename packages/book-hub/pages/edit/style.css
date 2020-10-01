@@ -3,19 +3,17 @@
     max-width: 800px;
 }
 
-#bot-buttons button {
+#action-button, #save {
     min-width: 100px;
-    margin-left: 10px;
 }
 
 @media only screen and (max-width: 630px) {
-    #bot-buttons button {
-        margin-left: 0px;
+    #action-button, #save {
         margin-bottom: 10px;
         width: 100%;
     }
-
-    #right-buttons {
+    .dropdown-menu
+    {
         width: 100%;
     }
 }

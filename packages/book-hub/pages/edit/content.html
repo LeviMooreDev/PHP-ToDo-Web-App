@@ -69,12 +69,13 @@
             </form>
 
             <br>
-            <div id="bot-buttons">
-                <button id="save" class="btn btn-primary float-left">Save</button>
-                <div id="right-buttons" class="float-right">
-                    <button id="auto-fill" class="btn btn-primary">Auto Fill</button>
-                    <button id="download" class="btn btn-primary">Download</button>
-                    <button id="delete" class="btn btn-danger">Delete</button>
+            <button id="save" class="btn btn-primary float-left">Save</button>
+            <div id="action-button" class="btn-group float-right">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
+                <div class="dropdown-menu">
+                    <a id="auto-fill" class="dropdown-item" href="#">Auto Fill</a>
+                    <a id="download" class="dropdown-item" href="#">Download</a>
+                    <a id="delete" class="dropdown-item" href="#">Delete</a>
                 </div>
             </div>
         </div>
