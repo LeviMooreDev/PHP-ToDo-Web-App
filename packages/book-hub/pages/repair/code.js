@@ -11,12 +11,11 @@ $(document).ready(function()
 function ready()
 {
     $("#fix-all").attr("disabled", "disabled");
+    scan();
 }
 
 function scan()
 {
-    //get uploaded files
-
     Alert.working(() =>
     {
         API.simple("book-hub", "repair/scan", "",
@@ -84,7 +83,7 @@ function fixAll()
 {
     scanResults.forEach(item =>
     {
-        eval(item["fix"]);
+        eval(item["button"]);
     });
 }
 
