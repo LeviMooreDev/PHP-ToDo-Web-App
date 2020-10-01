@@ -1,86 +1,47 @@
 <?php
 header('Content-Type: application/json');
+include("../core.php");
 
-include($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
-Functions::collect();
+Core::validatePostIsset("name");
+$postFile = Helper::escapeFileName($_POST["name"]);
 
-if (Packages::exist("authentication"))
+if (!empty($postFile))
 {
-    Authentication::Auth403();
-}
-
-if (isset($_POST["name"]))
-{
-    $uploadFolder = Packages::serverPath("book-hub") . "/uploads/";
-    $booksFolder = Packages::serverPath("book-hub") . "/books/";
-    $file = $_POST["name"];
-    $file = Helper::escapeFileName($file);
-    $fileName = pathinfo($file)['filename'];
-    $fileType = pathinfo($file, PATHINFO_EXTENSION);
-    $uploadFile = $uploadFolder . $file;
-
-    if (!file_exists($booksFolder))
+    $uploadFilePath = Core::uploadFilePath($postFile);
+    if (file_exists($uploadFilePath))
     {
-        mkdir($booksFolder, 0777, true);
-    }
-
-    if (!empty($file))
-    {
-        if (file_exists($uploadFile))
+        $id;
+        Database::connect();
+        $fileName = Database::escape(pathinfo($uploadFilePath)['filename']);
+        $result = Database::queries("INSERT INTO `book-hub`(`title`) VALUES ('$fileName'); SELECT LAST_INSERT_ID();");
+        if ($result->field_count == 1 && $result->num_rows == 0)
         {
-            $commitFile = "$booksFolder$fileName.$fileType";
-            $postfix = 0;
-            while (file_exists($commitFile))
+            $row = $result->fetch_assoc();
+            if (array_key_exists("LAST_INSERT_ID()", $row))
             {
-                $postfix = $postfix + 1;
-                $commitFile = "$booksFolder$fileName $postfix.$fileType";
+                $id = $row["LAST_INSERT_ID()"];
             }
-            rename($uploadFile, $commitFile);
-            Database::connect();
-            $commitFileName = Database::escape(pathinfo($commitFile)['filename']);
-            $commitFilePath = Database::escape($commitFileName . ".$fileType");
+        }
+        if (isset($id))
+        {
+            $bookFile = Core::bookFilePathServer($id);
+            Core::createFolder(Core::bookFolderPathServer($id));
+            rename($uploadFilePath, $bookFile);
 
-            $id;
-            $sql = "INSERT INTO `book-hub`(`title`, `file`) VALUES ('$commitFileName', '$commitFilePath'); SELECT LAST_INSERT_ID();";
-            $result = Database::queries($sql);
-
-            if ($result->field_count == 1 && $result->num_rows == 0)
-            {
-                $row = $result->fetch_assoc();
-                if (array_key_exists("LAST_INSERT_ID()", $row))
-                {
-                    $id = $row["LAST_INSERT_ID()"];
-                }
-            }
-            if (isset($id))
-            {
-                $return["result"]["success"] = true;
-                $return["result"]["message"] = "Committed";
-                $return["result"]["id"] = $id;
-            }
-            else
-            {
-                $return["result"]["success"] = false;
-                $return["result"]["message"] = "Cant commit book. Database error.";
-            }
+            Core::result("id", $id);
+            Core::success("Committed");
         }
         else
         {
-            $return["result"]["success"] = false;
-            $return["result"]["message"] = "Cant find file";
+            Core::fail("Cant commit book. Database error.");
         }
     }
     else
     {
-        $return["result"]["success"] = false;
-        $return["result"]["message"] = "Name data empty";
+        Core::fail("Cant find file");
     }
 }
 else
 {
-    $return["result"]["success"] = false;
-    $return["result"]["message"] = "Name data is missing";
+    Core::fail("Name data empty");
 }
-
-$return["status"] = "OK";
-exit(json_encode($return));

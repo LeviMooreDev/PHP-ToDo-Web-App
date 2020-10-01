@@ -56,7 +56,7 @@ function save()
         isbn13: $('input[name="isbn13"]').val(),
         isbn10: $('input[name="isbn10"]').val()
     }
-    API.simple("book-hub", "edit/save-metadata", data,
+    API.simple("book-hub", "edit/save", data,
         function(result)
         {
             if (result["success"] == true)
@@ -82,30 +82,29 @@ function load()
     var data = {
         id: id
     };
-    API.simple("book-hub", "edit/get-metadata", data,
+    API.simple("book-hub", "edit/load", data,
         function(result)
         {
             if (result["success"] == true)
             {
-                var metadata = result["metadata"];
-                $('input[name="title"]').val(metadata["title"]);
-                $('input[name="subtitle"]').val(metadata["subtitle"]);
-                $('textarea[name="description"]').val(metadata["description"]);
-                $('input[name="authors"]').val(metadata["authors"]);
-                $('input[name="categories"]').val(metadata["categories"]);
-                $('input[name="publisher"]').val(metadata["publisher"]);
-                $('input[name="date"]').val(metadata["date"]);
-                $('#added').html("Added: " + metadata["created_timestamp"]);
-                $('#updated').html("Updated: " + metadata["update_timestamp"]);
-                $('#file').html("File: " + metadata["file"]);
-                setCoverSrc(metadata["cover"]);
-                if (metadata["isbn13"] !== null)
+                var data = result["data"];
+                $('input[name="title"]').val(data["title"]);
+                $('input[name="subtitle"]').val(data["subtitle"]);
+                $('textarea[name="description"]').val(data["description"]);
+                $('input[name="authors"]').val(data["authors"]);
+                $('input[name="categories"]').val(data["categories"]);
+                $('input[name="publisher"]').val(data["publisher"]);
+                $('input[name="date"]').val(data["date"]);
+                $('#added').html("Added: " + data["created_timestamp"]);
+                $('#updated').html("Updated: " + data["update_timestamp"]);
+                setCoverSrc(data["cover"]);
+                if (data["isbn13"] !== null)
                 {
-                    $('input[name="isbn13"]').val(parseInt(metadata["isbn13"]));
+                    $('input[name="isbn13"]').val(parseInt(data["isbn13"]));
                 }
-                if (metadata["isbn10"] !== null)
+                if (data["isbn10"] !== null)
                 {
-                    $('input[name="isbn10"]').val(parseInt(metadata["isbn10"]));
+                    $('input[name="isbn10"]').val(parseInt(data["isbn10"]));
                 }
 
                 enableForm();
@@ -132,7 +131,7 @@ function deleteBook()
             {
                 id: id
             };
-            API.simple("book-hub", "edit/delete-book", data,
+            API.simple("book-hub", "edit/delete", data,
                 function(result)
                 {
                     if (result["success"] == true)
@@ -412,7 +411,7 @@ class AutoFill
                 {
                     if (result["success"] == true)
                     {
-                        if (result["metadata"].length != 0)
+                        if (result["books"].length != 0)
                         {
                             Alert.success(result["message"]);
                         }
@@ -420,7 +419,7 @@ class AutoFill
                         {
                             Alert.error(result["message"]);
                         }
-                        AutoFill.searchResults = result["metadata"];
+                        AutoFill.searchResults = result["books"];
                         AutoFill.pageIndex = 0;
                         AutoFill.updatePage();
                     }

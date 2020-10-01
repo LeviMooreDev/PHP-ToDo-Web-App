@@ -1,40 +1,18 @@
 <?php
 header('Content-Type: application/json');
+include("../core.php");
 
-include($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
-Functions::collect();
+Core::validatePostIsset("name");
 
-if (Packages::exist("authentication"))
+$fileName = Helper::escapeFileName($_POST["name"]);
+$filePath = Core::uploadFilePath($fileName);
+
+if (file_exists($filePath))
 {
-    Authentication::Auth403();
-}
-
-$uploadFolder = Packages::serverPath("book-hub") . "/uploads/";
-
-if (isset($_POST["name"]))
-{
-    $fileName = $_POST["name"];
-    $fileName = Helper::escapeFileName($fileName);
-    $finalPath = $uploadFolder . $fileName;
-
-    if (file_exists($finalPath))
-    {
-        chmod($finalPath, 0777);
-        unlink($finalPath);
-        $return["result"]["success"] = true;
-        $return["result"]["message"] = "File removed";
-    }
-    else
-    {
-        $return["result"]["success"] = false;
-        $return["result"]["message"] = "Cant find file";
-    }
+    Core::deleteFile($filePath);
+    Core::success("File removed");
 }
 else
 {
-    $return["result"]["success"] = false;
-    $return["result"]["message"] = "Name data is missing";
+    Core::fail("Can't find file");
 }
-
-$return["status"] = "OK";
-exit(json_encode($return));

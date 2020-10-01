@@ -1,21 +1,6 @@
 <?php
 header('Content-Type: application/json');
-
-include($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
-Functions::collect();
-
-//authentication check
-if (Packages::exist("authentication"))
-{
-    Authentication::Auth403();
-}
-
-//create upload folder
-$targetFolder = Packages::serverPath("book-hub") . "/uploads/";
-if (!file_exists($targetFolder))
-{
-    mkdir($targetFolder, 0777, true);
-}
+include("../core.php");
 
 $count = sizeof($_FILES["files"]["name"]);
 $allowTypes = array('pdf');
@@ -25,83 +10,51 @@ $uploaded = [];
 if ($count != 0)
 {
     //check if files are in a unsupported format
-    $stop = false;
-    for ($i = 0; $i < $count && !$stop; $i++)
+    for ($i = 0; $i < $count; $i++)
     {
         $fileType = pathinfo(basename($_FILES["files"]["name"][$i]), PATHINFO_EXTENSION);
         if (!in_array($fileType, $allowTypes))
         {
-            $return["result"]["success"] = false;
-            $return["result"]["message"] = "File format $fileType not supported";
-            $stop = true;
+            Core::fail("File format $fileType not supported");
         }
     }
 
-    //if all files are in correct format
-    if (!$stop)
+    $test = [];
+
+    for ($i = 0; $i < $count; $i++)
     {
-        //default result is success 
-        $return["result"]["success"] = true;
-        $return["result"]["message"] = "Upload successful!";
-        
-        //loop files
-        $stop = false;
-        for ($i = 0; $i < $count && !$stop; $i++)
-        {
-            //file path 
-            $fileName = basename($_FILES["files"]["name"][$i]);
-            $fileName = Helper::escapeFileName($fileName);
-            $targetFilePath = $targetFolder . $fileName;
+        $test[] = $i;
+        $fileName = Helper::escapeFileName(basename($_FILES["files"]["name"][$i]));
 
-            //if the file has not already been uploaded
-            if (!file_exists($targetFilePath))
+        //if the file has not already been uploaded
+        if (!file_exists(Core::uploadFilePath($fileName)))
+        {
+            if (move_uploaded_file($_FILES["files"]["tmp_name"][$i], Core::uploadFilePath($fileName)))
             {
-                //move from tmp to upload folder 
-                if (move_uploaded_file($_FILES["files"]["tmp_name"][$i], $targetFilePath))
+                $uploaded[] = $fileName;
+            }
+            else
+            {
+                foreach ($uploaded as $file)
                 {
-                    $uploaded[] = $fileName;
+                    Core::deleteFile(Core::uploadFilePath($file));
                 }
-                //if something went wrong mark as unsuccessful and stop the loop
-                else
-                {
-                    $return["result"]["success"] = false;
-                    $return["result"]["message"] = "Unable to upload files. Server side error";
-                    $stop = true;
-                }
+                Core::fail("Unable to upload files. Server side error");
             }
         }
+    }
 
-        //if successful
-        if ($return["result"]["success"] === true)
-        {
-            //return what files was uploaded
-            $return["result"]["uploaded"] = $uploaded;
-            //check if no files were uploaded (all already existed)
-            if (sizeof($uploaded) == 0)
-            {
-                $return["result"]["message"] = "Files already uploaded";
-            }
-        }
-        //if unsuccessful remove all files that were uploaded before the error happened
-        else
-        {
-            foreach ($uploaded as $file)
-            {
-                $targetFilePath = $targetFolder . $file;
-                if (file_exists($targetFilePath))
-                {
-                    chmod($targetFilePath, 0777);
-                    unlink($targetFilePath);
-                }
-            }
-        }
+    Core::result("uploaded", $uploaded);
+    if (sizeof($uploaded) == 0)
+    {
+        Core::success("Files already uploaded");
+    }
+    else
+    {
+        Core::success("Upload successful!");
     }
 }
 else
 {
-    $return["result"]["success"] = false;
-    $return["result"]["message"] = "Files are missing";
+    Core::fail("Files are missing");
 }
-
-$return["status"] = "OK";
-exit(json_encode($return));

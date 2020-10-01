@@ -1,52 +1,20 @@
 <?php
 header('Content-Type: application/json');
+include("../core.php");
 
-include($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
-Functions::collect();
+Core::validatePostIsset("id");
 
-//authentication check
-if (Packages::exist("authentication"))
+Database::connect();
+$id = Database::escape($_POST["id"]);
+Core::validateBookExists($id);
+
+if (file_exists(Core::coverFilePathServer($id)))
 {
-    Authentication::Auth403();
-}
-
-//create upload folder
-$booksFolder = Packages::serverPath("book-hub") . "/books/";
-
-if (isset($_POST["id"]))
-{
-    Database::connect();
-    $id = Database::escape($_POST["id"]);
-    $result = Database::query("SELECT `file` FROM `book-hub` WHERE `id`=$id");
-    if ($result->num_rows === 1)
-    {
-        $filePath = $booksFolder . $result->fetch_assoc()["file"] . ".jpg";
-        if (file_exists($filePath))
-        {
-            Database::query("UPDATE `book-hub` SET `update_timestamp`=CURRENT_TIMESTAMP() WHERE `id`=$id");
-
-            chmod($filePath, 0777);
-            unlink($filePath);
-            $return["result"]["success"] = true;
-            $return["result"]["message"] = "Cover removed";
-        }
-        else
-        {
-            $return["result"]["success"] = false;
-            $return["result"]["message"] = "Cant find cover file.";
-        }
-    }
-    else
-    {
-        $return["result"]["success"] = false;
-        $return["result"]["message"] = "Unable to find book with id $id";
-    }
+    Database::query("UPDATE `book-hub` SET `update_timestamp`=CURRENT_TIMESTAMP() WHERE `id`=$id");
+    Core::deleteFile(Core::coverFilePathServer($id));
+    Core::success("Cover removed");
 }
 else
 {
-    $return["result"]["success"] = false;
-    $return["result"]["message"] = "Id data is missing";
+    Core::fail("Cant find cover file.");
 }
-
-$return["status"] = "OK";
-exit(json_encode($return));
