@@ -125,7 +125,41 @@ function load()
 
 function deleteBook()
 {
+    Alert.yesNo("Are you sure you want to delete the book?",
+        function()
+        {
+            var data = 
+            {
+                id: id
+            };
+            API.simple("book-hub", "edit/delete-book", data,
+                function(result)
+                {
+                    if (result["success"] == true)
+                    {
+                        Alert.success(result["message"]);
+                        setTimeout(function()
+                        {
+                            window.location = "/books/list";
+                        }, 750);
+                    }
+                    else if (result["success"] == false)
+                    {
+                        Alert.error(result["message"]);
+                    }
+                },
+                function(result)
+                {
+                    Alert.error("Something went wrong. See console (F12) for more info.");
+                    console.log(result);
+                }
+            );
+        },
+        function()
+        {
 
+        }
+    );
 }
 
 function deleteCover()
@@ -150,7 +184,7 @@ function deleteCover()
                         Alert.error(result["message"]);
                     }
                 },
-                function(result) //failed
+                function(result)
                 {
                     Alert.error("Something went wrong. See console (F12) for more info.");
                     console.log(result);
