@@ -115,17 +115,17 @@ function commit(name, goToEdit)
             {
                 Alert.success(result["message"]);
 
-                var index = uploadedList.indexOf(name);
-                uploadedList.splice(index, 1);
-                updateList();
-
                 if (goToEdit)
                 {
-                    setTimeout(function()
-                    {
-                        window.location = "/books/edit?id=" + result["id"];
-                    }, 500);
+                    window.location = "/books/edit?id=" + result["id"];
                 }
+                else
+                {
+                    var index = uploadedList.indexOf(name);
+                    uploadedList.splice(index, 1);
+                    updateList();
+                }
+
             }
             else if (result["success"] == false)
             {
