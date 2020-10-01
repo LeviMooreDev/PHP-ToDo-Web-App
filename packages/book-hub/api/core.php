@@ -4,7 +4,7 @@ Functions::collect();
 
 if (Packages::exist("authentication"))
 {
-    Authentication::Auth403();
+    //Authentication::Auth403();
 }
 Core::createFolder(Core::booksFolderServer());
 
@@ -48,6 +48,16 @@ class Core
         return Core::booksFolderHTTP() . "$id/book.pdf";
     }
 
+    static function originalFileNamePathServer($id)
+    {
+        return Core::booksFolderServer() . "$id/original-file-name.txt";
+    }
+    static function originalFileNamePathHTTP($id)
+    {
+        return Core::booksFolderHTTP() . "$id/original-file-name.txt";
+    }
+
+
     static function coverFilePathServer($id)
     {
         return Core::booksFolderServer() . "$id/cover.jpg";
@@ -79,6 +89,21 @@ class Core
         {
             chmod($path, 0777);
             unlink($path);
+        }
+    }
+
+    static function deleteBookFolder($id)
+    {
+        $path = Core::bookFolderPathServer($id);
+        if(file_exists($path))
+        {
+            foreach (array_diff(scandir($path), array('..', '.')) as $entry)
+            {
+                $file = $path . $entry;
+                chmod($file, 0777);
+                unlink($file);
+            }
+            rmdir($path);
         }
     }
 

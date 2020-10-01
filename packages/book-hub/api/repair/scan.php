@@ -1,50 +1,78 @@
 <?php
 header('Content-Type: application/json');
+include("../core.php");
 
-include($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
-Functions::collect();
+$databaseEntries = [];
 
-if (Packages::exist("authentication"))
-{
-    Authentication::Auth403();
-}
+$missingFolders = [];
+$missingBooks = [];
+$missingDatabaseEntries = [];
+$leftoverFiles = [];
 
-$return["result"]["missing-file"] = [];
-$return["result"]["missing-database-entry"] = [];
-
-$booksFolder = Packages::serverPath("book-hub") . "/books/";
-
-$sql = "SELECT `id`,`file` FROM `book-hub`";
 Database::connect();
-$result = Database::query($sql);
-$databaseBookFiles = [];
+$result = Database::query("SELECT `id`,`title` FROM `book-hub`");
 if ($result->num_rows > 0)
 {
     while ($book = $result->fetch_assoc())
     {
-        $bookFilePath = $booksFolder . $book["file"];
-        if (!file_exists($bookFilePath))
+        $databaseEntries[] = $book;
+    }
+}
+
+foreach ($databaseEntries as $entry)
+{
+    if (!file_exists(Core::bookFolderPathServer($entry["id"])))
+    {
+        $missingFolders[] = $entry;
+    }
+    else if (!file_exists(Core::bookFilePathServer($entry["id"])))
+    {
+        $missingBooks[] = $entry;
+    }
+}
+
+foreach (array_diff(scandir(Core::booksFolderServer()), array('..', '.')) as $entry)
+{
+    $missingDatabaseEntry = true;
+    foreach ($databaseEntries as $dbEntry)
+    {
+        if ($dbEntry["id"] == $entry)
         {
-            $return["result"]["missing-file"][] = $book;
+            $missingDatabaseEntry = false;
+        }
+    }
+    if ($missingDatabaseEntry === true)
+    {
+        $id = $entry;
+        $title = "Unknown";
+        if (file_exists(Core::originalFileNamePathServer($id)))
+        {
+            $fileReader = fopen(Core::originalFileNamePathServer($id), "r");
+            if ($fileReader !== false)
+            {
+                $title = fread($fileReader, filesize(Core::originalFileNamePathServer($id)));
+                fclose($fileReader);
+            }
+        }
+        $entry = [];
+        $entry["id"] = $id;
+        $entry["title"] = $title;
+
+        if (file_exists(Core::bookFilePathServer($id)))
+        {
+            $missingDatabaseEntries[] = $entry;
         }
         else
         {
-            $databaseBookFiles[] = $book["file"];
+            $leftoverFiles[] = $entry;
         }
     }
 }
 
-$files = array_diff(scandir($booksFolder), array('..', '.'));
-foreach ($files as $file)
-{
-    if (!in_array($file, $databaseBookFiles))
-    {
-        $fileName = pathinfo($file)['filename'];
-        $return["result"]["missing-database-entry"][] = $file;
-    }
-}
+Core::result("missing-folders", $missingFolders);
+Core::result("missing-books", $missingBooks);
+Core::result("missing-database-entries", $missingDatabaseEntries);
+Core::result("leftover-files", $leftoverFiles);
+Core::success("Scan complete");
 
-sleep(1);
-
-$return["status"] = "OK";
-exit(json_encode($return));
+//sleep(1);

@@ -25,21 +25,47 @@ function scan()
                 Alert.success("Scan complete");
                 scanResults = [];
                 var rowId = 0;
-                result["missing-file"].forEach(item =>
+                result["missing-folders"].forEach(item =>
                 {
                     var arrayItem = [];
-                    arrayItem["name"] = item["file"];
-                    arrayItem["type"] = "Missing file. (Fix: remove entry)";
-                    arrayItem["fix"] = `fixMissingFile(${rowId}, ${item["id"]})`;
+                    arrayItem["id"] = item["id"];
+                    arrayItem["title"] = item["title"];
+                    arrayItem["type"] = "Missing folder";
+                    arrayItem["fix"] = "Remove database entry";
+                    arrayItem["button"] = `deleteAll(${rowId}, ${item["id"]})`;
                     arrayItem["rowId"] = rowId++;
                     scanResults.push(arrayItem);
                 });
-                result["missing-database-entry"].forEach(item =>
+                result["missing-books"].forEach(item =>
                 {
                     var arrayItem = [];
-                    arrayItem["name"] = item;
-                    arrayItem["type"] = "Missing database entry. (Fix: add entry)";
-                    arrayItem["fix"] = `fixMissingDatabaseEntry(${rowId}, '${item}')`;
+                    arrayItem["id"] = item["id"];
+                    arrayItem["title"] = item["title"];
+                    arrayItem["type"] = "Missing book";
+                    arrayItem["fix"] = "Remove database entry";
+                    arrayItem["button"] = `deleteAll(${rowId}, ${item["id"]})`;
+                    arrayItem["rowId"] = rowId++;
+                    scanResults.push(arrayItem);
+                });
+                result["leftover-files"].forEach(item =>
+                {
+                    var arrayItem = [];
+                    arrayItem["id"] = item["id"];
+                    arrayItem["title"] = item["title"];
+                    arrayItem["type"] = "Leftover files";
+                    arrayItem["fix"] = "Remove files";
+                    arrayItem["button"] = `deleteAll(${rowId}, ${item["id"]})`;
+                    arrayItem["rowId"] = rowId++;
+                    scanResults.push(arrayItem);
+                });
+                result["missing-database-entries"].forEach(item =>
+                {
+                    var arrayItem = [];
+                    arrayItem["id"] = item["id"];
+                    arrayItem["title"] = item["title"];
+                    arrayItem["type"] = "Missing database entries";
+                    arrayItem["fix"] = "Create database entry";
+                    arrayItem["button"] = `createEntry(${rowId}, ${item["id"]}, '${item["title"]}')`;
                     arrayItem["rowId"] = rowId++;
                     scanResults.push(arrayItem);
                 });
@@ -67,8 +93,8 @@ function updateList()
     scanResults.sort(
         function(a, b)
         {
-            if (a["name"].toLowerCase() < b["name"].toLowerCase()) return -1;
-            if (a["name"].toLowerCase() > b["name"].toLowerCase()) return 1;
+            if (a["title"].toLowerCase() < b["title"].toLowerCase()) return -1;
+            if (a["title"].toLowerCase() > b["title"].toLowerCase()) return 1;
             return 0;
         }
     );
@@ -78,13 +104,19 @@ function updateList()
         $("tbody").append(`
         <tr id="${item["rowId"]}">
             <td>
-                ${item["name"]}
+                ${item["id"]}
+            </td>
+            <td>
+                ${item["title"]}
             </td>
             <td>
                 ${item["type"]}
             </td>
+            <td>
+                ${item["fix"]}
+            </td>
             <td class="button-col">
-                <button class="btn btn-primary" data-toggle="tooltip" title="Fix" onClick="${item["fix"]}">
+                <button class="btn btn-primary" data-toggle="tooltip" title="Fix" onClick="${item["button"]}">
                     <i class="fas fa-hammer"></i>
                 </button>
             </td>
@@ -108,12 +140,12 @@ function removeRow(rowId)
     scanResults = scanResults.filter(e => e["rowId"] !== rowId);
 }
 
-function fixMissingFile(rowId, id)
+function deleteAll(rowId, id)
 {
     var data = {
         id: id
     };
-    API.simple("book-hub", "repair/fix-missing-file", data,
+    API.simple("book-hub", "repair/delete-all", data,
         function(result)
         {
             if (result["success"] == true)
@@ -127,7 +159,7 @@ function fixMissingFile(rowId, id)
                 Alert.error(result["message"]);
             }
         },
-        function(result) //failed
+        function(result)
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
@@ -135,12 +167,13 @@ function fixMissingFile(rowId, id)
     );
 }
 
-function fixMissingDatabaseEntry(rowId, name)
+function createEntry(rowId, id, title)
 {
     var data = {
-        file: name
+        id: id,
+        title: title
     };
-    API.simple("book-hub", "repair/fix-database-entry", data,
+    API.simple("book-hub", "repair/create-entry", data,
         function(result)
         {
             if (result["success"] == true)
@@ -154,7 +187,7 @@ function fixMissingDatabaseEntry(rowId, name)
                 Alert.error(result["message"]);
             }
         },
-        function(result) //failed
+        function(result)
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
