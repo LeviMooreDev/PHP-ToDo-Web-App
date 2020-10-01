@@ -3,17 +3,18 @@ header('Content-Type: application/json');
 include("../core.php");
 
 Core::validatePostIsset("query");
+Core::validatePostIsset("language");
 
 $query = $_POST["query"];
+$language = $_POST["language"];
 if ((strlen($query) == 10 || strlen($query) == 13) && ctype_digit($query))
 {
     $googleUrl = "https://www.googleapis.com/books/v1/volumes?q=isbn:$query";
 }
 else
 {
-    $lang = "en";
     $limit = 5;
-    $googleUrl = "https://www.googleapis.com/books/v1/volumes?langRestrict=$lang&maxResults=$limit&printType=BOOKS&q=" . urlencode($query);
+    $googleUrl = "https://www.googleapis.com/books/v1/volumes?langRestrict=$language&maxResults=$limit&printType=BOOKS&q=" . urlencode($query);
 }
 
 $googleAPIResult = json_decode(file_get_contents($googleUrl));

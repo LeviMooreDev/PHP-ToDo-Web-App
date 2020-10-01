@@ -66,3 +66,8 @@
 #auto-fill-apply {
     margin-right: 10px;
 }
+
+#auto-fill-language{
+    max-width: 60px;
+    margin-right: 10px;
+}

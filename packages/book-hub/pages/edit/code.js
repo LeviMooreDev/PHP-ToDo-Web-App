@@ -404,6 +404,7 @@ class AutoFill
         Alert.working(() =>
         {
             var data = {
+                language: $('#auto-fill-language').val(),
                 query: $('#auto-fill-search-query').val()
             };
             API.simple("book-hub", "edit/search-metadata", data,
