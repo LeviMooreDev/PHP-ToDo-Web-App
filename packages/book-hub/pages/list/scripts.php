@@ -1,0 +1,1 @@
+<script src="<?= Packages::httpPath("book-hub") ?>/bootstrap-select/bootstrap-select.min.js"></script>
