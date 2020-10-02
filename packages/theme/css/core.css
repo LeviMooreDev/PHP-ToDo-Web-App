@@ -10,13 +10,8 @@
     display: none;
 }
 
-.content-min-height {
-    min-height: calc(100% - 77px);
-}
-
 #main {
     min-height: 100%;
-    height: calc(100% - 22px - 40px);
 }
 
 /*
@@ -24,7 +19,7 @@
 */
 
 .content {
-    min-height: calc(100% - 37px);
+    min-height: calc(100% - 37px - 60px);
     padding: 20px;
 }
 

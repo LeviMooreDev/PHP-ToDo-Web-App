@@ -17,6 +17,7 @@ usort($menuItems, function($a, $b) {
 });
 ?>
 
+<div id="main">
 <?php if(Configuration::get("menu") === true) : ?>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
@@ -43,6 +44,4 @@ usort($menuItems, function($a, $b) {
     </div>
 </nav>
 <?php endif; ?>
-
-<div id="main">
     <div class="content">
