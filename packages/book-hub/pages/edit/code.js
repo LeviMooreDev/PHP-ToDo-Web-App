@@ -1,5 +1,5 @@
 var id;
-var coverPlaceholder = "/packages/book-hub/cover-placeholder.png";
+var coverPlaceholder = "/packages/book-hub/cover-placeholder.jpg";
 
 $(document).ready(function()
 {
