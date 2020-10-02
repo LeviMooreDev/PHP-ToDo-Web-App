@@ -1,4 +1,15 @@
 var books = [];
+var tableShow
+var tableCols = [
+    ["authors", "Authors"],
+    ["categories", "Categories"],
+    ["date", "Release date"],
+    ["publisher", "Publisher"],
+    ["isbn10", "ISBN10"],
+    ["isbn13", "ISBN13"],
+    ["created_timestamp", "Created"],
+    ["update_timestamp", "Updated"]
+]
 
 $(document).ready(function()
 {
@@ -19,6 +30,26 @@ function ready()
 {
     $("#sort-by").val(getCookie("sort-by", "title-asc"));
     $("#layout").val(getCookie("layout", "covers"));
+    tableShow = getCookie("table-show", null);
+    if (tableShow == null)
+    {
+        tableShow = ["Title", "Authors", "Categories", "Release date"];
+    }
+    else{
+        tableShow = JSON.parse(tableShow);
+    }
+
+    var sortByOptions = "";
+    sortByOptions += `<option value="title-asc">Title ASC</option>`;
+    sortByOptions += `<option value="title-desc">Title DESC</option>`;
+    tableCols.forEach(col => {
+        sortByOptions += `<option disabled>──────────</option>`;
+        sortByOptions += `<option value="${col[0]}-asc">${col[1]} ASC</option>`;
+        sortByOptions += `<option value="${col[0]}-desc">${col[1]} DESC</option>`;
+        
+    });
+    $("#sort-by").html(sortByOptions);
+
     load();
 }
 
@@ -48,10 +79,15 @@ function updateUI()
     var col = sortBy.split("-")[0];
     var asc = sortBy.split("-")[1] == "asc";
 
+    console.log(sortBy);
+    console.log(col);
+    console.log(asc);
+
     books.sort(
         function(a, b)
         {
-
+            if(a[col] == null ) return asc ? 1 : -1;
+            if(b[col] == null ) return asc ? -1 : 1;
             if (a[col].toLowerCase() > b[col].toLowerCase()) return asc ? 1 : -1;
             if (a[col].toLowerCase() < b[col].toLowerCase()) return asc ? -1 : 1;
             return 0;
@@ -71,26 +107,48 @@ function updateUI()
 
 function tableLayout()
 {
+    var options = "";
+    var heads = "";
+    tableCols.forEach(col => {
+        options += `<option>${col[1]}</option>`;
+        heads += getTableHead(col[0], col[1]);
+    });
+
     var root = $("#root");
     root.html("");
     root.append(`
         <div class="card">
+            <div>
+                <select id="table-show" class="selectpicker float-right" multiple data-selected-text-format="static" title="Show" data-width="300px">
+                    <option disabled>Title (always)</option>
+                    ${options}
+                </select>
+            </div>
             <div class="card-body">
                 <table id="books-table" class="table table-striped w-100 table-hover">
                     <thead>
                         <tr>
                             <th onclick="tableClickHeader('title-asc','title-desc')">Title</th>
-                            <th onclick="tableClickHeader('authors-asc','authors-desc')"class="fit">Authors</th>
-                            <th onclick="tableClickHeader('categories-asc','categories-desc')"class="fit">Categories</th>
-                            <th onclick="tableClickHeader('date-asc','date-desc')"class="fit">Release date</th>
+                            ${heads}
                         </tr>
                     </thead>
                         <tbody id="books-table-body">
                     </tbody>
                 </table>
             </div>
-        </div>
-    `);
+        </div>`
+    );
+
+    $('#table-show').selectpicker();
+    $('#table-show').selectpicker('val', tableShow);
+    $('#table-show').on('hidden.bs.select', function(e, clickedIndex, isSelected, previousValue)
+    {
+        tableShowChange();
+    });
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent))
+    {
+        $('#table-show').selectpicker('mobile');
+    }
 
     var body = $("#books-table-body");
     books.forEach(book =>
@@ -101,20 +159,32 @@ function tableLayout()
         }
 
         var viewUrl = `/books/view?id=${book["id"]}`;
-        var title = book["title"];
-        var subtitle = book["subtitle"] != null ? ` - ${book["subtitle"]}` : "";
-        var authors = book["authors"] == null ? "N/A" : book["authors"];
-        var categories = book["categories"] == null ? "N/A" : book["categories"];
-        var date = book["date"] == null ? "N/A" : book["date"];
+        var title = "<td>" + book["title"] + (book["subtitle"] != null ? ` - ${book["subtitle"]}` : "") + "</td>";
+
+        var tds = "";
+        tableCols.forEach(col => {
+            tds += getTableTd(col[0], col[1], book);
+        });
+
         body.append(`
             <tr onclick="window.location='${viewUrl}';">
-                <td>${title + subtitle}</td>
-                <td class="fit">${authors}</td>
-                <td class="fit">${categories}</td>
-                <td class="fit">${date}</td>
+                ${title}
+                ${tds}
             </tr>
         `);
     });
+}
+
+function getTableTd(name, filterName, book)
+{
+    var data = book[name] == null ? "N/A" : book[name];
+    var td = `<td class="fit">${data}</td>`;
+    return tableShow.includes(filterName) ? td : "";
+}
+function getTableHead(name, filterName)
+{
+    var th = `<th onclick="tableClickHeader('${name}-asc','${name}-desc')"class="fit">${filterName}</th>`;
+    return tableShow.includes(filterName) ? th : "";
 }
 
 function coverLayout()
@@ -158,8 +228,9 @@ function searchMatch(book)
     var searchQuery = $("#search-query").val();
     if (!(searchQuery === null || searchQuery.match(/^ *$/) !== null))
     {
-        var match = false; 
-        cols.forEach(col => {
+        var match = false;
+        cols.forEach(col =>
+        {
             if (book[col].toLowerCase().includes(searchQuery.toLowerCase()))
             {
                 match = true;
@@ -181,6 +252,13 @@ function layoutChange()
 {
     var value = $("#layout").val();
     setCookie("layout", value);
+    updateUI();
+}
+
+function tableShowChange()
+{
+    tableShow = $('#table-show').selectpicker('val');
+    setCookie("table-show", JSON.stringify(tableShow));
     updateUI();
 }
 

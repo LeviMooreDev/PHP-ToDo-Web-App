@@ -44,7 +44,7 @@ body {
 }
 
 #filter-panel .control {
-    margin-left: 10px;
+    margin-right: 10px;
 }
 
 #filter-panel .card-body {
@@ -59,6 +59,10 @@ body {
 #search-query {
     height: 35px;
     width: calc(100% - 35px);
+}
+
+#search-col{
+    min-width: 300px;
 }
 
 tr {
