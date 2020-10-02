@@ -9,14 +9,16 @@ class Page
     private const PAGE_CONTENT_FILE_NAMES = ['content.html', 'content.php'];
     private const PAGE_STYLE_FILE_NAME = 'style.css';
     private const PAGE_CODE_FILE_NAME = 'code.js';
-
+    private const PAGE_HEAD_FILE_NAME = 'head.php';
+    private const PAGE_SCRIPTS_FILE_NAME = 'scripts.php';
+    
     public static function build()
     {
 ?>
         <html lang="en">
         <head>
 <?php
-        //html style
+        //html head
         foreach (Packages::names() as &$package)
         {
             foreach (Page::HTML_HEADER_FILE_NAMES as &$fileName)
@@ -27,6 +29,11 @@ class Page
                     include($filePath);
                 }
             }
+        }
+        //page head
+        if (file_exists(Page::serverPath() . "/" . Page::PAGE_HEAD_FILE_NAME))
+        {
+            include(Page::serverPath() . "/" . Page::PAGE_HEAD_FILE_NAME);
         }
 
         //page style
@@ -88,6 +95,10 @@ class Page
         }
 
         //page script
+        if (file_exists(Page::serverPath() . "/" . Page::PAGE_SCRIPTS_FILE_NAME))
+        {
+            include(Page::serverPath() . "/" . Page::PAGE_SCRIPTS_FILE_NAME);
+        }
         if (file_exists(Page::serverPath() . "/" . Page::PAGE_CODE_FILE_NAME))
         {
             echo '<script src="' . Page::httpPath() . '/' . Page::PAGE_CODE_FILE_NAME . '"></script>';
