@@ -76,4 +76,8 @@ class Alert
             }
         });
     }
+    static workingDone()
+    {
+        Swal.close();
+    }
 }
