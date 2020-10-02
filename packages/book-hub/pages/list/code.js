@@ -64,7 +64,6 @@ function updateUI()
     root.html("");
     books.forEach(book =>
     {
-        console.log(searchQuery);
         if (!(searchQuery === null || searchQuery.match(/^ *$/) !== null))
         {
             if (!book["title"].toLowerCase().includes(searchQuery.toLowerCase()))
