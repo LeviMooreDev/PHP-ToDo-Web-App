@@ -1,5 +1,5 @@
 <?php
 return [
-    'sidebar' => false,
+    'menu' => false,
     'protected' => false
 ];

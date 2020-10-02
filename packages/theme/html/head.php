@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta http-equiv="x-ua-compatible" content="ie=edge">
-<title>Simple Website</title>
+<title><?=Info::Name?></title>
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
 <?php if (UserSettings::get("theme", "dark-theme", false) == true) : ?>
     <link rel="stylesheet" href="<?= Packages::httpPath("theme") ?>/css/dark-bootstrap.min.css">

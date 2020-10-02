@@ -1,21 +1,22 @@
 <?php
 return [
     [
-        'name' => "Book List",
-        'icon' => "book",
+        'name' => "Books",
         'url' => "books/list",
         "order" => 1,
     ],
     [
-        'name' => "Upload Books",
-        'icon' => "book-medical",
+        'name' => "Upload",
         'url' => "books/upload",
         "order" => 2,
     ],
     [
-        'name' => "Repair Books",
-        'icon' => "hammer",
+        'name' => "Repair",
         'url' => "books/repair",
         "order" => 3,
+    ],
+    [
+        'name' => "|",
+        "order" => 4,
     ]
 ];

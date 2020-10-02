@@ -1,5 +1,5 @@
 <?php
 return [
-    'sidebar' => true,
+    'menu' => true,
     'footer' => true,
 ];
