@@ -43,6 +43,10 @@ body {
     width: auto;
 }
 
+#filter-panel .control {
+    margin-left: 10px;
+}
+
 #filter-panel .card-body {
     padding: 5px 15px 10px 15px;
 }
@@ -55,4 +59,27 @@ body {
 #search-query {
     height: 35px;
     width: calc(100% - 35px);
+}
+
+tr {
+    cursor: pointer;
+}
+
+.table-hover tbody tr:hover td,
+.table-hover tbody tr:hover th {
+    background-color: rgb(0 119 255 / 21%);
+}
+
+@media only screen and (min-width: 750px) {
+    .table td.fit,
+    .table th.fit {
+        white-space: nowrap;
+        width: 1%;
+    }
+}
+@media only screen and (min-width: 950px) {
+    .table td.fit,
+    .table th.fit {
+        padding-right: 30px;
+    }
 }

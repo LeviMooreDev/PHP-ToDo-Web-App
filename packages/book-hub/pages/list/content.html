@@ -1,12 +1,27 @@
 <div id="filter-panel" class="card">
     <div class="card-body">
         <div class="row">
-            <div class="col">
-                <div>
+            <div class="col d-inline-flex">
+
+                <div class="d-inline control">
+                    <small class="form-text text-muted">Layout</small>
+                    <select id="layout" class="form-control form-control-sm">
+                        <option value="covers">Covers</option>
+                        <option value="table">Table</option>
+                    </select>
+                </div>
+
+                <div class="d-inline control">
                     <small class="form-text text-muted">Sort by</small>
                     <select id="sort-by" class="form-control form-control-sm">
                         <option value="title-asc">Title ASC</option>
                         <option value="title-desc">Title DESC</option>
+                        <option value="authors-asc">Authors ASC</option>
+                        <option value="authors-desc">Authors DESC</option>
+                        <option value="categories-asc">Categories ASC</option>
+                        <option value="categories-desc">Categories DESC</option>
+                        <option value="date-asc">Release date ASC</option>
+                        <option value="date-desc">Release date DESC</option>
                     </select>
                 </div>
 
@@ -22,6 +37,6 @@
     </div>
 </div>
 
-<div id="books" class="row justify-content-center">
-
+<div id="root">
+    
 </div>
