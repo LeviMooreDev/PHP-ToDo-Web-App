@@ -7,13 +7,15 @@ var tableCols = [
     ["publisher", "Publisher"],
     ["isbn10", "ISBN10"],
     ["isbn13", "ISBN13"],
+    ["status", "Status"],
     ["added", "Added"]
 ]
 
 $(document).ready(function()
 {
-    $("#sort-by").on("change", sortByChange);
     $("#layout").on("change", layoutChange);
+    $("#status").on("change", statusChange);
+    $("#sort-by").on("change", sortByChange);
     $("#search-button").on("click", updateUI);
     $('#search-query').keyup(function(e)
     {
@@ -27,8 +29,9 @@ $(document).ready(function()
 
 function ready()
 {
-    $("#sort-by").val(getCookie("sort-by", "title-asc"));
     $("#layout").val(getCookie("layout", "covers"));
+    $("#status").val(getCookie("status", "all"));
+    $("#sort-by").val(getCookie("sort-by", "title-asc"));
     tableShow = getCookie("table-show", null);
     if (tableShow == null)
     {
@@ -156,6 +159,10 @@ function tableLayout()
         {
             return;
         }
+        if (statusMatch(book) == false)
+        {
+            return;
+        }
 
         var viewUrl = `/books/view?id=${book["id"]}`;
         var title = "<td>" + book["title"] + (book["subtitle"] != null ? ` - ${book["subtitle"]}` : "") + "</td>";
@@ -203,6 +210,10 @@ function coverLayout()
         {
             return;
         }
+        if (statusMatch(book) == false)
+        {
+            return;
+        }
 
         var viewUrl = `/books/view?id=${book["id"]}`;
         var cover = `<img src="${book["cover"]}">`;
@@ -222,15 +233,13 @@ function coverLayout()
 
 function searchMatch(book)
 {
-    var cols = ["title", "authors", "categories", "date"];
-
     var searchQuery = $("#search-query").val();
     if (!(searchQuery === null || searchQuery.match(/^ *$/) !== null))
     {
         var match = false;
-        cols.forEach(col =>
+        tableCols.forEach(col =>
         {
-            if (book[col].toLowerCase().includes(searchQuery.toLowerCase()))
+            if (book[col[0]].toLowerCase().includes(searchQuery.toLowerCase()))
             {
                 match = true;
             }
@@ -238,6 +247,15 @@ function searchMatch(book)
         return match;
     }
     return true;
+}
+
+function statusMatch(book)
+{
+    var show = $("#status").val();
+    if(show == "all"){
+        return true;
+    }
+    return book["status"] == show;
 }
 
 function sortByChange()
@@ -251,6 +269,13 @@ function layoutChange()
 {
     var value = $("#layout").val();
     setCookie("layout", value);
+    updateUI();
+}
+
+function statusChange()
+{
+    var value = $("#status").val();
+    setCookie("status", value);
     updateUI();
 }
 
