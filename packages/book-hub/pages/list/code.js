@@ -7,8 +7,7 @@ var tableCols = [
     ["publisher", "Publisher"],
     ["isbn10", "ISBN10"],
     ["isbn13", "ISBN13"],
-    ["created_timestamp", "Created"],
-    ["update_timestamp", "Updated"]
+    ["added", "Added"]
 ]
 
 $(document).ready(function()
