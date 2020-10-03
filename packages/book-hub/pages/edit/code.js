@@ -83,7 +83,7 @@ function load()
     var data = {
         id: id
     };
-    API.simple("book-hub", "edit/load", data,
+    API.simple("book-hub", "view/book", data,
         function(result)
         {
             if (result["success"] == true)
@@ -367,7 +367,7 @@ function originalTitle()
     var data = {
         id: id
     };
-    API.simple("book-hub", "edit/original-title", data,
+    API.simple("book-hub", "view/original-title", data,
         function(result)
         {
             if (result["success"] == true)
