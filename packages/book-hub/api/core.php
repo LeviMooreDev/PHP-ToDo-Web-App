@@ -118,6 +118,17 @@ class Core
             Core::fail("$name data is missing");
         }
     }
+    static function validateGetIsset($name)
+    {
+        if (isset($_GET[$name]))
+        {
+            return true;
+        }
+        else
+        {
+            Core::fail("$name data is missing");
+        }
+    }
 
     static function validateBookExists($id)
     {
