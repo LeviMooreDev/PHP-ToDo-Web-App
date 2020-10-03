@@ -19,18 +19,10 @@
 */
 
 .content {
-    min-height: calc(100% - 37px - 60px);
+    min-height: calc(100% - 55px);
     padding: 20px;
 }
 
-footer {
-    height: 35px;
-    font-size: 12px;
-    vertical-align: middle;
-    line-height: 35px;
-    padding-left: 15px;
-    padding-right: 15px;
-    border-top: 1px;
-    border-top-color: #84848452;
-    border-top-style: solid;
+#top-menu{
+    height: 55px;
 }
