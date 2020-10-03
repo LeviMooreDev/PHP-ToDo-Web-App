@@ -1,0 +1,19 @@
+.content {
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+iframe {
+    position: absolute;
+    right: 0;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    border: none;
+}
+
+body {
+    background-color: #2a2a2e;
+}
