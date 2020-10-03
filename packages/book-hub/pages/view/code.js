@@ -1,5 +1,5 @@
 var content = $(".content");
-var url = encodeURIComponent("http://books.levimoore.dk/packages/book-hub/api/view.php?id=" + getUrlParameter("id"));
+var url = encodeURIComponent("http://books.levimoore.dk/packages/book-hub/api/download.php?id=" + getUrlParameter("id"));
 content.html("");
 content.append(`
     <iframe id="iframe" src="http://books.levimoore.dk/packages/book-hub/pdfjs/iframe.php?file=${url}"></iframe>

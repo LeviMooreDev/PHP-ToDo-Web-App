@@ -251,7 +251,7 @@ function uploadCover()
 
 function download()
 {
-    var iDownload = new iframePostFormDownload("http://books.levimoore.dk/packages/book-hub/api/download.php");
+    var iDownload = new iframePostFormDownload("http://books.levimoore.dk/packages/book-hub/api/download.php?id=" + id);
     iDownload.addParameter('id', id);
     iDownload.send();
 }

@@ -1,9 +1,10 @@
 <?php
 include("core.php");
-Core::validatePostIsset("id");
+
+Core::validateGetIsset("id");
 
 Database::connect();
-$id = Database::escape($_POST["id"]);
+$id = Database::escape($_GET["id"]);
 $result = Database::query("SELECT `title` FROM `book-hub` WHERE `id`=$id");
 if ($result->num_rows === 1)
 {
