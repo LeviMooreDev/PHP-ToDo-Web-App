@@ -48,12 +48,21 @@
 #cover-file {
     border: none;
     padding: 0px;
+    margin-bottom: 10px;
 }
 
 #cover-file-group {
     margin-top: 5px;
 }
 
+#cover-file-group button{
+    width: 100%;
+}
+
+.progress
+{
+    margin-top: 10px;
+}
 
 #auto-fill-cover {
     border: solid 1px black;

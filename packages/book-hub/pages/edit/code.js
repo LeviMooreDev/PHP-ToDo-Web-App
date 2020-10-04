@@ -131,8 +131,7 @@ function deleteBook()
     Alert.yesNo("Are you sure you want to delete the book?",
         function()
         {
-            var data = 
-            {
+            var data = {
                 id: id
             };
             API.simple("book-hub", "edit/delete", data,
@@ -158,8 +157,7 @@ function deleteBook()
                 }
             );
         },
-        function()
-        {
+        function() {
 
         }
     );
@@ -170,8 +168,7 @@ function deleteCover()
     Alert.yesNo("Are you sure you want to remove the cover?",
         function()
         {
-            var data = 
-            {
+            var data = {
                 id: id
             };
             API.simple("book-hub", "edit/delete-cover", data,
@@ -194,8 +191,7 @@ function deleteCover()
                 }
             );
         },
-        function()
-        {
+        function() {
 
         }
     );

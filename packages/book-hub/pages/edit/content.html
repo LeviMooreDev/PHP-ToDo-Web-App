@@ -60,12 +60,16 @@
                                 <label>Cover</label>
                                 <br>
                                 <img id="cover">
-                                <div id="cover-file-group" class="input-group">
-                                    <input id="cover-file" type="file" name="file" class="form-control width100" accept=".jpg, .png, .jpeg, .png, .gif, .bmp" required>
-                                    <span class="input-group-btn">
-                                        <button type="button" id="cover-upload" class="btn btn-secondary btn-sm">Upload</button>
-                                        <button type="button" id="cover-delete" class="btn btn-secondary btn-sm">X</button>
-                                    </span>
+                                <div id="cover-file-group">
+                                    <input id="cover-file" type="file" name="file" class="w-100" accept=".jpg, .png, .jpeg, .png, .gif, .bmp" required>
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <button type="button" id="cover-upload" class="btn btn-primary btn-sm">Upload</button>
+                                        </div>
+                                        <div class="col-4">
+                                            <button type="button" id="cover-delete" class="btn btn-primary btn-sm">Remove</button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="progress">
                                     <div class="progress-bar" id="progress-bar"></div>
