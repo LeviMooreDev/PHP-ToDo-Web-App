@@ -187,7 +187,6 @@ function tableLayout()
             tds += getTableTd(col[0], col[1], book);
         });
 
-        //<tr onclick="window.location='${viewUrl}';">
         body.append(`
             <tr>
                 ${title}
@@ -207,7 +206,7 @@ function getTableTd(name, filterName, book)
 
 function getTableHead(name, filterName)
 {
-    var th = `<th onclick="tableClickHeader('${name}-asc','${name}-desc')"class="fit">${filterName}</th>`;
+    var th = `<th class="cursor-pointer fit" onclick="tableClickHeader('${name}-asc','${name}-desc')">${filterName}</th>`;
     return tableShow.includes(filterName) ? th : "";
 }
 
