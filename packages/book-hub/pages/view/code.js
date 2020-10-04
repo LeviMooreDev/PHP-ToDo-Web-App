@@ -50,6 +50,17 @@ function onPageChange(number)
     }
     currentPage = number;
 
+    if(currentPage == totalPageCount && statusElement.val() != "finished")
+    {
+        statusElement.val("finished");
+        onStatusChange();
+    }
+
+    if(currentPage != 1 && statusElement.val() == "unread")
+    {
+        statusElement.val("reading");
+        onStatusChange();
+    }
 }
 
 function pageNumberDatabaseUpdateTimer()
