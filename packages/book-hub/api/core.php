@@ -7,6 +7,7 @@ if (Packages::exist("authentication"))
     Authentication::Auth403();
 }
 Core::createFolder(Core::booksFolderServer());
+Core::createFolder(Core::uploadFolder());
 
 class Core
 {
