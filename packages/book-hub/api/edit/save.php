@@ -6,7 +6,7 @@ Database::connect();
 $data = new Data();
 Core::validateBookExists($data->id);
 
-$sql = "UPDATE `book-hub` SET `title`=$data->title, `subtitle`=$data->subtitle, `categories`=$data->categories, `description`=$data->description, `authors`=$data->authors, `publisher`=$data->publisher, `date`=$data->date, `isbn13`=$data->isbn13, `isbn10`=$data->isbn10 WHERE `id`=$data->id";
+$sql = "UPDATE `book-hub` SET `title`=$data->title, `subtitle`=$data->subtitle, `categories`=$data->categories, `description`=$data->description, `authors`=$data->authors, `publisher`=$data->publisher, `date`=$data->date, `isbn13`=$data->isbn13, `isbn10`=$data->isbn10, `status`='$data->status' WHERE `id`=$data->id";
 Database::query($sql);
 Core::result("sql", $sql);
 Core::success("Save successful");
@@ -23,6 +23,7 @@ class Data
     public $isbn13;
     public $isbn10;
     public $date;
+    public $status;
 
     function __construct()
     {
@@ -36,12 +37,25 @@ class Data
         $this->authors = $this->validateNullableString("authors");
         $this->categories = $this->validateNullableString("categories");
         $this->publisher = $this->validateNullableString("publisher");
+        $this->status = $this->validateStatus();
     }
 
     function validateID()
     {
         Core::validatePostIsset("id");
         return Database::escape($_POST["id"]);
+    }
+
+    function validateStatus()
+    {
+        $values = ["unread", "reading", "finished"];
+
+        Core::validatePostIsset("status");
+        $data = Database::escape($_POST["status"]);
+        if(!in_array($data, $values)){
+            Core::fail("$data is not a valid status. Use " . implode(", ", $values));
+        }
+        return Database::escape($_POST["status"]);
     }
 
     function validateDate()

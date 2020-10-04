@@ -16847,10 +16847,11 @@ function bookHubReady()
 {
     bookHubParent = parent;
 
-    var buttons = [];
-    buttons["download"] = document.getElementById("book-hub-download");
-    buttons["edit"] = document.getElementById("book-hub-edit");
-    parent.iframeReady(buttons);
+    var elements = [];
+    elements["download"] = document.getElementById("book-hub-download");
+    elements["edit"] = document.getElementById("book-hub-edit");
+    elements["status"] = document.getElementById("book-hub-status");
+    parent.iframeReady(elements);
 }
 
 function bookHubPageCount(number)

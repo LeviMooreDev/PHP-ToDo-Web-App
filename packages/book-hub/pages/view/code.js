@@ -1,5 +1,6 @@
 var id;
 var totalPageCount = -1;
+var statusElement;
 
 $(document).ready(function()
 {
@@ -9,47 +10,95 @@ $(document).ready(function()
 function ready()
 {
     id = getUrlParameter("id");
-
     $("#iframe").attr('src', "/packages/book-hub/pdfjs/iframe.html?file=" + encodeURIComponent("http://books.levimoore.dk/packages/book-hub/api/download.php?id=" + id));
 }
 
-function iframeReady(buttons)
+function iframeReady(elements)
 {
-    $(buttons["download"]).on("click", function()
+    $(elements["download"]).on("click", function()
     {
-        download();
+        onDownloadClick();
     })
-    $(buttons["edit"]).on("click", function()
+    $(elements["edit"]).on("click", function()
     {
-        edit();
+        onEditClick();
     })
+    statusElement = $(elements["status"]);
+    statusElement.on("change", function()
+    {
+        onStatusChange();
+    })
+
+    updateStatusUI();
 }
 
-function getUrlParameter(sParam)
+
+function setTotalPages(number)
 {
-    var sPageURL = window.location.search.substring(1),
-        sURLVariables = sPageURL.split('&'),
-        sParameterName,
-        i;
+    totalPageCount = number;
+}
 
-    for (i = 0; i < sURLVariables.length; i++)
+function onPageChange(number)
+{
+    if (totalPageCount == -1)
     {
-        sParameterName = sURLVariables[i].split('=');
-
-        if (sParameterName[0] === sParam)
-        {
-            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-        }
+        return;
     }
 }
 
-function download()
+function updateStatusUI()
+{
+    var data = {
+        id: id
+    }
+    API.simple("book-hub", "view/status", data,
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                var status = result["status"];
+                statusElement.val(status);
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+}
+function onStatusChange()
+{
+    var data = {
+        id: id,
+        status: statusElement.val()
+    }
+    API.simple("book-hub", "edit/status", data,
+        function(result)
+        {
+            if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+}
+
+function onDownloadClick()
 {
     var iDownload = new iframePostFormDownload("http://books.levimoore.dk/packages/book-hub/api/download.php?id=" + id);
     iDownload.addParameter('id', id);
     iDownload.send();
 }
-
 function iframePostFormDownload(url)
 {
     //https://stackoverflow.com/questions/3599670/ajax-file-download-using-jquery-php
@@ -80,22 +129,25 @@ function iframePostFormDownload(url)
     }
 }
 
-function edit()
+function onEditClick()
 {
     window.location.href = '/books/edit?id=' + id;
 }
 
-function onPageChange(number)
+function getUrlParameter(sParam)
 {
-    if (totalPageCount == -1)
-    {
-        return;
-    }
-    console.log(number + "/" + totalPageCount);
-}
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
 
-function setTotalPages(number)
-{
-    console.log(number);
-    totalPageCount = number;
+    for (i = 0; i < sURLVariables.length; i++)
+    {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam)
+        {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
 }

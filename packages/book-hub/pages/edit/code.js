@@ -7,6 +7,7 @@ $(document).ready(function()
     $('input[name="isbn10"]').on('change', onIsbn10Change);
 
     $('#save').on('click', save);
+    $('#read').on('click', read);
     $('#delete').on('click', deleteBook);
     $('#original-title').on('click', originalTitle);
     $('#download').on('click', download);
@@ -55,7 +56,8 @@ function save()
         publisher: $('input[name="publisher"]').val(),
         date: $('input[name="date"]').val(),
         isbn13: $('input[name="isbn13"]').val(),
-        isbn10: $('input[name="isbn10"]').val()
+        isbn10: $('input[name="isbn10"]').val(),
+        status: $('select[name="status"]').val()
     }
     API.simple("book-hub", "edit/save", data,
         function(result)
@@ -96,6 +98,7 @@ function load()
                 $('input[name="categories"]').val(data["categories"]);
                 $('input[name="publisher"]').val(data["publisher"]);
                 $('input[name="date"]').val(data["date"]);
+                $('select[name="status"]').val(data["status"]);
                 $('#added').html("Added: " + data["created_timestamp"]);
                 $('#updated').html("Updated: " + data["update_timestamp"]);
                 setCoverSrc(data["cover"]);
@@ -247,6 +250,11 @@ function uploadCover()
             enableForm();
         }
     );
+}
+
+function read()
+{
+    window.location.href = '/books/view?id=' + id;
 }
 
 function download()

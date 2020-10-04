@@ -13,7 +13,16 @@
 }
 
 .toolbarButton.pdfSidebarNotification::after {
-  display: none !important;
+    display: none !important;
+}
+
+#book-hub-status-root {
+    width: 75px;
+}
+
+html[dir="ltr"] .verticalToolbarSeparator {
+    margin-left: 6px !important;
+    margin-right: 6px !important;
 }
 
 
