@@ -131,7 +131,7 @@ function tableLayout()
                 <table id="books-table" class="table table-striped w-100 table-hover">
                     <thead>
                         <tr>
-                            <th onclick="tableClickHeader('title-asc','title-desc')">Title</th>
+                            <th class="cursor-pointer" onclick="tableClickHeader('title-asc','title-desc')">Title</th>
                             ${heads}
                             <th class="fit">Actions</th>
                         </tr>
