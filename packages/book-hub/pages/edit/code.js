@@ -14,6 +14,8 @@ $(document).ready(function()
     $('#cover-upload').on('click', uploadCover);
     $('#cover-delete').on('click', deleteCover);
 
+    $('#search-cover').on('click', SearchCover.open);
+
     $(window).resize(onResize);
 
     ready();
@@ -28,6 +30,7 @@ function ready()
     $("#progress-bar").html('0%');
 
     AutoFill.ready();
+    SearchCover.ready();
 }
 
 function onResize()
@@ -517,7 +520,7 @@ class AutoFill
                     id: id,
                     url: cover
                 }
-                API.simple("book-hub", "edit/upload-cover-from-google-api", data,
+                API.simple("book-hub", "edit/upload-cover-from-url", data,
                     function(result)
                     {
                         if (result["success"] == true)
@@ -555,5 +558,151 @@ class AutoFill
     {
         AutoFill.pageIndex = index;
         AutoFill.updatePage();
+    }
+}
+
+class SearchCover
+{
+    static modal = '#high-res-cover-modal';
+    static openButton = '#high-res-cover-open';
+    static searchQueryInput = '#high-res-cover-search-query';
+    static pageButtons = '#high-res-cover-page-buttons';
+    static pageButtonClass = 'high-res-cover-page-button';
+    static coverImg = '#high-res-cover';
+    static applyButton = '#high-res-cover-apply';
+    static searchButton = '#high-res-cover-search-button';
+
+    static searchResults = [];
+    static pageIndex = 0;
+
+    static ready()
+    {
+        $(SearchCover.openButton).on('click', SearchCover.open);
+        $(SearchCover.searchButton).on('click', SearchCover.search);
+        $(SearchCover.applyButton).on('click', SearchCover.apply);
+        $(SearchCover.searchQueryInput).keyup(function(e)
+        {
+            if (e.keyCode == 13)
+            {
+                SearchCover.search();
+            }
+        });
+        updatePage();
+    }
+
+    static open()
+    {
+        var title = $('input[name="title"]').val();
+        if (title && SearchCover.searchResults.length == 0)
+        {
+            $(SearchCover.searchQueryInput).val(title);
+            SearchCover.search();
+        }
+        $(SearchCover.modal).modal('show');
+    }
+
+    static search()
+    {
+        $(SearchCover.coverImg).attr("src", coverPlaceholder);
+        Alert.working(() =>
+        {
+            var data = {
+                query: $(SearchCover.searchQueryInput).val()
+            };
+            API.simple("book-hub", "edit/search-high-res-cover", data,
+                function(result)
+                {
+                    if (result["success"] == true)
+                    {
+                        if (result["covers"].length != 0)
+                        {
+                            Alert.success(result["message"]);
+                        }
+                        else
+                        {
+                            Alert.error(result["message"]);
+                        }
+                    }
+                    else if (result["success"] == false)
+                    {
+                        Alert.error(result["message"]);
+                    }
+                    SearchCover.searchResults = result["covers"];
+                    SearchCover.pageIndex = 0;
+                    SearchCover.updatePage();
+                },
+                function(result)
+                {
+                    Alert.error("Something went wrong. See console (F12) for more info.");
+                    console.log(result);
+                }
+            );
+        });
+    }
+
+    static updatePage()
+    {
+        $(SearchCover.pageButtons).html("");
+        if (SearchCover.searchResults.length == 0)
+        {
+            $(SearchCover.applyButton).attr("disabled", "disabled");
+        }
+        else
+        {
+            if (SearchCover.searchResults.length > 1)
+            {
+                for (let i = 0; i < SearchCover.searchResults.length; i++)
+                {
+                    $(SearchCover.pageButtons).append(`<button class="btn btn-${i == SearchCover.pageIndex ? "primary" : "secondary"} ${SearchCover.pageButtonClass}" onclick="SearchCover.clickPageButton(${i})">${i + 1}</button>`);
+                }
+            }
+
+            var coverUrl = SearchCover.searchResults[SearchCover.pageIndex];
+            $(SearchCover.coverImg).attr("src", coverUrl);
+            $(SearchCover.applyButton).removeAttr("disabled");
+        }
+    }
+
+    static clickPageButton(index)
+    {
+        SearchCover.pageIndex = index;
+        SearchCover.updatePage();
+    }
+
+    static apply()
+    {
+        Alert.working(() =>
+        {
+            var coverUrl = SearchCover.searchResults[SearchCover.pageIndex];
+            {
+                var data = {
+                    id: id,
+                    url: coverUrl
+                }
+                API.simple("book-hub", "edit/upload-cover-from-url", data,
+                    function(result)
+                    {
+                        if (result["success"] == true)
+                        {
+                            setCoverSrc(result["file"]);
+                            $(SearchCover.modal).modal('hide');
+                            Alert.success("Cover applied");
+                        }
+                        else if (result["success"] == false)
+                        {
+                            Alert.error("Unable to apply cover");
+                            console.log(result["message"]);
+                            Alert.workingDone();
+                        }
+                    },
+                    function(result)
+                    {
+                        Alert.error("Unable to apply cover");
+                        console.log(result["message"]);
+                        Alert.workingDone();
+                    }
+                );
+            }
+        });
     }
 }
