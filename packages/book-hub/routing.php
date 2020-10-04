@@ -1,6 +1,6 @@
 <?php
 return [
-    'home' => "pages/upload",
+    'home' => "pages/list",
     'books/upload' => "pages/upload",
     'books/repair' => "pages/repair",
     'books/edit' => "pages/edit",
