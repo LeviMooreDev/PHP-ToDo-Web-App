@@ -407,6 +407,13 @@ class AutoFill
         $('#auto-fill').on('click', AutoFill.open);
         $('#auto-fill-search-button').on('click', AutoFill.search);
         $('#auto-fill-apply').on('click', AutoFill.apply);
+        $('#auto-fill-search-query').keyup(function(e)
+        {
+            if (e.keyCode == 13)
+            {
+                AutoFill.search();
+            }
+        });
         AutoFill.updatePage();
     }
 
