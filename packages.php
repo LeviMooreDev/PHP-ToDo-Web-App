@@ -1,5 +1,6 @@
 <?php
 return [
+    'force-ssl' => "1.0",
     '404' => "1.0",
     'jquery' => "1.0",
     "font-awesome" => "1.0",
