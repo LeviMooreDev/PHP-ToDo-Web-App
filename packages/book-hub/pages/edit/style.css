@@ -64,8 +64,8 @@
     margin-top: 10px;
 }
 
-#auto-fill-cover,
-#high-res-cover{
+#search-metadata-google-books-cover,
+#search-cover-open-library-img{
     object-fit: fill;
     margin-bottom: 10px;
     -webkit-box-shadow: 0 0 10px 0px #00000075;
@@ -73,34 +73,34 @@
     box-shadow: 0 0 10px 0px #00000075;
 }
 
-#auto-fill-cover{
+#search-metadata-google-books-cover{
     width: 230px;
     height: 310px;
 }
-#high-res-cover {
+#search-cover-open-library-img {
     width: 345px;
     height: 500px;
 }
 
-#auto-fill-search-button,
-#high-res-cover-search-button {
+#search-metadata-google-books-search-button,
+#search-cover-open-library-search-button {
     height: 37px;
     width: 37px;
     margin-left: 10px;
 }
 
-.auto-fill-page-button,
-.high-res-cover-page-button {
+.search-metadata-google-books-page-button,
+.search-cover-open-library-page-button {
     width: 35px;
     height: 35px;
 }
 
-#auto-fill-apply,
-#high-res-cover-apply {
+#search-metadata-google-books-apply,
+#search-cover-open-library-apply {
     margin-right: 10px;
 }
 
-#auto-fill-language {
+#search-metadata-google-books-search-language {
     max-width: 60px;
     margin-right: 10px;
 }

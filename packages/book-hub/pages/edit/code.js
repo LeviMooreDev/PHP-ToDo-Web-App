@@ -14,7 +14,7 @@ $(document).ready(function()
     $('#cover-upload').on('click', uploadCover);
     $('#cover-delete').on('click', deleteCover);
 
-    $('#search-cover').on('click', SearchCover.open);
+    $('#search-cover').on('click', SearchCoverOpenLibraryCom.open);
 
     $(window).resize(onResize);
 
@@ -29,8 +29,8 @@ function ready()
     $("#progress-bar").width('0%');
     $("#progress-bar").html('0%');
 
-    AutoFill.ready();
-    SearchCover.ready();
+    SearchMetadataGoogleBooks.ready();
+    SearchCoverOpenLibraryCom.ready();
 }
 
 function onResize()
@@ -354,24 +354,34 @@ function originalTitle()
     );
 }
 
-class AutoFill
+class SearchMetadataGoogleBooks
 {
+    static modal = '#search-metadata-google-books-modal';
+    static openButton = '#search-metadata-google-books-open';
+    static searchQueryInput = '#search-metadata-google-books-search-query';
+    static searchLanguage = '#search-metadata-google-books-search-language';
+    static pageButtons = '#search-metadata-google-books-page-buttons';
+    static pageButtonClass = 'search-metadata-google-books-page-button';
+    static coverImg = '#search-metadata-google-books-cover';
+    static applyButton = '#search-metadata-google-books-apply';
+    static searchButton = '#search-metadata-google-books-search-button';
+
     static searchResults = [];
     static pageIndex = 0;
 
     static ready()
     {
-        $('#auto-fill').on('click', AutoFill.open);
-        $('#auto-fill-search-button').on('click', AutoFill.search);
-        $('#auto-fill-apply').on('click', AutoFill.apply);
-        $('#auto-fill-search-query').keyup(function(e)
+        $(SearchMetadataGoogleBooks.openButton).on('click', SearchMetadataGoogleBooks.open);
+        $(SearchMetadataGoogleBooks.searchButton).on('click', SearchMetadataGoogleBooks.search);
+        $(SearchMetadataGoogleBooks.applyButton).on('click', SearchMetadataGoogleBooks.apply);
+        $(SearchMetadataGoogleBooks.searchQueryInput).keyup(function(e)
         {
             if (e.keyCode == 13)
             {
-                AutoFill.search();
+                SearchMetadataGoogleBooks.search();
             }
         });
-        AutoFill.updatePage();
+        SearchMetadataGoogleBooks.updatePage();
     }
 
     static open()
@@ -392,12 +402,12 @@ class AutoFill
         {
             query = title;
         }
-        if (query && AutoFill.searchResults.length == 0)
+        if (query && SearchMetadataGoogleBooks.searchResults.length == 0)
         {
-            $('#auto-fill-search-query').val(query);
-            AutoFill.search();
+            $(SearchMetadataGoogleBooks.searchQueryInput).val(query);
+            SearchMetadataGoogleBooks.search();
         }
-        $('#autoFillModal').modal('show');
+        $(SearchMetadataGoogleBooks.modal).modal('show');
     }
 
     static search()
@@ -405,10 +415,10 @@ class AutoFill
         Alert.working(() =>
         {
             var data = {
-                language: $('#auto-fill-language').val(),
-                query: $('#auto-fill-search-query').val()
+                language: $(SearchMetadataGoogleBooks.searchLanguage).val(),
+                query: $(SearchMetadataGoogleBooks.searchQueryInput).val()
             };
-            API.simple("book-hub", "edit/search-metadata", data,
+            API.simple("book-hub", "edit/search-metadata-google-book", data,
                 function(result)
                 {
                     if (result["success"] == true)
@@ -421,9 +431,9 @@ class AutoFill
                         {
                             Alert.error(result["message"]);
                         }
-                        AutoFill.searchResults = result["books"];
-                        AutoFill.pageIndex = 0;
-                        AutoFill.updatePage();
+                        SearchMetadataGoogleBooks.searchResults = result["books"];
+                        SearchMetadataGoogleBooks.pageIndex = 0;
+                        SearchMetadataGoogleBooks.updatePage();
                     }
                     else if (result["success"] == false)
                     {
@@ -441,61 +451,61 @@ class AutoFill
 
     static updatePage()
     {
-        $("#auto-fill-page-buttons").html("");
-        if (AutoFill.searchResults.length == 0)
+        $(SearchMetadataGoogleBooks.pageButtons).html("");
+        if (SearchMetadataGoogleBooks.searchResults.length == 0)
         {
-            $("#auto-fill-search-apply").attr("disabled", "disabled");
+            $(SearchMetadataGoogleBooks.applyButton).attr("disabled", "disabled");
             var elements = ["title", "subtitle", "categories", "description", "authors", "publisher", "date", "isbn13", "isbn10", "cover", "title"];
             elements.forEach(element =>
             {
-                AutoFill.updatePageTextElement(element, null);
+                SearchMetadataGoogleBooks.updatePageTextElement(element, null);
             });
         }
         else
         {
-            if (AutoFill.searchResults.length > 1)
+            if (SearchMetadataGoogleBooks.searchResults.length > 1)
             {
-                for (let i = 0; i < AutoFill.searchResults.length; i++)
+                for (let i = 0; i < SearchMetadataGoogleBooks.searchResults.length; i++)
                 {
-                    $("#auto-fill-page-buttons").append(`<button class="btn btn-${i == AutoFill.pageIndex ? "primary" : "secondary"} auto-fill-page-button" onclick="AutoFill.clickPageButton(${i})">${i + 1}</button>`);
+                    $(SearchMetadataGoogleBooks.pageButtons).append(`<button class="btn btn-${i == SearchMetadataGoogleBooks.pageIndex ? "primary" : "secondary"} ${SearchMetadataGoogleBooks.pageButtonClass}" onclick="SearchMetadataGoogleBooks.clickPageButton(${i})">${i + 1}</button>`);
                 }
             }
 
-            var data = AutoFill.searchResults[AutoFill.pageIndex];
-            AutoFill.updatePageTextElement("title", data.title);
-            AutoFill.updatePageTextElement("subtitle", data.subtitle);
-            AutoFill.updatePageTextElement("categories", data.categories);
-            AutoFill.updatePageTextElement("description", data.description);
-            AutoFill.updatePageTextElement("authors", data.authors);
-            AutoFill.updatePageTextElement("publisher", data.publisher);
-            AutoFill.updatePageTextElement("date", data.date);
-            AutoFill.updatePageTextElement("isbn13", data.isbn13);
-            AutoFill.updatePageTextElement("isbn10", data.isbn10);
-            AutoFill.updatePageTextElement("cover", data.cover);
-            AutoFill.updatePageTextElement("title", data.title);
+            var data = SearchMetadataGoogleBooks.searchResults[SearchMetadataGoogleBooks.pageIndex];
+            SearchMetadataGoogleBooks.updatePageTextElement("title", data.title);
+            SearchMetadataGoogleBooks.updatePageTextElement("subtitle", data.subtitle);
+            SearchMetadataGoogleBooks.updatePageTextElement("categories", data.categories);
+            SearchMetadataGoogleBooks.updatePageTextElement("description", data.description);
+            SearchMetadataGoogleBooks.updatePageTextElement("authors", data.authors);
+            SearchMetadataGoogleBooks.updatePageTextElement("publisher", data.publisher);
+            SearchMetadataGoogleBooks.updatePageTextElement("date", data.date);
+            SearchMetadataGoogleBooks.updatePageTextElement("isbn13", data.isbn13);
+            SearchMetadataGoogleBooks.updatePageTextElement("isbn10", data.isbn10);
+            SearchMetadataGoogleBooks.updatePageTextElement("cover", data.cover);
+            SearchMetadataGoogleBooks.updatePageTextElement("title", data.title);
 
-            var cover = AutoFill.searchResults[AutoFill.pageIndex].cover;
+            var cover = SearchMetadataGoogleBooks.searchResults[SearchMetadataGoogleBooks.pageIndex].cover;
             if (cover)
             {
-                $("#auto-fill-cover").attr("src", cover);
+                $(SearchMetadataGoogleBooks.coverImg).attr("src", cover);
             }
             else
             {
-                $("#auto-fill-cover").attr("src", coverPlaceholder);
+                $(SearchMetadataGoogleBooks.coverImg).attr("src", coverPlaceholder);
             }
 
-            $("#auto-fill-search-apply").removeAttr("disabled");
+            $(SearchMetadataGoogleBooks.applyButton).removeAttr("disabled");
         }
     }
     static updatePageTextElement(name, value)
     {
         if (value)
         {
-            $("#auto-fill-" + name).html(value);
+            $("#search-metadata-google-books-" + name).html(value);
         }
         else
         {
-            $("#auto-fill-" + name).html("N/A");
+            $("#search-metadata-google-books-" + name).html("N/A");
         }
     }
 
@@ -503,7 +513,7 @@ class AutoFill
     {
         Alert.working(() =>
         {
-            var data = AutoFill.searchResults[AutoFill.pageIndex];
+            var data = SearchMetadataGoogleBooks.searchResults[SearchMetadataGoogleBooks.pageIndex];
             $('input[name="title"]').val(data.title);
             $('input[name="subtitle"]').val(data.subtitle);
             $('textarea[name="description"]').val(data.description);
@@ -532,84 +542,84 @@ class AutoFill
                             Alert.error("Unable to apply cover. Other metadata is still applied");
                             console.log(result["message"]);
                         }
-                        AutoFill.saveApplied();
+                        SearchMetadataGoogleBooks.saveApplied();
                     },
                     function(result)
                     {
                         Alert.error("Unable to apply cover. Other metadata is still applied");
                         console.log(result["message"]);
-                        AutoFill.saveApplied();
+                        SearchMetadataGoogleBooks.saveApplied();
                     }
                 );
             }
             else
             {
-                AutoFill.saveApplied();
+                SearchMetadataGoogleBooks.saveApplied();
             }
         });
     }
     static saveApplied()
     {
         save();
-        $('#autoFillModal').modal('hide');
+        $(SearchMetadataGoogleBooks.modal).modal('hide');
     }
 
     static clickPageButton(index)
     {
-        AutoFill.pageIndex = index;
-        AutoFill.updatePage();
+        SearchMetadataGoogleBooks.pageIndex = index;
+        SearchMetadataGoogleBooks.updatePage();
     }
 }
 
-class SearchCover
+class SearchCoverOpenLibraryCom
 {
-    static modal = '#high-res-cover-modal';
-    static openButton = '#high-res-cover-open';
-    static searchQueryInput = '#high-res-cover-search-query';
-    static pageButtons = '#high-res-cover-page-buttons';
-    static pageButtonClass = 'high-res-cover-page-button';
-    static coverImg = '#high-res-cover';
-    static applyButton = '#high-res-cover-apply';
-    static searchButton = '#high-res-cover-search-button';
+    static modal = '#search-cover-open-library-modal';
+    static openButton = '#search-cover-open-library-open';
+    static searchQueryInput = '#search-cover-open-library-search-query';
+    static pageButtons = '#search-cover-open-library-page-buttons';
+    static pageButtonClass = 'search-cover-open-library-page-button';
+    static coverImg = '#search-cover-open-library-img';
+    static applyButton = '#search-cover-open-library-apply';
+    static searchButton = '#search-cover-open-library-search-button';
 
     static searchResults = [];
     static pageIndex = 0;
 
     static ready()
     {
-        $(SearchCover.openButton).on('click', SearchCover.open);
-        $(SearchCover.searchButton).on('click', SearchCover.search);
-        $(SearchCover.applyButton).on('click', SearchCover.apply);
-        $(SearchCover.searchQueryInput).keyup(function(e)
+        $(SearchCoverOpenLibraryCom.openButton).on('click', SearchCoverOpenLibraryCom.open);
+        $(SearchCoverOpenLibraryCom.searchButton).on('click', SearchCoverOpenLibraryCom.search);
+        $(SearchCoverOpenLibraryCom.applyButton).on('click', SearchCoverOpenLibraryCom.apply);
+        $(SearchCoverOpenLibraryCom.searchQueryInput).keyup(function(e)
         {
             if (e.keyCode == 13)
             {
-                SearchCover.search();
+                SearchCoverOpenLibraryCom.search();
             }
         });
-        updatePage();
+        SearchCoverOpenLibraryCom.updatePage();
     }
 
     static open()
     {
         var title = $('input[name="title"]').val();
-        if (title && SearchCover.searchResults.length == 0)
+        if (title && SearchCoverOpenLibraryCom.searchResults.length == 0)
         {
-            $(SearchCover.searchQueryInput).val(title);
-            SearchCover.search();
+            $(SearchCoverOpenLibraryCom.searchQueryInput).val(title);
+            SearchCoverOpenLibraryCom.search();
         }
-        $(SearchCover.modal).modal('show');
+        $(SearchCoverOpenLibraryCom.modal).modal('show');
     }
 
     static search()
     {
-        $(SearchCover.coverImg).attr("src", coverPlaceholder);
+        $(SearchCoverOpenLibraryCom.coverImg).attr("src", coverPlaceholder);
         Alert.working(() =>
         {
             var data = {
-                query: $(SearchCover.searchQueryInput).val()
+                query: $(SearchCoverOpenLibraryCom.searchQueryInput).val()
             };
-            API.simple("book-hub", "edit/search-high-res-cover", data,
+            API.simple("book-hub", "edit/search-cover-open-library", data,
                 function(result)
                 {
                     if (result["success"] == true)
@@ -627,9 +637,9 @@ class SearchCover
                     {
                         Alert.error(result["message"]);
                     }
-                    SearchCover.searchResults = result["covers"];
-                    SearchCover.pageIndex = 0;
-                    SearchCover.updatePage();
+                    SearchCoverOpenLibraryCom.searchResults = result["covers"];
+                    SearchCoverOpenLibraryCom.pageIndex = 0;
+                    SearchCoverOpenLibraryCom.updatePage();
                 },
                 function(result)
                 {
@@ -642,38 +652,38 @@ class SearchCover
 
     static updatePage()
     {
-        $(SearchCover.pageButtons).html("");
-        if (SearchCover.searchResults.length == 0)
+        $(SearchCoverOpenLibraryCom.pageButtons).html("");
+        if (SearchCoverOpenLibraryCom.searchResults.length == 0)
         {
-            $(SearchCover.applyButton).attr("disabled", "disabled");
+            $(SearchCoverOpenLibraryCom.applyButton).attr("disabled", "disabled");
         }
         else
         {
-            if (SearchCover.searchResults.length > 1)
+            if (SearchCoverOpenLibraryCom.searchResults.length > 1)
             {
-                for (let i = 0; i < SearchCover.searchResults.length; i++)
+                for (let i = 0; i < SearchCoverOpenLibraryCom.searchResults.length; i++)
                 {
-                    $(SearchCover.pageButtons).append(`<button class="btn btn-${i == SearchCover.pageIndex ? "primary" : "secondary"} ${SearchCover.pageButtonClass}" onclick="SearchCover.clickPageButton(${i})">${i + 1}</button>`);
+                    $(SearchCoverOpenLibraryCom.pageButtons).append(`<button class="btn btn-${i == SearchCoverOpenLibraryCom.pageIndex ? "primary" : "secondary"} ${SearchCoverOpenLibraryCom.pageButtonClass}" onclick="SearchCoverOpenLibraryCom.clickPageButton(${i})">${i + 1}</button>`);
                 }
             }
 
-            var coverUrl = SearchCover.searchResults[SearchCover.pageIndex];
-            $(SearchCover.coverImg).attr("src", coverUrl);
-            $(SearchCover.applyButton).removeAttr("disabled");
+            var coverUrl = SearchCoverOpenLibraryCom.searchResults[SearchCoverOpenLibraryCom.pageIndex];
+            $(SearchCoverOpenLibraryCom.coverImg).attr("src", coverUrl);
+            $(SearchCoverOpenLibraryCom.applyButton).removeAttr("disabled");
         }
     }
 
     static clickPageButton(index)
     {
-        SearchCover.pageIndex = index;
-        SearchCover.updatePage();
+        SearchCoverOpenLibraryCom.pageIndex = index;
+        SearchCoverOpenLibraryCom.updatePage();
     }
 
     static apply()
     {
         Alert.working(() =>
         {
-            var coverUrl = SearchCover.searchResults[SearchCover.pageIndex];
+            var coverUrl = SearchCoverOpenLibraryCom.searchResults[SearchCoverOpenLibraryCom.pageIndex];
             {
                 var data = {
                     id: id,
@@ -685,7 +695,7 @@ class SearchCover
                         if (result["success"] == true)
                         {
                             setCoverSrc(result["file"]);
-                            $(SearchCover.modal).modal('hide');
+                            $(SearchCoverOpenLibraryCom.modal).modal('hide');
                             Alert.success("Cover applied");
                         }
                         else if (result["success"] == false)

@@ -90,8 +90,8 @@
                     <div id="action-button" class="btn-group bottom-button">
                         <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
                         <div class="dropdown-menu">
-                            <button id="auto-fill" class="dropdown-item">Search Metadata</button>
-                            <button id="high-res-cover-open" class="dropdown-item">Search High Res Cover</button>
+                            <button id="search-metadata-google-books-open" class="dropdown-item">Search Metadata (books.google.com)</button>
+                            <button id="search-cover-open-library-open" class="dropdown-item">Search Cover (OpenLibrary.com)</button>
                             <a id="download" class="dropdown-item" href="#">Download</a>
                             <button id="original-title" class="dropdown-item">Reset Title</button>
                             <button id="delete" class="dropdown-item">Delete</button>
@@ -114,55 +114,53 @@
 </div>
 
 <!-- Auto fill -->
-<div class="modal fade" id="autoFillModal" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="search-metadata-google-books-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="form-group w-100">
                     <div class="input-group">
-                        <select id="auto-fill-language" class="form-control">
+                        <select id="search-metadata-google-books-search-language" class="form-control">
                             <option>en</option>
                             <option>da</option>
                         </select>
-                        <input id="auto-fill-search-query" type="search" class="form-control" placeholder="search title or ISBN">
+                        <input id="search-metadata-google-books-search-query" type="search" class="form-control" placeholder="search title or ISBN">
                         <span class="input-group-btn">
-                            <button type="button" id="auto-fill-search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                            <button type="button" id="search-metadata-google-books-search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
                         </span>
                     </div>
                 </div>
             </div>
-            <div id="auto-fill-body" class="modal-body">
+            <div id="search-metadata-google-books-body" class="modal-body">
 
                 <div class="row">
                     <div class="col col-md-4">
-                        <img id="auto-fill-cover" src="/packages/book-hub/cover-placeholder.jpg">
+                        <img id="search-metadata-google-books-cover" src="/packages/book-hub/cover-placeholder.jpg">
                     </div>
                     <div class="col col-md-8">
-                        <p><b>Title:</b> <span id="auto-fill-title">N/A</span></p>
-                        <p><b>Subtitle:</b> <span id="auto-fill-subtitle">N/A</span></p>
-                        <p><b>Categories:</b> <span id="auto-fill-categories">N/A</span></p>
-                        <p><b>Authors:</b> <span id="auto-fill-authors">N/A</span></p>
-                        <p><b>Publisher:</b> <span id="auto-fill-publisher">N/A</span></p>
-                        <p><b>Date:</b> <span id="auto-fill-date">N/A</span></p>
-                        <p><b>ISBN13:</b> <span id="auto-fill-isbn13">N/A</span></p>
-                        <p><b>ISBN10:</b> <span id="auto-fill-isbn10">N/A</span></p>
+                        <p><b>Title:</b> <span id="search-metadata-google-books-title">N/A</span></p>
+                        <p><b>Subtitle:</b> <span id="search-metadata-google-books-subtitle">N/A</span></p>
+                        <p><b>Categories:</b> <span id="search-metadata-google-books-categories">N/A</span></p>
+                        <p><b>Authors:</b> <span id="search-metadata-google-books-authors">N/A</span></p>
+                        <p><b>Publisher:</b> <span id="search-metadata-google-books-publisher">N/A</span></p>
+                        <p><b>Date:</b> <span id="search-metadata-google-books-date">N/A</span></p>
+                        <p><b>ISBN13:</b> <span id="search-metadata-google-books-isbn13">N/A</span></p>
+                        <p><b>ISBN10:</b> <span id="search-metadata-google-books-isbn10">N/A</span></p>
                     </div>
                 </div>
                 <br>
                 <div class="row">
                     <div class="col col-md-12">
-                        <p><b>Description:</b> <span id="auto-fill-description">N/A</span></p>
+                        <p><b>Description:</b> <span id="search-metadata-google-books-description">N/A</span></p>
                     </div>
                 </div>
-
-                <!-- <p>Cover: <span id="auto-fill-cover">NONE</span></p> -->
             </div>
             <div class="modal-footer">
                 <div class="row w-100">
-                    <div id="auto-fill-page-buttons" class="col col-md-6">
+                    <div id="search-metadata-google-books-page-buttons" class="col col-md-6">
                     </div>
                     <div class="col col-md-6 d-flex justify-content-end">
-                        <button id="auto-fill-apply" class="btn btn-primary">Apply and Save</button>
+                        <button id="search-metadata-google-books-apply" class="btn btn-primary">Apply and Save</button>
                         <button class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
@@ -171,29 +169,29 @@
     </div>
 </div>
 
-<!-- Search High Res Cover -->
-<div class="modal fade" id="high-res-cover-modal" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- Search Cover OpenLibrary.com -->
+<div class="modal fade" id="search-cover-open-library-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="form-group w-100">
                     <div class="input-group">
-                        <input id="high-res-cover-search-query" type="search" class="form-control" placeholder="search title">
+                        <input id="search-cover-open-library-search-query" type="search" class="form-control" placeholder="search title">
                         <span class="input-group-btn">
-                            <button type="button" id="high-res-cover-search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                            <button type="button" id="search-cover-open-library-search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
                         </span>
                     </div>
                 </div>
             </div>
-            <div id="high-res-cover-body" class="modal-body d-flex justify-content-center">
-                <img id="high-res-cover" src="/packages/book-hub/cover-placeholder.jpg">
+            <div id="search-cover-open-library-body" class="modal-body d-flex justify-content-center">
+                <img id="search-cover-open-library-img" src="/packages/book-hub/cover-placeholder.jpg">
             </div>
             <div class="modal-footer">
                 <div class="row w-100">
-                    <div id="high-res-cover-page-buttons" class="col col-md-6">
+                    <div id="search-cover-open-library-page-buttons" class="col col-md-6">
                     </div>
                     <div class="col col-md-6 d-flex justify-content-end">
-                        <button id="high-res-cover-apply" class="btn btn-primary">Apply and Save</button>
+                        <button id="search-cover-open-library-apply" class="btn btn-primary">Apply and Save</button>
                         <button class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
