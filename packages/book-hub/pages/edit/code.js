@@ -380,7 +380,6 @@ function originalTitle()
         {
             if (result["success"] == true)
             {
-                Alert.success(result["message"]);
                 $('input[name="title"]').val(result["title"]);
             }
             else if (result["success"] == false)
