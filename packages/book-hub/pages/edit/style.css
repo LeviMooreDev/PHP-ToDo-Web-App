@@ -32,8 +32,11 @@
 }
 
 #cover {
-    border: solid 1px black;
-    object-fit: contain;
+    object-fit: fill;
+    margin-bottom: 10px;
+    -webkit-box-shadow: 0 0 10px 0px #00000075;
+    -moz-box-shadow: 0 0 10px 0px #00000075;
+    box-shadow: 0 0 10px 0px #00000075;
 }
 
 #cover,
