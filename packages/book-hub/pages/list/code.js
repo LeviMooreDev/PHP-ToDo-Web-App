@@ -16,13 +16,15 @@ $(document).ready(function()
     $("#layout").on("change", layoutChange);
     $("#status").on("change", statusChange);
     $("#sort-by").on("change", sortByChange);
-    $("#search-button").on("click", updateUI);
+    //$("#search-button").on("click", updateUI);
     $('#search-query').keyup(function(e)
     {
-        if (e.keyCode == 13)
-        {
-            updateUI();
-        }
+        updateUI();
+        //only on enter key
+        // if (e.keyCode == 13)
+        // {
+        //     updateUI();
+        // }
     });
     ready();
 });
@@ -37,18 +39,20 @@ function ready()
     {
         tableShow = ["Title", "Authors", "Categories", "Release date"];
     }
-    else{
+    else
+    {
         tableShow = JSON.parse(tableShow);
     }
 
     var sortByOptions = "";
     sortByOptions += `<option value="title-asc">Title ASC</option>`;
     sortByOptions += `<option value="title-desc">Title DESC</option>`;
-    tableCols.forEach(col => {
+    tableCols.forEach(col =>
+    {
         sortByOptions += `<option disabled>──────────</option>`;
         sortByOptions += `<option value="${col[0]}-asc">${col[1]} ASC</option>`;
         sortByOptions += `<option value="${col[0]}-desc">${col[1]} DESC</option>`;
-        
+
     });
     $("#sort-by").html(sortByOptions);
 
@@ -81,15 +85,11 @@ function updateUI()
     var col = sortBy.split("-")[0];
     var asc = sortBy.split("-")[1] == "asc";
 
-    console.log(sortBy);
-    console.log(col);
-    console.log(asc);
-
     books.sort(
         function(a, b)
         {
-            if(a[col] == null ) return asc ? 1 : -1;
-            if(b[col] == null ) return asc ? -1 : 1;
+            if (a[col] == null) return asc ? 1 : -1;
+            if (b[col] == null) return asc ? -1 : 1;
             if (a[col].toLowerCase() > b[col].toLowerCase()) return asc ? 1 : -1;
             if (a[col].toLowerCase() < b[col].toLowerCase()) return asc ? -1 : 1;
             return 0;
@@ -111,7 +111,8 @@ function tableLayout()
 {
     var options = "";
     var heads = "";
-    tableCols.forEach(col => {
+    tableCols.forEach(col =>
+    {
         options += `<option>${col[1]}</option>`;
         heads += getTableHead(col[0], col[1]);
     });
@@ -138,8 +139,7 @@ function tableLayout()
                     </tbody>
                 </table>
             </div>
-        </div>`
-    );
+        </div>`);
 
     $('#table-show').selectpicker();
     $('#table-show').selectpicker('val', tableShow);
@@ -168,7 +168,8 @@ function tableLayout()
         var title = "<td>" + book["title"] + (book["subtitle"] != null ? ` - ${book["subtitle"]}` : "") + "</td>";
 
         var tds = "";
-        tableCols.forEach(col => {
+        tableCols.forEach(col =>
+        {
             tds += getTableTd(col[0], col[1], book);
         });
 
@@ -187,6 +188,7 @@ function getTableTd(name, filterName, book)
     var td = `<td class="fit">${data}</td>`;
     return tableShow.includes(filterName) ? td : "";
 }
+
 function getTableHead(name, filterName)
 {
     var th = `<th onclick="tableClickHeader('${name}-asc','${name}-desc')"class="fit">${filterName}</th>`;
@@ -239,11 +241,18 @@ function searchMatch(book)
         var match = false;
         tableCols.forEach(col =>
         {
-            if (book[col[0]].toLowerCase().includes(searchQuery.toLowerCase()))
+            if (book[col[0]] != null)
             {
-                match = true;
+                if (book[col[0]].toLowerCase().includes(searchQuery.toLowerCase()))
+                {
+                    match = true;
+                }
             }
         });
+        if (book["title"].toLowerCase().includes(searchQuery.toLowerCase()))
+        {
+            match = true;
+        }
         return match;
     }
     return true;
@@ -252,7 +261,8 @@ function searchMatch(book)
 function statusMatch(book)
 {
     var show = $("#status").val();
-    if(show == "all"){
+    if (show == "all")
+    {
         return true;
     }
     return book["status"] == show;
