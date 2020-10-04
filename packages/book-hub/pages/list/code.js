@@ -133,6 +133,7 @@ function tableLayout()
                         <tr>
                             <th onclick="tableClickHeader('title-asc','title-desc')">Title</th>
                             ${heads}
+                            <th class="fit">Actions</th>
                         </tr>
                     </thead>
                         <tbody id="books-table-body">
@@ -164,8 +165,21 @@ function tableLayout()
             return;
         }
 
-        var viewUrl = `/books/view?id=${book["id"]}`;
+        var id = book["id"];
+        var viewUrl = `/books/view?id=${id}`;
         var title = "<td>" + book["title"] + (book["subtitle"] != null ? ` - ${book["subtitle"]}` : "") + "</td>";
+        var actions = `
+        <td class="fit actions">
+            <a class="btn btn-primary" data-toggle="tooltip" title="Read" href="/books/view?id=${id}">
+                <i class="fas fa-eye"></i>
+            </a>
+            <a class="btn btn-primary" data-toggle="tooltip" title="Edit" href="/books/edit?id=${id}">
+                <i class="fas fa-edit"></i>
+            </a>
+            <a class="btn btn-primary" data-toggle="tooltip" title="Download" href="/packages/book-hub/api/download.php?id=${id}" target="_blank">
+                <i class="fas fa-download"></i>
+            </a>
+        </td>`;
 
         var tds = "";
         tableCols.forEach(col =>
@@ -173,10 +187,12 @@ function tableLayout()
             tds += getTableTd(col[0], col[1], book);
         });
 
+        //<tr onclick="window.location='${viewUrl}';">
         body.append(`
-            <tr onclick="window.location='${viewUrl}';">
+            <tr>
                 ${title}
                 ${tds}
+                ${actions}
             </tr>
         `);
     });
