@@ -18,14 +18,9 @@ function ready()
 
 function iframeReady(elements)
 {
-    $(elements["download"]).on("click", function()
-    {
-        onDownloadClick();
-    })
-    $(elements["edit"]).on("click", function()
-    {
-        onEditClick();
-    })
+    $(elements["download"]).attr("href", "/packages/book-hub/api/download.php?id=" + id)
+    $(elements["edit"]).attr("href", "/books/edit?id=" + id)
+
     statusElement = $(elements["status"]);
     statusElement.on("change", function()
     {
@@ -174,48 +169,6 @@ function jumpToStartPage()
             console.log(result);
         }
     );
-}
-
-function onDownloadClick()
-{
-    var iDownload = new iframePostFormDownload("http://books.levimoore.dk/packages/book-hub/api/download.php?id=" + id);
-    iDownload.addParameter('id', id);
-    iDownload.send();
-}
-
-function iframePostFormDownload(url)
-{
-    //https://stackoverflow.com/questions/3599670/ajax-file-download-using-jquery-php
-    //Trafalmadorian
-    var object = this;
-    object.time = new Date().getTime();
-    object.form = $('<form action="' + url + '" target="iframe' + object.time + '" method="post" style="display:none;" id="form' + object.time + '" name="form' + object.time + '"></form>');
-
-    object.addParameter = function(parameter, value)
-    {
-        $("<input type='hidden' />")
-            .attr("name", parameter)
-            .attr("value", value)
-            .appendTo(object.form);
-    }
-
-    object.send = function()
-    {
-        var iframe = $('<iframe data-time="' + object.time + '" style="display:none;" id="iframe' + object.time + '"></iframe>');
-        $("body").append(iframe);
-        $("body").append(object.form);
-        object.form.submit();
-        iframe.load(function()
-        {
-            $('#form' + $(this).data('time')).remove();
-            $(this).remove();
-        });
-    }
-}
-
-function onEditClick()
-{
-    window.location.href = '/books/edit?id=' + id;
 }
 
 function getUrlParameter(sParam)
