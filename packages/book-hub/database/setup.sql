@@ -11,7 +11,9 @@ CREATE TABLE `book-hub` (
   `date` date DEFAULT NULL,
   `page` int(11) NOT NULL DEFAULT '1',
   `status` enum('unread', 'reading', 'finished') COLLATE utf8_bin NOT NULL DEFAULT 'unread',
-  `ISBN13` varchar(13) COLLATE utf8_bin DEFAULT NULL,
-  `ISBN10` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+  `isbn13` varchar(13) COLLATE utf8_bin DEFAULT NULL,
+  `isbn10` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+  `created_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_bin;
