@@ -1,5 +1,8 @@
 var id;
 var totalPageCount = -1;
+var pageOnLastUpdate = -1;
+var updatingDatabasePage = false;
+var currentPage = 1;
 var statusElement;
 
 $(document).ready(function()
@@ -30,6 +33,7 @@ function iframeReady(elements)
     })
 
     updateStatusUI();
+    jumpToStartPage();
 }
 
 
@@ -44,6 +48,43 @@ function onPageChange(number)
     {
         return;
     }
+    currentPage = number;
+
+}
+
+function pageNumberDatabaseUpdateTimer()
+{
+    setInterval(function()
+    {
+        if (currentPage != pageOnLastUpdate && !updatingDatabasePage)
+        {
+            updatingDatabasePage = true;
+            var number = currentPage;
+            var data = {
+                id: id,
+                page: number
+            }
+            API.simple("book-hub", "edit/page", data,
+                function(result)
+                {
+                    if (result["success"] == true)
+                    {
+                        pageOnLastUpdate = number;
+                        updatingDatabasePage = false;
+                    }
+                    else if (result["success"] == false)
+                    {
+                        Alert.error(result["message"]);
+                    }
+                },
+                function(result)
+                {
+                    Alert.error("Something went wrong. See console (F12) for more info.");
+                    console.log(result);
+                }
+            );
+        }
+    }, 1000);
 }
 
 function updateStatusUI()
@@ -71,6 +112,7 @@ function updateStatusUI()
         }
     );
 }
+
 function onStatusChange()
 {
     var data = {
@@ -93,12 +135,42 @@ function onStatusChange()
     );
 }
 
+function jumpToStartPage()
+{
+    var data = {
+        id: id,
+    }
+    API.simple("book-hub", "view/page", data,
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                var page = parseInt(result["page"]);
+                document.getElementById('iframe').contentWindow.PDFViewerApplication.page = page;
+                pageOnLastUpdate = page;
+                currentPage = page;
+                setTimeout(pageNumberDatabaseUpdateTimer, 2000);
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+}
+
 function onDownloadClick()
 {
     var iDownload = new iframePostFormDownload("http://books.levimoore.dk/packages/book-hub/api/download.php?id=" + id);
     iDownload.addParameter('id', id);
     iDownload.send();
 }
+
 function iframePostFormDownload(url)
 {
     //https://stackoverflow.com/questions/3599670/ajax-file-download-using-jquery-php
