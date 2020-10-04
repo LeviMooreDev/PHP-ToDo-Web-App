@@ -58,7 +58,12 @@ class Database
     }
     public static function queryFile($file)
     {
-        Database::queries(file_get_contents($file));
+        $sql = file_get_contents($file);
+        Database::$mysqli->multi_query($sql);
+        while(Database::$mysqli->more_results() && Database::$mysqli->next_result())
+        {
+            ;
+        }
     }
 
     public static function escape($value)

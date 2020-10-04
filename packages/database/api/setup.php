@@ -23,9 +23,6 @@ ini_set('display_errors', 0);
 $mysqliTest = new mysqli($host, $username, $password, $database);
 ini_set('display_errors', 1);
 
-//wait
-sleep(1);
-
 //If something went wrong write error message and stop.
 if ($mysqliTest->connect_error)
 {
@@ -53,6 +50,7 @@ else
         foreach ($packages as &$package)
         {
             $file = Packages::serverPath($package) . "/database/setup.sql";
+
             if (file_exists($file))
             {
                 Database::queryFile($file);
