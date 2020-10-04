@@ -13,7 +13,7 @@ $(document).ready(function()
 function ready()
 {
     id = getUrlParameter("id");
-    $("#iframe").attr('src', "/packages/book-hub/pdfjs/iframe.html?file=" + encodeURIComponent("http://books.levimoore.dk/packages/book-hub/api/download.php?id=" + id));
+    $("#iframe").attr('src', "/packages/book-hub/pdfjs/iframe.html?file=" + encodeURIComponent("/packages/book-hub/api/download.php?id=" + id));
 }
 
 function iframeReady(elements)
