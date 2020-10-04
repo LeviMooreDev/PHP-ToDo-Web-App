@@ -154,6 +154,7 @@ function jumpToStartPage()
                 var page = parseInt(result["page"]);
                 document.getElementById('iframe').contentWindow.PDFViewerApplication.page = page;
                 document.getElementById('iframe').contentWindow.PDFViewerApplication.pdfViewer.currentScaleValue = "page-fit";
+                document.getElementById('iframe').contentWindow.PDFViewerApplication.pdfViewer.spreadMode = 0;
                 pageOnLastUpdate = page;
                 currentPage = page;
                 setTimeout(pageNumberDatabaseUpdateTimer, 2000);
