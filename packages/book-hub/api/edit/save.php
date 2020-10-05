@@ -130,6 +130,7 @@ class Data
             }
             else
             {
+                $data = str_replace("&", ", ", $data);
                 $data = ucwords(strtolower($data));
                 $data = explode(",", $data);
                 $data = array_map('trim', $data);
