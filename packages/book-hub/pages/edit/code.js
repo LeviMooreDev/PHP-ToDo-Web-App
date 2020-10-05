@@ -537,10 +537,12 @@ class SearchMetadataGoogleBooks
                             function(textResult)
                             { // cover success, text success
                                 Alert.success(coverResult + ". " + textResult);
+                                $(SearchMetadataGoogleBooks.modal).modal('hide');
                             },
                             function(textResult)
                             { // cover success, text fail
                                 Alert.success(coverResult + ". " + textResult);
+                                $(SearchMetadataGoogleBooks.modal).modal('hide');
                             }
                         );
                     },
@@ -550,10 +552,12 @@ class SearchMetadataGoogleBooks
                             function(textResult)
                             { // cover fail, text success
                                 Alert.success(coverResult + ". " + textResult);
+                                $(SearchMetadataGoogleBooks.modal).modal('hide');
                             },
                             function(textResult)
                             { // cover fail, text fail
                                 Alert.success(coverResult + ". " + textResult);
+                                $(SearchMetadataGoogleBooks.modal).modal('hide');
                             }
                         );
                     }
@@ -565,10 +569,12 @@ class SearchMetadataGoogleBooks
                     function(textResult)
                     { // cover success, text success
                         Alert.success(textResult);
+                        $(SearchMetadataGoogleBooks.modal).modal('hide');
                     },
                     function(textResult)
                     { // cover success, text fail
                         Alert.success(textResult);
+                        $(SearchMetadataGoogleBooks.modal).modal('hide');
                     }
                 );
             }
@@ -578,10 +584,12 @@ class SearchMetadataGoogleBooks
                     function(coverResult)
                     { // cover success, text success
                         Alert.success(coverResult);
+                        $(SearchMetadataGoogleBooks.modal).modal('hide');
                     },
                     function(coverResult)
                     { // cover success, text fail
                         Alert.success(coverResult);
+                        $(SearchMetadataGoogleBooks.modal).modal('hide');
                     }
                 );
             }
