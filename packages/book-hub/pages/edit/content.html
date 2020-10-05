@@ -113,7 +113,7 @@
     </div>
 </div>
 
-<!-- Auto fill -->
+<!-- Search Metadata Google Books -->
 <div class="modal fade" id="search-metadata-google-books-modal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -160,7 +160,15 @@
                     <div id="search-metadata-google-books-page-buttons" class="col col-md-6">
                     </div>
                     <div class="col col-md-6 d-flex justify-content-end">
-                        <button id="search-metadata-google-books-apply" class="btn btn-primary">Apply and Save</button>
+
+                        <div id="action-button" class="btn-group bottom-button">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apply and save</button>
+                            <div class="dropdown-menu">
+                                <button id="search-metadata-google-books-apply-everything" class="dropdown-item">Everything</button>
+                                <button id="search-metadata-google-books-apply-text" class="dropdown-item">Text</button>
+                                <button id="search-metadata-google-books-apply-cover" class="dropdown-item">Cover</button>
+                            </div>
+                        </div>
                         <button class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>

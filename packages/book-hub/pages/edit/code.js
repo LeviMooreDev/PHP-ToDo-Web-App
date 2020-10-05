@@ -105,11 +105,11 @@ function load()
                 setCoverSrc(data["cover"]);
                 if (data["isbn13"] !== null)
                 {
-                    $('input[name="isbn13"]').val(parseInt(data["isbn13"]));
+                    $('input[name="isbn13"]').val(data["isbn13"]);
                 }
                 if (data["isbn10"] !== null)
                 {
-                    $('input[name="isbn10"]').val(parseInt(data["isbn10"]));
+                    $('input[name="isbn10"]').val(data["isbn10"]);
                 }
 
                 $('#read').attr("href", "/books/view?id=" + id)
@@ -363,17 +363,31 @@ class SearchMetadataGoogleBooks
     static pageButtons = '#search-metadata-google-books-page-buttons';
     static pageButtonClass = 'search-metadata-google-books-page-button';
     static coverImg = '#search-metadata-google-books-cover';
-    static applyButton = '#search-metadata-google-books-apply';
     static searchButton = '#search-metadata-google-books-search-button';
+    static applyEverythingButton = '#search-metadata-google-books-apply-everything';
+    static applyTextButton = '#search-metadata-google-books-apply-text';
+    static applyCoverButton = '#search-metadata-google-books-apply-cover';
 
     static searchResults = [];
     static pageIndex = 0;
 
     static ready()
     {
+        $(SearchMetadataGoogleBooks.applyEverythingButton).on('click', function()
+        {
+            SearchMetadataGoogleBooks.apply("everything");
+        });
+        $(SearchMetadataGoogleBooks.applyTextButton).on('click', function()
+        {
+            SearchMetadataGoogleBooks.apply("text");
+        });
+        $(SearchMetadataGoogleBooks.applyCoverButton).on('click', function()
+        {
+            SearchMetadataGoogleBooks.apply("cover");
+        });
+
         $(SearchMetadataGoogleBooks.openButton).on('click', SearchMetadataGoogleBooks.open);
         $(SearchMetadataGoogleBooks.searchButton).on('click', SearchMetadataGoogleBooks.search);
-        $(SearchMetadataGoogleBooks.applyButton).on('click', SearchMetadataGoogleBooks.apply);
         $(SearchMetadataGoogleBooks.searchQueryInput).keyup(function(e)
         {
             if (e.keyCode == 13)
@@ -509,69 +523,169 @@ class SearchMetadataGoogleBooks
         }
     }
 
-    static apply()
+    static apply(what)
     {
         Alert.working(() =>
         {
-            var data = SearchMetadataGoogleBooks.searchResults[SearchMetadataGoogleBooks.pageIndex];
-            $('input[name="title"]').val(data.title);
-            $('input[name="subtitle"]').val(data.subtitle);
-            $('textarea[name="description"]').val(data.description);
-            $('input[name="authors"]').val(data.authors);
-            $('input[name="categories"]').val(data.categories);
-            $('input[name="publisher"]').val(data.publisher);
-
-            try
+            if (what == "everything")
             {
-                $('input[name="date"]').val(new Date(data.date).toISOString().substring(0, 10));
-            }
-            catch (error)
-            {
-
-            }
-
-            $('input[name="isbn13"]').val(data.isbn13);
-            $('input[name="isbn10"]').val(data.isbn10);
-            var cover = data.cover;
-            if (cover != null)
-            {
-                var data = {
-                    id: id,
-                    url: cover
-                }
-                API.simple("book-hub", "edit/upload-cover-from-url", data,
-                    function(result)
-                    {
-                        if (result["success"] == true)
-                        {
-                            setCoverSrc(result["file"]);
-                        }
-                        else if (result["success"] == false)
-                        {
-                            Alert.error("Unable to apply cover. Other metadata is still applied");
-                            console.log(result["message"]);
-                        }
-                        SearchMetadataGoogleBooks.saveApplied();
+                SearchMetadataGoogleBooks.applyCover(
+                    function(coverResult)
+                    { // cover success
+                        SearchMetadataGoogleBooks.applyText(
+                            function(textResult)
+                            { // cover success, text success
+                                Alert.success(coverResult + ". " + textResult);
+                            },
+                            function(textResult)
+                            { // cover success, text fail
+                                Alert.success(coverResult + ". " + textResult);
+                            }
+                        );
                     },
-                    function(result)
-                    {
-                        Alert.error("Unable to apply cover. Other metadata is still applied");
-                        console.log(result["message"]);
-                        SearchMetadataGoogleBooks.saveApplied();
+                    function(coverResult)
+                    { // cover fail
+                        SearchMetadataGoogleBooks.applyText(
+                            function(textResult)
+                            { // cover fail, text success
+                                Alert.success(coverResult + ". " + textResult);
+                            },
+                            function(textResult)
+                            { // cover fail, text fail
+                                Alert.success(coverResult + ". " + textResult);
+                            }
+                        );
                     }
                 );
             }
-            else
+            if (what == "text")
             {
-                SearchMetadataGoogleBooks.saveApplied();
+                SearchMetadataGoogleBooks.applyText(
+                    function(textResult)
+                    { // cover success, text success
+                        Alert.success(textResult);
+                    },
+                    function(textResult)
+                    { // cover success, text fail
+                        Alert.success(textResult);
+                    }
+                );
+            }
+            if (what == "cover")
+            {
+                SearchMetadataGoogleBooks.applyCover(
+                    function(coverResult)
+                    { // cover success, text success
+                        Alert.success(coverResult);
+                    },
+                    function(coverResult)
+                    { // cover success, text fail
+                        Alert.success(coverResult);
+                    }
+                );
             }
         });
     }
-    static saveApplied()
+    static applyCover(callbackSuccess, callbackFail)
     {
-        save();
-        $(SearchMetadataGoogleBooks.modal).modal('hide');
+        var data = SearchMetadataGoogleBooks.searchResults[SearchMetadataGoogleBooks.pageIndex];
+        var cover = data.cover;
+        if (cover != null)
+        {
+            var data = {
+                id: id,
+                url: cover
+            }
+            API.simple("book-hub", "edit/upload-cover-from-url", data,
+                function(result)
+                {
+                    if (result["success"] == true)
+                    {
+                        setCoverSrc(result["file"]);
+                        callbackSuccess("Cover applied");
+                    }
+                    else if (result["success"] == false)
+                    {
+                        console.log(result["message"]);
+                        callbackFail("Cover apply failed");
+                    }
+                },
+                function(result)
+                {
+                    console.log(result);
+                    callbackFail("Cover apply failed");
+                }
+            );
+        }
     }
+    static applyText(callbackSuccess, callbackFail)
+    {
+        var data = SearchMetadataGoogleBooks.searchResults[SearchMetadataGoogleBooks.pageIndex];
+
+        var title = data.title.trim();
+        if (!title || title == null || title == "")
+        {
+            Alert.error("Title is missing");
+            return false;
+        }
+
+        var date = "";
+        try
+        {
+            date = new Date(data.date).toISOString().substring(0, 10);
+        }
+        catch (error)
+        {}
+
+        var status = $('select[name="status"]').val();
+
+        var data = {
+            id: id,
+            title: title,
+            subtitle: data.subtitle,
+            description: data.description,
+            authors: data.authors,
+            categories: data.categories,
+            publisher: data.publisher,
+            date: date,
+            isbn13: data.isbn13,
+            isbn10: data.isbn10,
+            status: status
+        }
+        API.simple("book-hub", "edit/save", data,
+            function(result)
+            {
+                if (result["success"] == true)
+                {
+                    $('input[name="title"]').val(title);
+                    $('input[name="subtitle"]').val(data.subtitle);
+                    $('textarea[name="description"]').val(data.description);
+                    $('input[name="authors"]').val(data.authors);
+                    $('input[name="categories"]').val(data.categories);
+                    $('input[name="publisher"]').val(data.publisher);
+                    $('input[name="date"]').val(date);
+                    $('input[name="isbn13"]').val(data.isbn13);
+                    $('input[name="isbn10"]').val(data.isbn10);
+                    callbackSuccess("Text applied");
+                }
+                else if (result["success"] == false)
+                {
+                    console.log(result["message"]);
+                    callbackFail("Text apply failed");
+                }
+            },
+            function(result)
+            {
+                console.log(result);
+                callbackFail("Text apply failed");
+            }
+        );
+    }
+
+
+    //all -> cover -
+    //cover
+    //text
 
     static clickPageButton(index)
     {
