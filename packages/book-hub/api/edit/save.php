@@ -98,7 +98,6 @@ class Data
         if (Core::validatePostIsset("isbn$length"))
         {
             $data = Database::escape($_POST["isbn$length"]);
-            $data = trim($data);
             if ($data == "")
             {
                 $data = "null";
