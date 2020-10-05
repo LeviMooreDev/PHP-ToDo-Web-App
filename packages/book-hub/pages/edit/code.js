@@ -520,7 +520,16 @@ class SearchMetadataGoogleBooks
             $('input[name="authors"]').val(data.authors);
             $('input[name="categories"]').val(data.categories);
             $('input[name="publisher"]').val(data.publisher);
-            $('input[name="date"]').val(data.date);
+
+            try
+            {
+                $('input[name="date"]').val(new Date(data.date).toISOString().substring(0, 10));
+            }
+            catch (error)
+            {
+
+            }
+
             $('input[name="isbn13"]').val(data.isbn13);
             $('input[name="isbn10"]').val(data.isbn10);
             var cover = data.cover;
