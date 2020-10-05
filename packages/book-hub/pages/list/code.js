@@ -33,7 +33,6 @@ function ready()
 {
     $("#layout").val(getCookie("layout", "covers"));
     $("#status").val(getCookie("status", "all"));
-    $("#sort-by").val(getCookie("sort-by", "title-asc"));
     tableShow = getCookie("table-show", null);
     if (tableShow == null)
     {
@@ -55,6 +54,12 @@ function ready()
 
     });
     $("#sort-by").html(sortByOptions);
+    try
+    {
+        $("#sort-by").val(JSON.parse(getCookie("sort-by", "[\"title-desc\"]")));
+    }
+    catch (error)
+    {}
 
     load();
 }
@@ -67,8 +72,8 @@ function load()
             function(result)
             {
                 books = result["books"];
-                updateUI();
                 Alert.workingDone();
+                updateUI();
             },
             function(result)
             {
@@ -286,7 +291,7 @@ function statusMatch(book)
 function sortByChange()
 {
     var value = $("#sort-by").val();
-    setCookie("sort-by", value);
+    setCookie("sort-by", JSON.stringify(value));
     updateUI();
 }
 
@@ -322,7 +327,7 @@ function tableClickHeader(a, b)
     {
         $("#sort-by").val(a);
     }
-    sortByChange();
+    $("#sort-by").trigger("change");
 }
 
 function setCookie(name, value)
