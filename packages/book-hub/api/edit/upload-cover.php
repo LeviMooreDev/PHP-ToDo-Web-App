@@ -64,7 +64,8 @@ function validateFile()
         $allowTypes = array("jpg", "jpeg", "png", "gif", "bmp");
         $file = $_FILES["file"];
         $fileType = pathinfo(basename($file["name"]), PATHINFO_EXTENSION);
-        if (in_array($fileType, $allowTypes))
+        $fileTypeLowerCase = strtolower($fileType);
+        if (in_array($fileTypeLowerCase, $allowTypes))
         {
             if (is_array(getimagesize($file["tmp_name"])))
             {
@@ -77,7 +78,7 @@ function validateFile()
         }
         else
         {
-            Core::fail("File format $fileType not supported");
+            Core::fail("File format $fileTypeLowerCase not supported");
         }
     }
     else

@@ -309,9 +309,10 @@ function onCoverFileChange()
     if (files.length == 1)
     {
         var type = files[0]["name"].split('.').pop();
-        if ($.inArray(type, supportedFormat) < 0)
+        var typeLowerCase = type.toLowerCase();
+        if ($.inArray(typeLowerCase, supportedFormat) < 0)
         {
-            Alert.error("Format " + type + " not supported. Use " + supportedFormat.join(', '));
+            Alert.error("Format " + typeLowerCase + " not supported. Use " + supportedFormat.join(', '));
             clearCoverSelect();
             return;
         }
