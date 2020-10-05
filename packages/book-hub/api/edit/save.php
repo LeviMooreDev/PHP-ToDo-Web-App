@@ -31,12 +31,12 @@ class Data
         $this->isbn13 = $this->validateISBN(13);
         $this->isbn10 = $this->validateISBN(10);
         $this->date = $this->validateDate();
-        $this->title = $this->validateNullableString("title");
-        $this->subtitle = $this->validateNullableString("subtitle");
-        $this->description = $this->validateNullableString("description");
-        $this->authors = $this->validateNullableString("authors");
-        $this->categories = $this->validateNullableString("categories");
-        $this->publisher = $this->validateNullableString("publisher");
+        $this->title = $this->validateString("title");
+        $this->subtitle = $this->validateString("subtitle");
+        $this->description = $this->validateString("description");
+        $this->authors = $this->validateStringList("authors");
+        $this->categories = $this->validateStringList("categories");
+        $this->publisher = $this->validateString("publisher");
         $this->status = $this->validateStatus();
     }
 
@@ -52,7 +52,8 @@ class Data
 
         Core::validatePostIsset("status");
         $data = Database::escape($_POST["status"]);
-        if(!in_array($data, $values)){
+        if (!in_array($data, $values))
+        {
             Core::fail("$data is not a valid status. Use " . implode(", ", $values));
         }
         return Database::escape($_POST["status"]);
@@ -117,7 +118,38 @@ class Data
         return $data;
     }
 
-    function validateNullableString($name)
+    function validateStringList($name)
+    {
+        if (isset($_POST[$name]))
+        {
+            $data = $_POST[$name];
+            $data = trim($data);
+            if ($data == "")
+            {
+                $data = "null";
+            }
+            else
+            {
+                $data = ucwords(strtolower($data));
+                $data = explode(",", $data);
+                $data = array_map('trim', $data);
+                $data = array_filter($data); 
+
+                sort($data);
+                $data = implode(", ", $data);
+
+                $data = Database::escape($data);
+                $data = "'" . $data . "'";
+            }
+        }
+        else
+        {
+            Core::fail("$name data is missing");
+        }
+        return $data;
+    }
+
+    function validateString($name)
     {
         if (isset($_POST[$name]))
         {
