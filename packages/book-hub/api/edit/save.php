@@ -135,6 +135,7 @@ class Data
                 $data = explode(",", $data);
                 $data = array_map('trim', $data);
                 $data = array_filter($data); 
+                $data = array_unique($data);
 
                 sort($data);
                 $data = implode(", ", $data);
