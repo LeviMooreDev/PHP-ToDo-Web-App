@@ -20,7 +20,10 @@ function loadStarted(elements)
 {
     console.log(1);
     $(elements["download"]).attr("href", "/packages/book-hub/api/download.php?id=" + id)
+    $(elements["download-secondary"]).attr("href", "/packages/book-hub/api/download.php?id=" + id)
     $(elements["edit"]).attr("href", "/books/edit?id=" + id)
+    $(elements["edit-secondary"]).attr("href", "/books/edit?id=" + id)
+    
     statusElement = $(elements["status"]);
     statusElement.on("change", function()
     {

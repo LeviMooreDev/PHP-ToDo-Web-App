@@ -1,30 +1,3 @@
-#openFile,
-#viewBookmark,
-#documentProperties,
-#spreadEven,
-#spreadOdd,
-#spreadNone,
-#download {
-    display: none !important;
-}
-
-.book-hub-toolbar-button {
-    width: auto !important;
-}
-
-.toolbarButton.pdfSidebarNotification::after {
-    display: none !important;
-}
-
-#book-hub-status-root {
-    width: 75px;
-}
-
-html[dir="ltr"] .verticalToolbarSeparator {
-    margin-left: 6px !important;
-    margin-right: 6px !important;
-}
-
 /* .book-hub-toolbar-button a {
     color: white !important;
 } */
@@ -4193,4 +4166,38 @@ html[dir="rtl"] #documentPropertiesOverlay .row>* {
     #scaleSelectContainer {
         display: none;
     }
+}
+
+
+
+#openFile,
+#viewBookmark,
+#documentProperties,
+#spreadEven,
+#spreadOdd,
+#spreadNone,
+#download {
+    /* display: none !important; */
+}
+
+.book-hub-toolbar-button {
+    width: auto !important;
+}
+
+.toolbarButton.pdfSidebarNotification::after {
+    display: none !important;
+}
+
+#book-hub-status-root {
+    width: 75px;
+}
+
+html[dir="ltr"] .verticalToolbarSeparator {
+    margin-left: 6px !important;
+    margin-right: 6px !important;
+}
+
+.book-hub-hide
+{
+    display: none !important;
 }

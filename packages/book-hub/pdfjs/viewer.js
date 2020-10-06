@@ -16847,7 +16847,9 @@ function loadStarted()
 {
     var elements = [];
     elements["download"] = document.getElementById("book-hub-download");
+    elements["download-secondary"] = document.getElementById("book-hub-download-secondary");
     elements["edit"] = document.getElementById("book-hub-edit");
+    elements["edit-secondary"] = document.getElementById("book-hub-edit-secondary");
     elements["status"] = document.getElementById("book-hub-status");
     parent.loadStarted(elements);
 }
