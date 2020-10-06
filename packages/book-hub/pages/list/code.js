@@ -68,7 +68,7 @@ function load()
 {
     Alert.working(() =>
     {
-        API.simple("book-hub", "view/all", "",
+        API.simple("book-hub", "view/all-books", "",
             function(result)
             {
                 books = result["books"];

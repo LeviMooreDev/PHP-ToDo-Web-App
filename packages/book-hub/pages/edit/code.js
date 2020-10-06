@@ -26,8 +26,80 @@ function ready()
     $("#progress-bar").width('0%');
     $("#progress-bar").html('0%');
 
+    setCategoriesAutocomplete();
+    setAuthorsAutocomplete();
+
     SearchMetadataGoogleBooks.ready();
     SearchCoverOpenLibraryCom.ready();
+}
+
+function setCategoriesAutocomplete()
+{
+    API.simple("book-hub", "view/all-categories", "",
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                setAutocomplete('input[name="categories"]', result["categories"]);
+            }
+            else if (result["success"] == false)
+            {
+                console.log("Set categories autocomplete failed");
+                console.log(result);
+            }
+        },
+        function(result) //failed
+        {
+            console.log("Set categories autocomplete failed");
+            console.log(result);
+        }
+    );
+}
+
+function setAuthorsAutocomplete()
+{
+    API.simple("book-hub", "view/all-authors", "",
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                setAutocomplete('input[name="authors"]', result["authors"]);
+            }
+            else if (result["success"] == false)
+            {
+                console.log("Set authors autocomplete failed");
+                console.log(result);
+            }
+        },
+        function(result) //failed
+        {
+            console.log("Set authors autocomplete failed");
+            console.log(result);
+        }
+    );
+}
+
+function setAutocomplete(finder, values)
+{
+    $(finder).attr("data-list", values);
+    new Awesomplete(finder,
+    {
+        filter: function(text, input)
+        {
+            return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);
+        },
+
+        item: function(text, input)
+        {
+            return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);
+        },
+
+        replace: function(text)
+        {
+            var before = this.input.value.match(/^.+,\s*|/)[0];
+            this.input.value = before + text + ", ";
+        }
+    });
 }
 
 function onResize()
