@@ -193,7 +193,7 @@ function filesSelectUpdate()
 
     //file size
     var totalSize = 0;
-    var maxMB = 100;
+    var maxMB = maxUploadSize - 10;
     for (var i = 0; i < count; i++)
     {
         totalSize += files[i]["size"];
