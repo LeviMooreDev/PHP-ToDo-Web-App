@@ -1040,6 +1040,7 @@
 
             async open(file, args)
             {
+                loadStarted();
                 if (this.pdfLoadingTask)
                 {
                     await this.close();
@@ -11757,7 +11758,7 @@
                 {
                     setTimeout(function()
                     {
-                        bookHubReady();
+                        loadDone();
                         bookHubPageCount(pagesCount);
                     }, 0);
                     this.eventBus.dispatch("pagesloaded",
@@ -16842,16 +16843,17 @@
 ]);
 //# sourceMappingURL=viewer.js.map
 
-
-function bookHubReady()
+function loadStarted()
 {
-    bookHubParent = parent;
-
     var elements = [];
     elements["download"] = document.getElementById("book-hub-download");
     elements["edit"] = document.getElementById("book-hub-edit");
     elements["status"] = document.getElementById("book-hub-status");
-    parent.iframeReady(elements);
+    parent.loadStarted(elements);
+}
+function loadDone()
+{
+    parent.loadDone();
 }
 
 function bookHubPageCount(number)
