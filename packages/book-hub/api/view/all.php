@@ -3,7 +3,7 @@ header('Content-Type: application/json');
 include("../core.php");
 
 Database::connect();
-$result = Database::query("SELECT *, CONVERT(created_timestamp, DATE) as added FROM `book-hub`");
+$result = Database::query("SELECT *, created_timestamp as added FROM `book-hub`");
 
 $books = [];
 if ($result->num_rows > 0)
