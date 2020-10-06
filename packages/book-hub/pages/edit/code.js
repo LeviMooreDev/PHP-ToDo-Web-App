@@ -3,9 +3,6 @@ var coverPlaceholder = "/packages/book-hub/cover-placeholder.jpg";
 
 $(document).ready(function()
 {
-    $('input[name="isbn13"]').on('change', onIsbn13Change);
-    $('input[name="isbn10"]').on('change', onIsbn10Change);
-
     $('#save').on('click', save);
     $('#delete').on('click', deleteBook);
     $('#original-title').on('click', originalTitle);
@@ -285,16 +282,6 @@ function enableForm()
     $("#download").removeAttr("disabled");
     $("#auto-fill").removeAttr("disabled");
     $("fieldset").removeAttr("disabled");
-}
-
-function onIsbn13Change()
-{
-    $('input[name="isbn13"]').val($('input[name="isbn13"]').val().replace(/\D/g, ''));
-}
-
-function onIsbn10Change()
-{
-    $('input[name="isbn10"]').val($('input[name="isbn10"]').val().replace(/\D/g, ''));
 }
 
 function clearCoverSelect()
