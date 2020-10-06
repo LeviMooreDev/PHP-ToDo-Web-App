@@ -2,42 +2,58 @@
 header('Content-Type: application/json');
 include("../core.php");
 
-Core::validatePostIsset("id");
-Core::validatePostIsset("title");
+Core::validatePostIsset("folder");
 Database::connect();
-$oldId = Database::escape($_POST["id"]);
-$title = Database::escape($_POST["title"]);
+$oldFolder = Database::escape($_POST["folder"]);
 
-if (!file_exists(Core::bookFolderPathServer($oldId)))
+if (!file_exists(Core::bookFolderPathServer($oldFolder)))
 {
-    Core::fail("Can't find folder for id $id");
+    Core::fail("Can't find folder $oldFolder");
 }
-if (!file_exists(Core::bookFilePathServer($oldId)))
+if (!file_exists(Core::bookFilePathServer($oldFolder)))
 {
-    Core::fail("Can't find book for id $id");
+    Core::fail("Can't find book in folder $oldFolder");
 }
 
-$result = Database::query("SELECT * FROM `book-hub` WHERE `id`='$oldId'");
+$result = Database::query("SELECT * FROM `book-hub` WHERE `id`='$oldFolder'");
 if ($result->num_rows !== 0)
 {
-    Core::fail("Database entry with id $oldId already exists");
+    Core::fail("Database entry using folder $oldFolder already exists");
 }
 
-$newId;
+$title = "Unknown";
+if (file_exists(Core::originalFileNamePathServer($oldFolder)))
+{
+    $fileReader = fopen(Core::originalFileNamePathServer($oldFolder), "r");
+    if ($fileReader !== false)
+    {
+        $title = fread($fileReader, filesize(Core::originalFileNamePathServer($oldFolder)));
+        fclose($fileReader);
+    }
+}
+
+$id;
 $result = Database::queries("INSERT INTO `book-hub`(`title`) VALUES ('$title'); SELECT LAST_INSERT_ID();");
 if ($result->field_count == 1 && $result->num_rows == 0)
 {
     $row = $result->fetch_assoc();
     if (array_key_exists("LAST_INSERT_ID()", $row))
     {
-        $newId = $row["LAST_INSERT_ID()"];
+        $id = $row["LAST_INSERT_ID()"];
     }
 }
 
-if (!isset($newId))
+if (!isset($id))
 {
     Core::fail("Can't create entry. Server side error.");
 }
 
-rename(Core::bookFolderPathServer($oldId), Core::bookFolderPathServer($newId));
+rename(Core::bookFolderPathServer($oldFolder), Core::bookFolderPathServer($id));
+$fileWrite = fopen(Core::originalFileNamePathServer($id), "w");
+if ($fileWrite !== false)
+{
+    fwrite($fileWrite, $title);
+    fclose($fileWrite);
+}
+
 Core::success("Fix successful");
