@@ -81,6 +81,7 @@ class API
                         if (e.lengthComputable)
                         {
                             var percentComplete = Math.floor(((e.loaded / e.total) * 100));
+                            percentComplete = Math.min(99, percentComplete);
                             $(progress).width(percentComplete + '%');
                             $(progress).html(percentComplete + '%');
                         }
@@ -114,6 +115,8 @@ class API
                 {
                     console.log(`Json: ${JSON.stringify(responseObject)}`);
                 }
+                $(progress).width('100%');
+                $(progress).html('Upload Complete');
             },
             error: function(xhr, ajaxOptions, thrownError)
             {
@@ -124,6 +127,8 @@ class API
                     console.log(`Status text: ${xhr.statusText}`);
                     console.log(`Thrown: ${thrownError}`);
                 }
+                $(progress).width('100%');
+                $(progress).html('Upload Failed');
             }
         });
         if (debug)
