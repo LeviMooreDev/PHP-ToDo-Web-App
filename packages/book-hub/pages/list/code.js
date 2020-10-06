@@ -26,6 +26,12 @@ $(document).ready(function()
         //     updateUI();
         // }
     });
+    $('[data-toggle="tooltip"]').tooltip();
+    $(document).on('focus', '[data-toggle=tooltip]', function()
+    {
+        $(this).tooltip('hide');
+    });
+
     ready();
 });
 
@@ -255,27 +261,49 @@ function coverLayout()
 
 function searchMatch(book)
 {
-    var searchQuery = $("#search-query").val();
-    if (!(searchQuery === null || searchQuery.match(/^ *$/) !== null))
+    //var searchable = [];
+    var searchable = "";
+    tableCols.forEach(col =>
     {
-        var match = false;
-        tableCols.forEach(col =>
+        if (book[col[0]] != null)
         {
-            if (book[col[0]] != null)
+            searchable += book[col[0]].toLowerCase() + " ";
+        }
+        if (book["title"] != null)
+        {
+            searchable += book["title"].toLowerCase() + " ";
+        }
+    });
+
+    var match = true;
+
+    var blocks = $("#search-query").val();
+    if (!(blocks === null || blocks.match(/^ *$/) !== null))
+    {
+        blocks = blocks.toLowerCase();
+
+        match = false;
+        blocks.split(",").forEach(block =>
+        {
+            var foundAll = true;
+            block.split(".").forEach(needs =>
             {
-                if (book[col[0]].toLowerCase().includes(searchQuery.toLowerCase()))
+                needs = needs.trim();
+
+                if (!searchable.includes(needs))
                 {
-                    match = true;
+                    foundAll = false;
                 }
+            });
+
+            if (foundAll)
+            {
+                match = true;
             }
         });
-        if (book["title"].toLowerCase().includes(searchQuery.toLowerCase()))
-        {
-            match = true;
-        }
-        return match;
     }
-    return true;
+
+    return match;
 }
 
 function statusMatch(book)

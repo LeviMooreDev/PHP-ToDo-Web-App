@@ -90,3 +90,21 @@
 .book a{
     color: unset;
 }
+
+.tooltip-inner {
+    white-space:pre-wrap;
+    max-width: 800px;
+}
+
+::-webkit-input-placeholder {
+    font-style: italic;
+ }
+ :-moz-placeholder {
+    font-style: italic;  
+ }
+ ::-moz-placeholder {
+    font-style: italic;  
+ }
+ :-ms-input-placeholder {  
+    font-style: italic; 
+ }
