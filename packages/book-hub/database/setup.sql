@@ -13,6 +13,7 @@ CREATE TABLE `book-hub` (
   `status` enum('unread', 'reading', 'finished') COLLATE utf8_bin NOT NULL DEFAULT 'unread',
   `isbn13` varchar(13) COLLATE utf8_bin DEFAULT NULL,
   `isbn10` varchar(10) COLLATE utf8_bin DEFAULT NULL,
+  `cover-color` varchar(6) COLLATE utf8_bin NOT NULL DEFAULT 'FFFFFF',
   `created_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
