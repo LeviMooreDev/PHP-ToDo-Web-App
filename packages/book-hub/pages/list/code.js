@@ -11,6 +11,107 @@ var tableCols = [
     ["added", "Added"]
 ]
 
+var stringSorting = function(a, b)
+{
+    if (a == null) return 1;
+    if (b == null) return -1;
+    if (a.toLowerCase() > b.toLowerCase()) return 1;
+    if (a.toLowerCase() < b.toLowerCase()) return -1;
+    return 0;
+};
+
+var colorSorting = function(a, b)
+{
+    a = hexToHSL(a);
+    b = hexToHSL(b);
+
+    if (a['h'] < b['h'])
+        return asc ? -1 : 1;
+    if (a['h'] > b['h'])
+        return asc ? 1 : -1
+
+    if (a['l'] < b['l'])
+        return asc ? 1 : -1
+    if (a['l'] > b['l'])
+        return asc ? -1 : 1;
+
+    return 0;
+};
+
+var sortingOptions = [
+{
+    title: "Authors",
+    column: "authors",
+    sorting: function(a, b)
+    {
+        return stringSorting(a["authors"], b["authors"])
+    }
+},
+{
+    title: "Categories",
+    column: "categories",
+    sorting: function(a, b)
+    {
+        return stringSorting(a["categories"], b["categories"])
+    }
+},
+{
+    title: "Release date",
+    column: "date",
+    sorting: function(a, b)
+    {
+        return stringSorting(a["date"], b["date"])
+    }
+},
+{
+    title: "Publisher",
+    column: "publisher",
+    sorting: function(a, b)
+    {
+        return stringSorting(a["publisher"], b["publisher"])
+    }
+},
+{
+    title: "ISBN10",
+    column: "isbn10",
+    sorting: function(a, b)
+    {
+        return stringSorting(a["isbn10"], b["isbn10"])
+    }
+},
+{
+    title: "ISBN13",
+    column: "categories",
+    sorting: function(a, b)
+    {
+        return stringSorting(a["categories"], b["categories"])
+    }
+},
+{
+    title: "Status",
+    column: "status",
+    sorting: function(a, b)
+    {
+        return stringSorting(a["status"], b["status"])
+    }
+},
+{
+    title: "Added",
+    column: "added",
+    sorting: function(a, b)
+    {
+        return stringSorting(a["added"], b["added"])
+    }
+},
+{
+    title: "Cover color",
+    column: "cover-color",
+    sorting: function(a, b)
+    {
+        return colorSorting(a["cover-color"], b["cover-color"])
+    }
+}, ]
+
 $(document).ready(function()
 {
     $("#layout").on("change", layoutChange);
@@ -57,8 +158,10 @@ function ready()
         sortByOptions += `<option disabled>──────────</option>`;
         sortByOptions += `<option value="${col[0]}-asc">${col[1]} ASC</option>`;
         sortByOptions += `<option value="${col[0]}-desc">${col[1]} DESC</option>`;
-
     });
+    sortByOptions += `<option disabled>──────────</option>`;
+    sortByOptions += `<option value="cover-asc">Cover ASC</option>`;
+    sortByOptions += `<option value="cover-desc">Cover DESC</option>`;
     $("#sort-by").html(sortByOptions);
     try
     {
@@ -90,22 +193,85 @@ function load()
     });
 }
 
+function hexToHSL(hex)
+{
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    var r = parseInt(result[1], 16) / 255;
+    var g = parseInt(result[2], 16) / 255;
+    var b = parseInt(result[3], 16) / 255;
+    var max = Math.max(r, g, b);
+    var min = Math.min(r, g, b);
+    var h, s, l = (max + min) / 2;
+
+    if (max == min)
+    {
+        h = s = 0;
+    }
+    else
+    {
+        var d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max)
+        {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
+        }
+        h /= 6;
+    }
+    var hsl = [];
+    hsl['h'] = h;
+    hsl['s'] = s;
+    hsl['l'] = l;
+    return hsl;
+}
+
 function updateUI()
 {
     var sortBy = $("#sort-by").val();
     var col = sortBy.split("-")[0];
     var asc = sortBy.split("-")[1] == "asc";
 
-    books.sort(
-        function(a, b)
-        {
-            if (a[col] == null) return asc ? 1 : -1;
-            if (b[col] == null) return asc ? -1 : 1;
-            if (a[col].toLowerCase() > b[col].toLowerCase()) return asc ? 1 : -1;
-            if (a[col].toLowerCase() < b[col].toLowerCase()) return asc ? -1 : 1;
-            return 0;
-        }
-    );
+    if (col == "cover")
+    {
+        books.sort(
+            function(a, b)
+            {
+                a = hexToHSL(a["cover-color"]);
+                b = hexToHSL(b["cover-color"]);
+
+                if (a['h'] < b['h'])
+                    return asc ? -1 : 1;
+                if (a['h'] > b['h'])
+                    return asc ? 1 : -1
+
+                if (a['l'] < b['l'])
+                    return asc ? 1 : -1
+                if (a['l'] > b['l'])
+                    return asc ? -1 : 1;
+                return 0;
+            }
+        );
+    }
+    else
+    {
+        books.sort(
+            function(a, b)
+            {
+                if (a[col] == null) return asc ? 1 : -1;
+                if (b[col] == null) return asc ? -1 : 1;
+                if (a[col].toLowerCase() > b[col].toLowerCase()) return asc ? 1 : -1;
+                if (a[col].toLowerCase() < b[col].toLowerCase()) return asc ? -1 : 1;
+                return 0;
+            }
+        );
+    }
 
     var layout = $("#layout").val();
     if (layout == "table")
@@ -246,6 +412,7 @@ function coverLayout()
         var viewUrl = `/books/view?id=${book["id"]}`;
         var coverColor = `${book["cover-color"]}`;
         var cover = `<img src="${book["cover"]}" style="background-color: #${coverColor};">`;
+         cover = `<img src="" style="background-color: #${coverColor};">`;
         var title = `<p class="title">${book["title"]}</p>`;
         var subtitle = book["subtitle"] != null ? `<p class="subtitle">${book["subtitle"]}</p>` : "";
 
