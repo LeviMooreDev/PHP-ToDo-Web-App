@@ -76,6 +76,20 @@ class Alert
             }
         });
     }
+    static workingSmall()
+    {
+        Swal.fire(
+        {
+            position: 'top',
+            title: 'Working',
+            timerProgressBar: true,
+            toast: true,
+            onBeforeOpen: () =>
+            {
+                Swal.showLoading()
+            }
+        });
+    }
     static workingDone()
     {
         Swal.close();
