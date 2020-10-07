@@ -1,8 +1,9 @@
 class API
 {
+    static debug = false;
+
     static simple(packageName, end, data, successCallback, errorCallback)
     {
-        var debug = true;
         var url = `/packages/${packageName}/api/${end}.php`;
         $.ajax(
         {
@@ -16,46 +17,44 @@ class API
                     if (responseObject["status"] == "OK")
                     {
                         successCallback(responseObject["result"]);
+                        if(API.debug == true)
+                        {
+                            console.log(`URL: ${url}`);
+                            console.log(`Data: ${data}`);
+                            console.log(`Json: ${JSON.stringify(responseObject)}`);
+                        }
                     }
                     else
                     {
                         errorCallback("Response did not contain a OK status.");
+                        console.log(`URL: ${url}`);
+                        console.log(`Data: ${data}`);
+                        console.log(`Json: ${JSON.stringify(responseObject)}`);
                     }
                 }
                 catch (error)
                 {
                     errorCallback("Unable to parse json.");
-                    if (debug)
-                    {
-                        console.log(`Catch: ${error}`);
-                    }
-                }
-                if (debug)
-                {
+                    console.log(`URL: ${url}`);
+                    console.log(`Data: ${data}`);
                     console.log(`Json: ${JSON.stringify(responseObject)}`);
+                    console.log(`Catch: ${error}`);
                 }
             },
             error: function(xhr, ajaxOptions, thrownError)
             {
                 errorCallback("Ajax call failed.")
-                if (debug)
-                {
-                    console.log(`Status code: ${xhr.status}`);
-                    console.log(`Status text: ${xhr.statusText}`);
-                    console.log(`Thrown: ${thrownError}`);
-                }
+                console.log(`URL: ${url}`);
+                console.log(`Data: ${data}`);
+                console.log(`Status code: ${xhr.status}`);
+                console.log(`Status text: ${xhr.statusText}`);
+                console.log(`Thrown: ${thrownError}`);
             }
         });
-        if (debug)
-        {
-            console.log(`URL: ${url}`);
-            console.log(`Data: ${data}`);
-        }
     }
 
     static upload(packageName, end, data, progress, successCallback, errorCallback)
     {
-        var debug = true;
         if (!(progress instanceof jQuery))
         {
             progress = $(progress);
@@ -97,45 +96,48 @@ class API
                     if (responseObject["status"] == "OK")
                     {
                         successCallback(responseObject["result"]);
+                        if(API.debug == true)
+                        {
+                            console.log(`URL: ${url}`);
+                            console.log(`Data: ${data}`);
+                            console.log(`Json: ${JSON.stringify(responseObject)}`);
+                        }
                     }
                     else
                     {
                         errorCallback("Response did not contain a OK status.");
+
+                        console.log(`URL: ${url}`);
+                        console.log(`Data: ${data}`);
+                        console.log(`Json: ${JSON.stringify(responseObject)}`);
                     }
                 }
                 catch (error)
                 {
                     errorCallback("Unable to parse json.");
-                    if (debug)
-                    {
-                        console.log(`Catch: ${error}`);
-                    }
-                }
-                if (debug)
-                {
+
+                    console.log(`URL: ${url}`);
+                    console.log(`Data: ${data}`);
                     console.log(`Json: ${JSON.stringify(responseObject)}`);
+                    console.log(`Catch: ${error}`);
                 }
+
                 $(progress).width('100%');
                 $(progress).html('Upload Complete');
             },
             error: function(xhr, ajaxOptions, thrownError)
             {
                 errorCallback("Ajax call failed.")
-                if (debug)
-                {
-                    console.log(`Status code: ${xhr.status}`);
-                    console.log(`Status text: ${xhr.statusText}`);
-                    console.log(`Thrown: ${thrownError}`);
-                }
                 $(progress).width('100%');
                 $(progress).html('Upload Failed');
+
+                console.log(`URL: ${url}`);
+                console.log(`Data: ${data}`);
+                console.log(`Status code: ${xhr.status}`);
+                console.log(`Status text: ${xhr.statusText}`);
+                console.log(`Thrown: ${thrownError}`);
             }
         });
-        if (debug)
-        {
-            console.log(`URL: ${url}`);
-            console.log(`Data: ${data}`);
-        }
     }
 
 
