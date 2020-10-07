@@ -7,53 +7,60 @@ $(document).ready(function()
     Filter.ready();
     CoverLayout.ready();
     TableLayout.ready();
-    
-    Alert.working(() =>
-    {
-        API.simple("book-hub", "view/all-books", "",
-            function(result)
-            {
-                books = result["books"];
-                Sorting.sort();
-                Layout.refresh();
-                Alert.workingDone();
-            },
-            function(result)
-            {
-                Alert.error("Something went wrong. See console (F12) for more info.");
-                console.log(result);
-            }
-        );
-    });
+
+    Alert.workingSmall();
+    API.simple("book-hub", "view/all-books", "",
+        function(result)
+        {
+            books = result["books"];
+            Sorting.sort();
+            Layout.refresh(false);
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
 });
 
 class Layout
 {
+    static cookieName = "layout";
+    static default = "covers";
     static layoutElement = $("#layout");
 
     static ready()
     {
         Layout.layoutElement.on("change", Layout.onLayoutChange);
-        Layout.layoutElement.val(Cookie.get("layout", "covers"));
+        Layout.layoutElement.val(Cookie.get(Layout.cookieName, Layout.default));
     }
 
-    static refresh()
+    static refresh(showWorking = true)
     {
-        var layout = Layout.layoutElement.val();
-        if (layout == "table")
+        if (showWorking)
         {
-            TableLayout.refresh();
+            Alert.workingSmall();
         }
-        else
+        setTimeout(() =>
         {
-            CoverLayout.refresh();
-        }
+            var layout = Layout.layoutElement.val();
+            if (layout == "table")
+            {
+                TableLayout.refresh();
+            }
+            else
+            {
+                CoverLayout.refresh();
+            }
+            Alert.workingDone();
+        }, 200)
     }
 
     static onLayoutChange()
     {
         var value = Layout.layoutElement.val();
-        Cookie.set("layout", value);
+        Cookie.set(Layout.cookieName, value);
         Layout.refresh();
     }
 }
@@ -95,7 +102,13 @@ class CoverLayout
 
 class TableLayout
 {
+    static selectElement = $("#sort-by");
+
     static showColumns;
+    static showColumnsElementId = "table-show-columns";
+    static showColumnsCookieName = "filter-status";
+    static showColumnsDefault = ["Title", "Authors", "Categories", "Release date"];
+
     static columns = [
     {
         header: "Title",
@@ -184,10 +197,10 @@ class TableLayout
 
     static ready()
     {
-        TableLayout.showColumns = Cookie.get("table-show", null);
-        if (TableLayout.showColumns == null)
+        TableLayout.showColumns = Cookie.get(TableLayout.showColumnsCookieName, null);
+        if (!Array.isArray(TableLayout.showColumns))
         {
-            TableLayout.showColumns = ["Title", "Authors", "Categories", "Release date"];
+            TableLayout.showColumns = TableLayout.showColumnsDefault;
         }
         else
         {
@@ -221,7 +234,7 @@ class TableLayout
         root.append(`
             <div class="card">
                 <div>
-                    <select id="table-show" class="selectpicker float-right" multiple data-selected-text-format="static" title="Show" data-width="300px">
+                    <select id="${TableLayout.showColumnsElementId}" class="selectpicker float-right" multiple data-selected-text-format="static" title="Show" data-width="300px">
                         ${showOptions}
                     </select>
                 </div>
@@ -238,15 +251,15 @@ class TableLayout
                 </div>
             </div>`);
 
-        $('#table-show').selectpicker();
-        $('#table-show').selectpicker('val', TableLayout.showColumns);
-        $('#table-show').on('hidden.bs.select', function(e, clickedIndex, isSelected, previousValue)
+        $(`#${TableLayout.showColumnsElementId}`).selectpicker();
+        $(`#${TableLayout.showColumnsElementId}`).selectpicker('val', TableLayout.showColumns);
+        $(`#${TableLayout.showColumnsElementId}`).on('hidden.bs.select', function(e, clickedIndex, isSelected, previousValue)
         {
             TableLayout.onShowSelectChange();
         });
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent))
         {
-            $('#table-show').selectpicker('mobile');
+            $(`#${TableLayout.showColumnsElementId}`).selectpicker('mobile');
         }
 
         var body = $("#books-table-body");
@@ -292,63 +305,146 @@ class TableLayout
 
     static headerSortClick(a, b)
     {
-        var sortBy = $("#sort-by").val();
+        var sortBy = TableLayout.selectElement.val();
         if (sortBy == a)
         {
-            $("#sort-by").val(b);
+            TableLayout.selectElement.val(b);
         }
         else
         {
-            $("#sort-by").val(a);
+            TableLayout.selectElement.val(a);
         }
-        $("#sort-by").trigger("change");
+        TableLayout.selectElement.trigger("change");
     }
 
     static onShowSelectChange()
     {
-        TableLayout.showColumns = $('#table-show').selectpicker('val');
-        Cookie.set("table-show", JSON.stringify(TableLayout.showColumns));
-        TableLayout.refresh();
+        if (JSON.stringify(TableLayout.showColumns) != JSON.stringify($(`#${TableLayout.showColumnsElementId}`).selectpicker('val')))
+        {
+            TableLayout.showColumns = $(`#${TableLayout.showColumnsElementId}`).selectpicker('val');
+            Cookie.set(TableLayout.showColumnsCookieName, JSON.stringify(TableLayout.showColumns));
+            Layout.refresh();
+        }
     }
 }
 
 class Filter
 {
+    static statusSelectElement = $("#status");
+    static statusCookieName = "filter-status";
+    static statusDefault = "all";
+
+    static searchQueryElement = $("#search-query");
+    static searchQueryTimer = 0;
+
+    static searchIncludeElement = $("#search-include");
+    static searchIncludeCookieName = "filter-search-include";
+    static searchIncludeDefault = ["Title", "Authors", "Categories"];
+    static searchInclude;
+
     static searchable = [
-        "title",
-        "subtitle",
-        "authors",
-        "categories",
-        "added",
-        "date",
-        "isbn10",
-        "isbn13",
-        "publisher",
-        "status"
-    ]
+    {
+        title: "Title",
+        index: "title"
+    },
+    {
+        title: "Subtitle",
+        index: "subtitle"
+    },
+    {
+        title: "Authors",
+        index: "authors"
+    },
+    {
+        title: "Categories",
+        index: "categories"
+    },
+    {
+        title: "Added",
+        index: "added"
+    },
+    {
+        title: "Release Date",
+        index: "date"
+    },
+    {
+        title: "ISBN10",
+        index: "isbn10"
+    },
+    {
+        title: "ISBN13",
+        index: "isbn13"
+    },
+    {
+        title: "Publisher",
+        index: "publisher"
+    },
+    {
+        title: "Status",
+        index: "status"
+    }]
 
     static ready()
     {
-        $("#status").val(Cookie.get("status", "all"));
-        $("#status").on("change", Filter.onStatusChange);
-        $('#search-query').keyup(function(e)
+        //status select
+        Filter.statusSelectElement.val(Cookie.get(Filter.statusCookieName, Filter.statusDefault));
+        Filter.statusSelectElement.on("change", Filter.onStatusChange);
+
+        //search query
+        Filter.searchQueryElement.keyup(function(e)
+        {
+            Filter.startSearchQueryTimer();
+            if (e.keyCode == 13)
+            {
+                Filter.startSearchQueryTimer(0);
+            }
+        });
+        Filter.searchQueryElement.tooltip();
+        Filter.searchQueryElement.on('focus', function()
+        {
+            Filter.searchQueryElement.tooltip('hide');
+        });
+
+        Filter.setupSearchInclude();
+    }
+
+    static setupSearchInclude()
+    {
+        Filter.searchInclude = Cookie.get(Filter.searchIncludeCookieName, null);
+        if (!Array.isArray(Filter.searchInclude))
+        {
+            Filter.searchInclude = Filter.searchIncludeDefault;
+        }
+        else
+        {
+            Filter.searchInclude = JSON.parse(Filter.searchInclude);
+        }
+
+        var includeOptions = "";
+        Filter.searchable.forEach(search =>
+        {
+            includeOptions += `<option>${search.title}</option>`;
+        });
+        Filter.searchIncludeElement.html(includeOptions);
+        Filter.searchIncludeElement.selectpicker();
+        Filter.searchIncludeElement.selectpicker('val', Filter.searchInclude);
+        Filter.searchIncludeElement.on('hidden.bs.select', function(e, clickedIndex, isSelected, previousValue)
+        {
+            Filter.onSearchIncludeSelectChange();
+        });
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent))
+        {
+            Filter.searchIncludeElement.selectpicker('mobile');
+        }
+    }
+
+    static startSearchQueryTimer(sec = 500)
+    {
+        clearTimeout(Filter.searchQueryTimer);
+        Filter.searchQueryTimer = setTimeout(function()
         {
             Layout.refresh();
-        });
-
-        $('#search-query').tooltip();
-        $('#search-query').on('focus', '[data-toggle=tooltip]', function()
-        {
-            $(this).tooltip('hide');
-        });
-
-        // $('#search-query').keyup(function(e)
-        // {
-        //     if (e.keyCode == 13)
-        //     {
-        //         Layout.refresh();
-        //     }
-        // });
+        }, sec);
     }
 
     static pass(book)
@@ -370,15 +466,15 @@ class Filter
         var searchable = "";
         Filter.searchable.forEach(search =>
         {
-            if (book[search] != null)
+            if (Filter.searchInclude.includes(search.title) && book[search.index] != null)
             {
-                searchable += book[search].toLowerCase() + " ";
+                searchable += book[search.index].toLowerCase() + " ";
             }
         });
 
         var match = true;
 
-        var blocks = $("#search-query").val();
+        var blocks = Filter.searchQueryElement.val();
         if (!(blocks === null || blocks.match(/^ *$/) !== null))
         {
             blocks = blocks.toLowerCase();
@@ -409,7 +505,7 @@ class Filter
 
     static passStatus(book)
     {
-        var show = $("#status").val();
+        var show = Filter.statusSelectElement.val();
         if (show == "all")
         {
             return true;
@@ -417,17 +513,29 @@ class Filter
         return book["status"] == show;
     }
 
+    static onSearchIncludeSelectChange()
+    {
+        if (JSON.stringify(Filter.searchInclude) != JSON.stringify(Filter.searchIncludeElement.selectpicker('val')))
+        {
+            Filter.searchInclude = Filter.searchIncludeElement.selectpicker('val');
+            Cookie.set(Filter.searchIncludeCookieName, JSON.stringify(Filter.searchInclude));
+            Layout.refresh();
+        }
+    }
+
     static onStatusChange()
     {
-        var value = $("#status").val();
-        Cookie.set("status", value);
+        var value = Filter.statusSelectElement.val();
+        Cookie.set(Filter.statusCookieName, value);
         Layout.refresh();
     }
 }
 
 class Sorting
 {
-    static selectElement = $("#sort-by");
+    static sortByCookieName = "sorting-sort-by";
+    static sortByDefault = "[\"0-asc\"]";
+    static sortByElement = $("#sort-by");
 
     static sortingOptions = [
     {
@@ -510,8 +618,6 @@ class Sorting
 
     static ready()
     {
-        Sorting.selectElement.on("change", Sorting.onSortByChange);
-
         var options = "";
         var index = 0;
         Sorting.sortingOptions.forEach(option =>
@@ -524,22 +630,17 @@ class Sorting
             options += `<option value="${index}-desc">${option.title} DESC</option>`;
             index++;
         });
-        Sorting.selectElement.html(options);
-
-        try
-        {
-            Sorting.selectElement.val(JSON.parse(Cookie.get("sort-by", "[\"0-asc\"]")));
-        }
-        catch (error)
-        {}
+        Sorting.sortByElement.html(options);
+        Sorting.sortByElement.val(JSON.parse(Cookie.get(Sorting.sortByCookieName, Sorting.sortByDefault)));
+        Sorting.sortByElement.on("change", Sorting.onSortByChange);
     }
 
     static sort()
     {
         books.sort(
-            Sorting.sortingOptions[Sorting.selectElement.val().split("-")[0]].sorting
+            Sorting.sortingOptions[Sorting.sortByElement.val().split("-")[0]].sorting
         );
-        if (Sorting.selectElement.val().split("-")[1] != "asc")
+        if (Sorting.sortByElement.val().split("-")[1] != "asc")
         {
             books.reverse();
         }
@@ -547,7 +648,7 @@ class Sorting
 
     static onSortByChange()
     {
-        Cookie.set("sort-by", JSON.stringify(Sorting.selectElement.val()));
+        Cookie.set(Sorting.sortByCookieName, JSON.stringify(Sorting.sortByElement.val()));
         Sorting.sort();
         Layout.refresh();
     }

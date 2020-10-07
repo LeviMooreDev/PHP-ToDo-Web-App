@@ -53,8 +53,7 @@
 }
 
 #search-query {
-    height: 35px;
-    width: calc(100% - 35px);
+    height: 30px;
 }
 
 #search-col {
@@ -108,3 +107,8 @@
  :-ms-input-placeholder {  
     font-style: italic; 
  }
+
+ #search-include ~ .dropdown-menu {
+    width: 200px !important;
+    left: -50px !important;
+  }
