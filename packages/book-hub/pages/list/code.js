@@ -244,7 +244,8 @@ function coverLayout()
         }
 
         var viewUrl = `/books/view?id=${book["id"]}`;
-        var cover = `<img src="${book["cover"]}">`;
+        var coverColor = `${book["cover-color"]}`;
+        var cover = `<img src="${book["cover"]}" style="background-color: #${coverColor};">`;
         var title = `<p class="title">${book["title"]}</p>`;
         var subtitle = book["subtitle"] != null ? `<p class="subtitle">${book["subtitle"]}</p>` : "";
 

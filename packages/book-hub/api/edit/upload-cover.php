@@ -12,7 +12,11 @@ if (convertImage($file["type"], $file["tmp_name"], Core::coverFilePathServer($id
 {
     if (file_exists(Core::coverFilePathServer($id)))
     {
-        Database::query("UPDATE `book-hub` SET `update_timestamp`=CURRENT_TIMESTAMP() WHERE `id`=$id");
+        $coverColor = CORE::getMainColor(Core::coverFilePathServer($id));
+        $coverColor = Database::escape($coverColor);
+        Database::query("UPDATE `book-hub` SET `cover-color`='$coverColor' WHERE `id`=$id");
+
+        Core::result("cover-color", $coverColor);
         Core::result("file", Core::coverFilePathHTTP($id));
         Core::success("Upload successful");
     }

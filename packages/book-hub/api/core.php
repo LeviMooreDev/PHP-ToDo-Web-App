@@ -96,7 +96,7 @@ class Core
     static function deleteBookFolder($id)
     {
         $path = Core::bookFolderPathServer($id);
-        if(file_exists($path))
+        if (file_exists($path))
         {
             foreach (array_diff(scandir($path), array('..', '.')) as $entry)
             {
@@ -135,7 +135,7 @@ class Core
     {
         $id = Database::escape($id);
         $result = Database::query("SELECT `id` FROM `book-hub` WHERE `id`=$id");
-        if($result->num_rows !== 1)
+        if ($result->num_rows !== 1)
         {
             Core::fail("Unable to find book with id $id");
         }
@@ -158,5 +158,13 @@ class Core
         Core::result("message", $message);
         Core::$response["status"] = "OK";
         exit(json_encode(Core::$response));
+    }
+ 
+    function getMainColor($file)
+    {
+        $image = imagecreatefromjpeg($file);
+        $thumb = imagecreatetruecolor(1, 1);
+        imagecopyresampled($thumb, $image, 0, 0, 0, 0, 1, 1, imagesx($image), imagesy($image));
+        return strtoupper(dechex(imagecolorat($thumb, 0, 0)));
     }
 }

@@ -171,7 +171,7 @@ function load()
                 $('select[name="status"]').val(data["status"]);
                 $('#added').html("Added: " + data["created_timestamp"]);
                 $('#updated').html("Updated: " + data["update_timestamp"]);
-                setCoverSrc(data["cover"]);
+                setCoverSrc(data["cover"], data["cover-color"]);
                 if (data["isbn13"] !== null)
                 {
                     $('input[name="isbn13"]').val(data["isbn13"]);
@@ -249,7 +249,7 @@ function deleteCover()
                     if (result["success"] == true)
                     {
                         Alert.success(result["message"]);
-                        setCoverSrc(coverPlaceholder);
+                        setCoverSrc(coverPlaceholder, "fff");
                     }
                     else if (result["success"] == false)
                     {
@@ -269,8 +269,9 @@ function deleteCover()
     );
 }
 
-function setCoverSrc(url)
+function setCoverSrc(url, backgroundColor)
 {
+    $("#cover").css('background-color', '#' + backgroundColor);
     $("#cover").attr("src", "");
     $("#cover").attr("src", url + "?t=" + new Date().getTime());
 }
@@ -301,7 +302,7 @@ function uploadCover()
             if (result["success"] == true)
             {
                 Alert.success(result["message"]);
-                setCoverSrc(result["file"]);
+                setCoverSrc(result["file"], result["cover-color"]);
             }
             else if (result["success"] == false)
             {
@@ -669,7 +670,7 @@ class SearchMetadataGoogleBooks
                 {
                     if (result["success"] == true)
                     {
-                        setCoverSrc(result["file"]);
+                        setCoverSrc(result["file"], result["cover-color"]);
                         callbackSuccess("Cover applied");
                     }
                     else if (result["success"] == false)
@@ -885,7 +886,7 @@ class SearchCoverOpenLibraryCom
                     {
                         if (result["success"] == true)
                         {
-                            setCoverSrc(result["file"]);
+                            setCoverSrc(result["file"], result["cover-color"]);
                             $(SearchCoverOpenLibraryCom.modal).modal('hide');
                             Alert.success("Cover applied");
                         }
