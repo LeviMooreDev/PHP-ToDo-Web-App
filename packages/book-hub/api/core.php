@@ -165,6 +165,8 @@ class Core
         $image = imagecreatefromjpeg($file);
         $thumb = imagecreatetruecolor(1, 1);
         imagecopyresampled($thumb, $image, 0, 0, 0, 0, 1, 1, imagesx($image), imagesy($image));
-        return strtoupper(dechex(imagecolorat($thumb, 0, 0)));
+        $hex = dechex(imagecolorat($thumb, 0, 0));
+        $hex = substr("000000".$hex,-6);
+        return strtoupper($hex);
     }
 }
