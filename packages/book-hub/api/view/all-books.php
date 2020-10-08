@@ -3,7 +3,7 @@ header('Content-Type: application/json');
 include("../core.php");
 
 Database::connect();
-$result = Database::query("SELECT *, created_timestamp as added FROM `book-hub`");
+$result = Database::query("SELECT `id`, `title`, `subtitle`, `categories`, `authors`, `publisher`, `date`, `page`, `status`, `isbn13`, `isbn10`, `cover-color`, `update_timestamp`, `created_timestamp` as added FROM `book-hub`");
 
 $books = [];
 if ($result->num_rows > 0)
