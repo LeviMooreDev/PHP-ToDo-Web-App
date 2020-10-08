@@ -35,10 +35,6 @@
     margin-bottom: 40px;
 }
 
-#filter-panel select {
-    width: auto;
-}
-
 #filter-panel .control {
     margin-right: 10px;
 }
@@ -56,8 +52,11 @@
     height: 30px;
 }
 
-#search-col {
-    min-width: 300px;
+#toolbar-left {
+    min-width: 350px;
+}
+#toolbar-right {
+    min-width: 350px;
 }
 
 .cursor-pointer {
