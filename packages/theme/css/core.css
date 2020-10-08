@@ -23,6 +23,15 @@
     padding: 20px;
 }
 
-#top-menu{
+#top-menu {
     min-height: 55px;
+}
+
+@media only screen and (max-width: 990px) {
+    .menu-separator {
+        height: 1px;
+        padding: 0px;
+        content-visibility: hidden;
+        background-color: #ffffff36
+    }
 }

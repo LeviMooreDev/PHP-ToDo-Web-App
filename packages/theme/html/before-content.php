@@ -29,7 +29,9 @@ usort($menuItems, function($a, $b) {
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
         <?php foreach ($menuItems as $item) : ?>
             <li class="nav-item">
-                <?php if(isset($item["url"])) : ?>
+                <?php if(isset($item["separator"])) : ?>
+                <span class="nav-link menu-separator"> | </span>
+                <?php elseif(isset($item["url"])) : ?>
                 <a class="nav-link" href="/<?= $item["url"] ?>"><?= ucfirst($item["name"]); ?></a>
                 <?php else : ?>
                 <span class="nav-link"><?= ucfirst($item["name"]); ?></span>

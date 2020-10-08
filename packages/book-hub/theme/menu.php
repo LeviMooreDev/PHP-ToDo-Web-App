@@ -16,7 +16,7 @@ return [
         "order" => 3,
     ],
     [
-        'name' => "|",
+        'separator' => true,
         "order" => 4,
     ]
 ];
