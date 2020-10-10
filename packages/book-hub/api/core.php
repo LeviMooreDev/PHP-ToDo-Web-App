@@ -58,14 +58,33 @@ class Core
         return Core::booksFolderHTTP() . "$id/original-file-name.txt";
     }
 
-
-    static function coverFilePathServer($id)
+    static function coverFileTmpPathServer($id)
     {
-        return Core::booksFolderServer() . "$id/cover.jpg";
+        return Core::booksFolderServer() . "$id/cover.tmp.jpg";
     }
-    static function coverFilePathHTTP($id)
+    static function coverFile100PathServer($id)
     {
-        return Core::booksFolderHTTP() . "$id/cover.jpg";
+        return Core::booksFolderServer() . "$id/cover.100.jpg";
+    }
+    static function coverFile50PathServer($id)
+    {
+        return Core::booksFolderServer() . "$id/cover.50.jpg";
+    }
+    static function coverFile20PathServer($id)
+    {
+        return Core::booksFolderServer() . "$id/cover.20.jpg";
+    }
+    static function coverFile100PathHTTP($id)
+    {
+        return Core::booksFolderHTTP() . "$id/cover.100.jpg";
+    }
+    static function coverFile50PathHTTP($id)
+    {
+        return Core::booksFolderHTTP() . "$id/cover.50.jpg";
+    }
+    static function coverFile20PathHTTP($id)
+    {
+        return Core::booksFolderHTTP() . "$id/cover.20.jpg";
     }
 
     static function coverPlaceholderFilePathServer()
@@ -159,14 +178,54 @@ class Core
         Core::$response["status"] = "OK";
         exit(json_encode(Core::$response));
     }
- 
+
     function getMainColor($file)
     {
         $image = imagecreatefromjpeg($file);
         $thumb = imagecreatetruecolor(1, 1);
         imagecopyresampled($thumb, $image, 0, 0, 0, 0, 1, 1, imagesx($image), imagesy($image));
         $hex = dechex(imagecolorat($thumb, 0, 0));
-        $hex = substr("000000".$hex,-6);
+        $hex = substr("000000" . $hex, -6);
         return strtoupper($hex);
+    }
+
+    //https://stackoverflow.com/questions/14549446/how-can-i-convert-all-images-to-jpg
+    //Davide Berra
+    function convertCoverImage($originalType, $originalImage, $id)
+    {
+        if ($originalType == "image/jpeg" || $originalType == "image/jpg")
+        {
+            $imageTmp = imagecreatefromjpeg($originalImage);
+        }
+        else if ($originalType == "image/png")
+        {
+            $imageTmp = imagecreatefrompng($originalImage);
+        }
+        else if ($originalType == "image/gif")
+        {
+            $imageTmp = imagecreatefromgif($originalImage);
+        }
+        else if ($originalType == "image/bmp")
+        {
+            $imageTmp = imagecreatefrombmp($originalImage);
+        }
+        else
+        {
+            return false;
+        }
+
+        if ($originalType == "image/jpeg")
+        {
+            copy($originalImage, Core::coverFile100PathServer($id));
+        }
+        else
+        {
+            imagejpeg($imageTmp, Core::coverFile100PathServer($id), 100);
+        }
+        imagejpeg($imageTmp, Core::coverFile50PathServer($id), 50);
+        imagejpeg($imageTmp, Core::coverFile20PathServer($id), 20);
+        imagedestroy($imageTmp);
+
+        return true;
     }
 }

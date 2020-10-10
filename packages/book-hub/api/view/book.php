@@ -8,9 +8,9 @@ $result = Database::query("SELECT * FROM `book-hub` WHERE `id`=$id");
 if ($result->num_rows === 1)
 {
     $data = $result->fetch_assoc();
-    if (file_exists(Core::coverFilePathServer($id)))
+    if (file_exists(Core::coverFile50PathServer($id)))
     {
-        $data["cover"] = Core::coverFilePathHTTP($id);
+        $data["cover"] = Core::coverFile50PathHTTP($id);
     }
     else
     {

@@ -8,10 +8,10 @@ Database::connect();
 $id = Database::escape($_POST["id"]);
 Core::validateBookExists($id);
 
-if (file_exists(Core::coverFilePathServer($id)))
+if (file_exists(Core::coverFile100PathServer($id)))
 {
     Database::query("UPDATE `book-hub` SET `update_timestamp`=CURRENT_TIMESTAMP() WHERE `id`=$id");
-    Core::deleteFile(Core::coverFilePathServer($id));
+    Core::deleteFile(Core::coverFile100PathServer($id));
     Core::success("Cover removed");
 }
 else

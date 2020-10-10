@@ -10,9 +10,9 @@ if ($result->num_rows > 0)
 {
     while ($row = $result->fetch_assoc())
     {
-        if(file_exists(Core::coverFilePathServer($row["id"])))
+        if(file_exists(Core::coverFile20PathServer($row["id"])))
         {
-            $row["cover"] = Core::coverFilePathHTTP($row["id"]);
+            $row["cover"] = Core::coverFile20PathHTTP($row["id"]);
         }
         else{
             $row["cover"] = Core::coverPlaceholderFilePathHTTP();

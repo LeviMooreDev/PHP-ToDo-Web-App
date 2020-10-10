@@ -10,23 +10,33 @@ $id = Database::escape($_POST["id"]);
 Core::validateBookExists($id);
 
 $image = file_get_contents($_POST["url"]);
-file_put_contents(Core::coverFilePathServer($id), $image);
+file_put_contents(Core::coverFileTmpPathServer($id), $image);
 
-if (file_exists(Core::coverFilePathServer($id)))
+if (file_exists(Core::coverFileTmpPathServer($id)))
 {
-    if (is_array(getimagesize(Core::coverFilePathServer($id))))
+    if (is_array(getimagesize(Core::coverFileTmpPathServer($id))))
     {
-        $coverColor = CORE::getMainColor(Core::coverFilePathServer($id));
-        $coverColor = Database::escape($coverColor);
-        Database::query("UPDATE `book-hub` SET `cover-color`='$coverColor' WHERE `id`=$id");
-
-        Core::result("cover-color", $coverColor);
-        Core::result("file", Core::coverFilePathHTTP($id));
-        Core::success("Upload successful");
+        if (Core::convertCoverImage("image/jpeg", Core::coverFileTmpPathServer($id), $id) === true)
+        {
+            Core::deleteFile(Core::coverFileTmpPathServer($id));
+            
+            $coverColor = CORE::getMainColor(Core::coverFile100PathServer($id));
+            $coverColor = Database::escape($coverColor);
+            Database::query("UPDATE `book-hub` SET `cover-color`='$coverColor' WHERE `id`=$id");
+    
+            Core::result("cover-color", $coverColor);
+            Core::result("file", Core::coverFile100PathHTTP($id));
+            Core::success("Upload successful");
+        }
+        else
+        {
+            Core::deleteFile(Core::coverFile100PathServer($id));
+            Core::fail("Unable to upload cover. Server side error #3");
+        }
     }
     else
     {
-        Core::deleteFile(Core::coverFilePathServer($id));
+        Core::deleteFile(Core::coverFile100PathServer($id));
         Core::fail("Unable to upload cover. Server side error #2");
     }
 }
