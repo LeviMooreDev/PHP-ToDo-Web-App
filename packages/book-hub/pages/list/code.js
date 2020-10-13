@@ -421,7 +421,7 @@ class Filter
     static setupSearchInclude()
     {
         Filter.searchInclude = Cookie.get(Filter.searchIncludeCookieName, null);
-        if (!Array.isArray(Filter.searchInclude))
+        if (Filter.searchInclude == null)
         {
             Filter.searchInclude = Filter.searchIncludeDefault;
         }
