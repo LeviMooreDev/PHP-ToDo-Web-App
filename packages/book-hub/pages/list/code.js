@@ -138,12 +138,22 @@ class TableLayout
         fit: true
     },
     {
+        header: "Publisher",
+        display: function(book)
+        {
+            return book["publisher"];
+        },
+        headerClick: TableLayout.headerClickSort(3),
+        hidable: true,
+        fit: true
+    },
+    {
         header: "Release date",
         display: function(book)
         {
             return book["date"];
         },
-        headerClick: TableLayout.headerClickSort(3),
+        headerClick: TableLayout.headerClickSort(4),
         hidable: true,
         fit: true
     },
@@ -153,7 +163,7 @@ class TableLayout
         {
             return book["isbn10"];
         },
-        headerClick: TableLayout.headerClickSort(4),
+        headerClick: TableLayout.headerClickSort(5),
         hidable: true,
         fit: true
     },
@@ -163,7 +173,7 @@ class TableLayout
         {
             return book["isbn13"];
         },
-        headerClick: TableLayout.headerClickSort(5),
+        headerClick: TableLayout.headerClickSort(6),
         hidable: true,
         fit: true
     },
@@ -173,7 +183,7 @@ class TableLayout
         {
             return book["status"];
         },
-        headerClick: TableLayout.headerClickSort(6),
+        headerClick: TableLayout.headerClickSort(7),
         hidable: true,
         fit: true
     },
@@ -183,7 +193,7 @@ class TableLayout
         {
             return book["added"];
         },
-        headerClick: TableLayout.headerClickSort(7),
+        headerClick: TableLayout.headerClickSort(8),
         hidable: true,
         fit: true
     },
@@ -557,6 +567,13 @@ class Sorting
         sorting: function(a, b)
         {
             return Sorting.stringSorting(a["categories"], b["categories"])
+        }
+    },
+    {
+        title: "Publisher",
+        sorting: function(a, b)
+        {
+            return Sorting.stringSorting(a["publisher"], b["publisher"])
         }
     },
     {
