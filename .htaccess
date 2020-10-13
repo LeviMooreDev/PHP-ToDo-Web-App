@@ -20,7 +20,7 @@ Deny from all
     Allow from all
 </Files>
 
-<FilesMatch ".*\.(css|js|jpg)$">
+<FilesMatch ".*\.(css|js|jpg|eot|svg|ttf)$">
     Order Allow,Deny
     Allow from all
 </FilesMatch>
