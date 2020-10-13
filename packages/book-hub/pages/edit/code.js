@@ -803,8 +803,9 @@ class SearchCoverOpenLibraryCom
         $(SearchCoverOpenLibraryCom.coverImg).attr("src", coverPlaceholder);
         Alert.working(() =>
         {
+            var query = $(SearchCoverOpenLibraryCom.searchQueryInput).val().replace(/[^a-z0-9\s]/gi, '');
             var data = {
-                query: $(SearchCoverOpenLibraryCom.searchQueryInput).val()
+                query: query
             };
             API.simple("book-hub", "edit/search-cover-open-library", data,
                 function(result)
