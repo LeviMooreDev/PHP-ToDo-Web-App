@@ -1,5 +1,4 @@
 <IfModule mod_rewrite.c>
-
     # Send all requests to the index.php file
     RewriteEngine on
 
@@ -10,20 +9,3 @@
     # Disable directory listing
     Options All -Indexes
 </IfModule>
-
-
-Order Deny,Allow
-Deny from all
-
-<Files /index.php>
-    Order Allow,Deny
-    Allow from all
-</Files>
-
-<FilesMatch ".*\.(css|js|jpg|eot|svg|ttf)$">
-    Order Allow,Deny
-    Allow from all
-</FilesMatch>
-
-# Instead of showing a 403 error page when trying to access protected files redirect to a 404 page
-ErrorDocument 403 /404
