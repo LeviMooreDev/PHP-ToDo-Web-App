@@ -106,7 +106,7 @@ class TableLayout
 
     static showColumns;
     static showColumnsElementId = "table-show-columns";
-    static showColumnsCookieName = "filter-status";
+    static showColumnsCookieName = "table-layout-able-show-columns";
     static showColumnsDefault = ["Title", "Authors", "Categories", "Release date"];
 
     static columns = [
