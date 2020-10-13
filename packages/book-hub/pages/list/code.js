@@ -198,7 +198,7 @@ class TableLayout
     static ready()
     {
         TableLayout.showColumns = Cookie.get(TableLayout.showColumnsCookieName, null);
-        if (!Array.isArray(TableLayout.showColumns))
+        if (TableLayout.showColumns == null)
         {
             TableLayout.showColumns = TableLayout.showColumnsDefault;
         }
