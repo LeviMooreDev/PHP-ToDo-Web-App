@@ -11,19 +11,18 @@
     Options All -Indexes
 </IfModule>
 
-# Deny access to files that starts with .
-<FilesMatch "^\.">
-    Deny from all
-</FilesMatch>
 
-# Deny access to all sql files
-<FilesMatch "\.(sql)$">
-	Deny from all
-</FilesMatch>
+Order Deny,Allow
+Deny from all
 
-# Deny access to all pdf files
-<FilesMatch "\.(pdf)$">
-	Deny from all
+<Files /index.php>
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+<FilesMatch ".*\.(css|js|jpg)$">
+    Order Allow,Deny
+    Allow from all
 </FilesMatch>
 
 # Instead of showing a 403 error page when trying to access protected files redirect to a 404 page
