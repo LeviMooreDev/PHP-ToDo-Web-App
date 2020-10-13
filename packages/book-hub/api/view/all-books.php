@@ -10,12 +10,17 @@ if ($result->num_rows > 0)
 {
     while ($row = $result->fetch_assoc())
     {
-        if(file_exists(Core::coverFile20PathServer($row["id"])))
+        if (file_exists(Core::coverFile20PathServer($row["id"])))
         {
-            $row["cover"] = Core::coverFile20PathHTTP($row["id"]);
+            $row["cover-20"] = Core::coverFile20PathHTTP($row["id"]);
+            $row["cover-50"] = Core::coverFile50PathHTTP($row["id"]);
+            $row["cover-100"] = Core::coverFile100PathHTTP($row["id"]);
         }
-        else{
-            $row["cover"] = Core::coverPlaceholderFilePathHTTP();
+        else
+        {
+            $row["cover-20"] = Core::coverPlaceholderFilePathHTTP();
+            $row["cover-50"] = Core::coverPlaceholderFilePathHTTP();
+            $row["cover-100"] = Core::coverPlaceholderFilePathHTTP();
         }
         $books[] = $row;
     }

@@ -171,7 +171,7 @@ function load()
                 $('select[name="status"]').val(data["status"]);
                 $('#added').html("Added: " + data["created_timestamp"]);
                 $('#updated').html("Updated: " + data["update_timestamp"]);
-                setCoverSrc(data["cover"], data["cover-color"]);
+                setCoverSrc(data["cover-100"], data["cover-color"]);
                 if (data["isbn13"] !== null)
                 {
                     $('input[name="isbn13"]').val(data["isbn13"]);
@@ -750,11 +750,6 @@ class SearchMetadataGoogleBooks
             }
         );
     }
-
-
-    //all -> cover -
-    //cover
-    //text
 
     static clickPageButton(index)
     {

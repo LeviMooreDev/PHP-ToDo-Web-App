@@ -11,16 +11,16 @@ class UserSettings
             {
                 while ($row = $result->fetch_assoc())
                 {
-                    $value = $row["value"];
-                    if ($row["data_type"] === "number")
+                    $selected = $row["selected"];
+                    if ($row["options"] === "#bool")
                     {
-                        $value = (int)$value;
+                        $selected = ($selected === "true" ? true : false);
                     }
-                    else if ($row["data_type"] === "boolean")
+                    if ($row["options"] === "#int")
                     {
-                        $value = ($value === "true" ? true : false);
+                        $selected = (int)$selected;
                     }
-                    return $value;
+                    return $selected;
                 }
                 return $default;
             }
@@ -35,13 +35,13 @@ class UserSettings
         }
     }
 
-    public static function add($package, $name, $value, $type, $description)
+    public static function add($package, $name, $selected, $options, $tooltip)
     {
         if (Database::isReady())
         {
             Database::connect();
-            Database::query("INSERT INTO `user-settings`(`name`, `package`, `value`, `data_type`, `description`) VALUES ('$name','$package','$value','$type','$description')
-            ON DUPLICATE KEY UPDATE `value`='$value'");
+            Database::query("INSERT INTO `user-settings`(`package`, `name`, `selected`, `options`, `tooltip`) VALUES ('$package','$name','$selected','$options','$tooltip') 
+            ON DUPLICATE KEY UPDATE `selected`='$selected'");
         }
     }
 }

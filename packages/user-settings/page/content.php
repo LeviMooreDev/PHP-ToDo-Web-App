@@ -28,26 +28,31 @@
                             $id = $row["id"];
                             $name = $row["name"];
                             $nameLabel = ucwords(str_replace("-", " ", $name));
-                            $description = $row["description"];
-                            $value = $row["value"];
-                            $dataType = $row["data_type"];
+                            $selected = $row["selected"];
+                            $options = $row["options"];
+                            $tooltip = $row["tooltip"];
                             ?>
 
-                    <div class='form-group'>
+                    <div class='form-group' data-toggle="tooltip" title="<?=$tooltip?>">
                         <label for='<?= $id ?>'><?= $nameLabel ?></label>
-                        <?php if ($dataType === "text") : ?>
-                        <input name='<?= $id ?>' class='form-control' type='text' value='<?= $value ?>' required>
-                        <?php elseif ($dataType === "number") : ?>
-                        <input name='<?= $id ?>' class='form-control' type='number' value='<?= $value ?>' required>
-                        <?php elseif ($dataType === "boolean") : ?>
-                        <input type='hidden' name="<?= $id ?>" value="false" />
-                        <div class="custom-control custom-switch">
-                            <input type="checkbox" class="custom-control-input" id="<?= $id ?>" name="<?= $id ?>"
-                                value="true" <?= ($value === "true" ? "checked" : "") ?>>
-                            <label class="custom-control-label" for="<?= $id ?>"></label>
-                        </div>
-                        <?php endif; ?>
-                        <p class='small-print'><i><?= $description ?></i></p>
+                        <?php
+                        if ($options === "#string")
+                        {
+                            printString($id, $selected);
+                        }
+                        elseif ($options === "#int")
+                        {
+                            printInt($id, $selected);
+                        }
+                        elseif ($options === "#bool")
+                        {
+                            printBoolean($id, $selected);
+                        }
+                        else
+                        {
+                            printDropdown($id, $selected, $options);
+                        }
+                        ?>
                     </div>
                     <?php }
                     } ?>
@@ -60,3 +65,45 @@
         </form>
     </div>
 </div>
+
+<?php
+function printBoolean($id, $selected)
+{
+?>
+    <input type='hidden' name="<?= $id ?>" value="false" />
+    <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="<?= $id ?>" name="<?= $id ?>"
+            value="true" <?= ($selected === "true" ? "checked" : "") ?>>
+        <label class="custom-control-label" for="<?= $id ?>"></label>
+    </div>
+    <?php
+}
+function printString($id, $selected)
+{
+    ?>
+    <input name='<?= $id ?>' class='form-control' type='text' value='<?= $selected ?>' required>
+    <?php
+}
+function printInt($id, $selected)
+{
+    ?>
+    <input name='<?= $id ?>' class='form-control' type='number' value='<?= $selected ?>' required>
+    <?php
+}
+function printDropdown($id, $selected, $options)
+{
+    $options = explode(",", $options);
+    echo "<select name='$id' class='custom-select'>";
+    foreach ($options as $index => $option)
+    {
+        if($option == $selected)
+        {
+            echo "<option value='$option' selected>$option</option>";
+        }
+        else
+        {
+            echo "<option value='$option'>$option</option>";
+        }
+    }
+    echo "</select>";
+}

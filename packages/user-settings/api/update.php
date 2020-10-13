@@ -14,8 +14,8 @@ Database::connect();
 foreach ($_POST as $id => $value)
 {
     $id = Database::escape($id);
-    $value = Database::escape($value);
-    Database::query("UPDATE `user-settings` SET `value`='$value' WHERE `id`='$id'");
+    $selected = Database::escape($value);
+    Database::query("UPDATE `user-settings` SET `selected`='$selected' WHERE `id`='$id'");
 }
 
 $return["status"] = "OK";
