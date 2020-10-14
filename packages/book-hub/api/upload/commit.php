@@ -37,6 +37,7 @@ if (!empty($postFile))
             else
             {
                 Core::deleteBookFolder($id);
+                Core::fail("Cant commit book. Database error #2");
             }
 
             Core::result("id", $id);
@@ -44,7 +45,7 @@ if (!empty($postFile))
         }
         else
         {
-            Core::fail("Cant commit book. Database error.");
+            Core::fail("Cant commit book. Database error #1");
         }
     }
     else
