@@ -32,6 +32,7 @@ function ready()
 
     SearchMetadataGoogleBooks.ready();
     SearchCoverOpenLibraryCom.ready();
+    GoodReads.ready();
 }
 
 function setCategoriesAutocomplete()
@@ -926,5 +927,22 @@ class SearchCoverOpenLibraryCom
                 );
             }
         });
+    }
+}
+
+class GoodReads
+{
+    static button = '#search-good-reads';
+
+    static ready()
+    {
+        $(GoodReads.button).on('click', GoodReads.search);
+    }
+
+    static search()
+    {
+        var query = $('input[name="title"]').val();
+        query = encodeURI(query);
+        window.open("https://www.goodreads.com/search?q=" + query, "_blank"); 
     }
 }
