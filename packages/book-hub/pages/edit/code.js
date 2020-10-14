@@ -11,8 +11,6 @@ $(document).ready(function()
     $('#cover-upload').on('click', uploadCover);
     $('#cover-delete').on('click', deleteCover);
 
-    $('#search-cover').on('click', SearchCoverOpenLibraryCom.open);
-
     $(window).resize(onResize);
 
     ready();
