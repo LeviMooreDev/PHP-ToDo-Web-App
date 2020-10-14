@@ -132,6 +132,7 @@ function onResize()
 
 function save()
 {
+    disableForm();
     var title = $('input[name="title"]').val().trim();
     if (!title || title == null || title == "")
     {
@@ -163,11 +164,13 @@ function save()
             {
                 Alert.error(result["message"]);
             }
+            enableForm();
         },
         function(result)
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
+            enableForm();
         }
     );
 }
