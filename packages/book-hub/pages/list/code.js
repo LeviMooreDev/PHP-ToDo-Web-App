@@ -584,13 +584,6 @@ class Sorting
         }
     },
     {
-        title: "Publishers",
-        sorting: function(a, b)
-        {
-            return Sorting.stringSorting(a["publishers"], b["publishers"])
-        }
-    },
-    {
         title: "ISBN10",
         sorting: function(a, b)
         {
