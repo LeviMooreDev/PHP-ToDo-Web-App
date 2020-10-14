@@ -12,8 +12,18 @@ if (!empty($postFile))
     {
         $id;
         Database::connect();
+
+        //pages
+        $bookDate = file_get_contents($uploadFilePath);
+        $pages = preg_match_all("/\/Page\W/", $bookDate, $dummy);
+
+        //file name
         $fileName = Database::escape(pathinfo($uploadFilePath)['filename']);
-        $result = Database::queries("INSERT INTO `book-hub`(`title`) VALUES ('$fileName'); SELECT LAST_INSERT_ID();");
+        
+        //insert entry
+        $result = Database::queries("INSERT INTO `book-hub`(`title`,`pages`) VALUES ('$fileName',$pages); SELECT LAST_INSERT_ID();");
+        
+        //get id
         if ($result->field_count == 1 && $result->num_rows == 0)
         {
             $row = $result->fetch_assoc();
@@ -22,12 +32,16 @@ if (!empty($postFile))
                 $id = $row["LAST_INSERT_ID()"];
             }
         }
+
         if (isset($id))
         {
             $bookFile = Core::bookFilePathServer($id);
+
+            //move from upload to book folder
             Core::createFolder(Core::bookFolderPathServer($id));
             rename($uploadFilePath, $bookFile);
 
+            //write original file name file
             $fileWrite = fopen(Core::originalFileNamePathServer($id), "w");
             if ($fileWrite !== false)
             {

@@ -3,6 +3,8 @@ var coverPlaceholder = "/packages/book-hub/cover-placeholder.jpg";
 
 $(document).ready(function()
 {
+    $('input[name="pages"]').on('change', onPagesChange);
+
     $('#save').on('click', save);
     $('#delete').on('click', deleteBook);
     $('#original-title').on('click', originalTitle);
@@ -151,6 +153,7 @@ function save()
         date: $('input[name="date"]').val(),
         isbn13: $('input[name="isbn13"]').val(),
         isbn10: $('input[name="isbn10"]').val(),
+        pages: $('input[name="pages"]').val(),
         status: $('select[name="status"]').val()
     }
     API.simple("book-hub", "edit/save", data,
@@ -194,6 +197,7 @@ function load()
                 $('input[name="categories"]').val(data["categories"]);
                 $('input[name="publishers"]').val(data["publishers"]);
                 $('input[name="date"]').val(data["date"]);
+                $('input[name="pages"]').val(data["pages"]);
                 $('select[name="status"]').val(data["status"]);
                 $('#added').html("Added: " + data["created_timestamp"]);
                 $('#updated').html("Updated: " + data["update_timestamp"]);
@@ -439,6 +443,18 @@ function originalTitle()
             enableForm();
         }
     );
+}
+
+function onPagesChange()
+{
+    if ($('input[name="pages"]').val() == "")
+    {
+        $('input[name="pages"]').val(0);
+    }
+    if ($('input[name="pages"]').val() < "0")
+    {
+        $('input[name="pages"]').val(0);
+    }
 }
 
 class SearchMetadataGoogleBooks
@@ -944,6 +960,6 @@ class GoodReads
     {
         var query = $('input[name="title"]').val();
         query = encodeURI(query);
-        window.open("https://www.goodreads.com/search?q=" + query, "_blank"); 
+        window.open("https://www.goodreads.com/search?q=" + query, "_blank");
     }
 }

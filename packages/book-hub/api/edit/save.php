@@ -23,6 +23,7 @@ class Data
     public $isbn13;
     public $isbn10;
     public $date;
+    public $pages;
     public $status;
 
     function __construct()
@@ -37,6 +38,7 @@ class Data
         $this->authors = $this->validateStringList("authors");
         $this->categories = $this->validateStringList("categories");
         $this->publishers = $this->validateStringList("publishers");
+        $this->pages = $this->validatePositiveInt("pages");
         $this->status = $this->validateStatus();
     }
 
@@ -98,6 +100,28 @@ class Data
         return $data;
     }
 
+    function validatePositiveInt($name)
+    {
+        if (isset($_POST[$name]))
+        {
+            $data = Database::escape($_POST[$name]);
+            $data = trim($data);
+            if (!ctype_digit($data))
+            {
+                Core::fail("$name data is not a whole number");
+            }
+            if ($data < 0)
+            {
+                Core::fail("$name data cant be negative");
+            }
+        }
+        else
+        {
+            Core::fail("$name data is missing");
+        }
+        return $data;
+    }
+
     function validateISBN($length)
     {
         if (Core::validatePostIsset("isbn$length"))
@@ -138,7 +162,7 @@ class Data
                 $data = ucwords(strtolower($data));
                 $data = explode(",", $data);
                 $data = array_map('trim', $data);
-                $data = array_filter($data); 
+                $data = array_filter($data);
                 $data = array_unique($data);
 
                 sort($data);

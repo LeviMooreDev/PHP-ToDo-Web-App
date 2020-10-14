@@ -188,12 +188,22 @@ class TableLayout
         fit: true
     },
     {
+        header: "Pages",
+        display: function(book)
+        {
+            return book["pages"];
+        },
+        headerClick: TableLayout.headerClickSort(8),
+        hidable: true,
+        fit: true
+    },
+    {
         header: "Added",
         display: function(book)
         {
             return book["added"];
         },
-        headerClick: TableLayout.headerClickSort(8),
+        headerClick: TableLayout.headerClickSort(9),
         hidable: true,
         fit: true
     },
@@ -602,6 +612,13 @@ class Sorting
         sorting: function(a, b)
         {
             return Sorting.stringSorting(a["status"], b["status"])
+        }
+    },
+    {
+        title: "Pages",
+        sorting: function(a, b)
+        {
+            return Sorting.stringSorting(a["pages"], b["pages"])
         }
     },
     {
