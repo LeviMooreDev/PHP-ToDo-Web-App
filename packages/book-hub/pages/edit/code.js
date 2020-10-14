@@ -28,6 +28,7 @@ function ready()
 
     setCategoriesAutocomplete();
     setAuthorsAutocomplete();
+    setPublisherAutocomplete();
 
     SearchMetadataGoogleBooks.ready();
     SearchCoverOpenLibraryCom.ready();
@@ -79,6 +80,29 @@ function setAuthorsAutocomplete()
     );
 }
 
+function setPublisherAutocomplete()
+{
+    API.simple("book-hub", "view/all-publishers", "",
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                setAutocomplete('input[name="publishers"]', result["publishers"]);
+            }
+            else if (result["success"] == false)
+            {
+                console.log("Set publishers autocomplete failed");
+                console.log(result);
+            }
+        },
+        function(result) //failed
+        {
+            console.log("Set publishers autocomplete failed");
+            console.log(result);
+        }
+    );
+}
+
 function setAutocomplete(finder, values)
 {
     $(finder).attr("data-list", values);
@@ -123,7 +147,7 @@ function save()
         description: $('textarea[name="description"]').val(),
         authors: $('input[name="authors"]').val(),
         categories: $('input[name="categories"]').val(),
-        publisher: $('input[name="publisher"]').val(),
+        publishers: $('input[name="publishers"]').val(),
         date: $('input[name="date"]').val(),
         isbn13: $('input[name="isbn13"]').val(),
         isbn10: $('input[name="isbn10"]').val(),
@@ -166,7 +190,7 @@ function load()
                 $('textarea[name="description"]').val(data["description"]);
                 $('input[name="authors"]').val(data["authors"]);
                 $('input[name="categories"]').val(data["categories"]);
-                $('input[name="publisher"]').val(data["publisher"]);
+                $('input[name="publishers"]').val(data["publishers"]);
                 $('input[name="date"]').val(data["date"]);
                 $('select[name="status"]').val(data["status"]);
                 $('#added').html("Added: " + data["created_timestamp"]);
@@ -530,7 +554,7 @@ class SearchMetadataGoogleBooks
         if (SearchMetadataGoogleBooks.searchResults.length == 0)
         {
             $(SearchMetadataGoogleBooks.applyButton).attr("disabled", "disabled");
-            var elements = ["title", "subtitle", "categories", "description", "authors", "publisher", "date", "isbn13", "isbn10", "cover", "title"];
+            var elements = ["title", "subtitle", "categories", "description", "authors", "publishers", "date", "isbn13", "isbn10", "cover", "title"];
             elements.forEach(element =>
             {
                 SearchMetadataGoogleBooks.updatePageTextElement(element, null);
@@ -552,7 +576,7 @@ class SearchMetadataGoogleBooks
             SearchMetadataGoogleBooks.updatePageTextElement("categories", data.categories);
             SearchMetadataGoogleBooks.updatePageTextElement("description", data.description);
             SearchMetadataGoogleBooks.updatePageTextElement("authors", data.authors);
-            SearchMetadataGoogleBooks.updatePageTextElement("publisher", data.publisher);
+            SearchMetadataGoogleBooks.updatePageTextElement("publishers", data.publishers);
             SearchMetadataGoogleBooks.updatePageTextElement("date", data.date);
             SearchMetadataGoogleBooks.updatePageTextElement("isbn13", data.isbn13);
             SearchMetadataGoogleBooks.updatePageTextElement("isbn10", data.isbn10);
@@ -715,7 +739,7 @@ class SearchMetadataGoogleBooks
             description: data.description,
             authors: data.authors,
             categories: data.categories,
-            publisher: data.publisher,
+            publishers: data.publishers,
             date: date,
             isbn13: data.isbn13,
             isbn10: data.isbn10,
@@ -731,7 +755,7 @@ class SearchMetadataGoogleBooks
                     $('textarea[name="description"]').val(data.description);
                     $('input[name="authors"]').val(data.authors);
                     $('input[name="categories"]').val(data.categories);
-                    $('input[name="publisher"]').val(data.publisher);
+                    $('input[name="publishers"]').val(data.publishers);
                     $('input[name="date"]').val(date);
                     $('input[name="isbn13"]').val(data.isbn13);
                     $('input[name="isbn10"]').val(data.isbn10);

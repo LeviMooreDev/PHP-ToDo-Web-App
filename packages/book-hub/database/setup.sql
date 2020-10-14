@@ -7,7 +7,7 @@ CREATE TABLE `book-hub` (
   `categories` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `description` text COLLATE utf8_bin,
   `authors` varchar(255) COLLATE utf8_bin DEFAULT NULL,
-  `publisher` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+  `publishers` varchar(255) COLLATE utf8_bin DEFAULT NULL,
   `date` date DEFAULT NULL,
   `page` int(11) NOT NULL DEFAULT '1',
   `status` enum('unread', 'reading', 'finished') COLLATE utf8_bin NOT NULL DEFAULT 'unread',

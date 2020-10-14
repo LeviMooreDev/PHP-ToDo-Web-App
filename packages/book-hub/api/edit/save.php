@@ -6,7 +6,7 @@ Database::connect();
 $data = new Data();
 Core::validateBookExists($data->id);
 
-$sql = "UPDATE `book-hub` SET `title`=$data->title, `subtitle`=$data->subtitle, `categories`=$data->categories, `description`=$data->description, `authors`=$data->authors, `publisher`=$data->publisher, `date`=$data->date, `isbn13`=$data->isbn13, `isbn10`=$data->isbn10, `status`='$data->status' WHERE `id`=$data->id";
+$sql = "UPDATE `book-hub` SET `title`=$data->title, `subtitle`=$data->subtitle, `categories`=$data->categories, `description`=$data->description, `authors`=$data->authors, `publishers`=$data->publishers, `date`=$data->date, `isbn13`=$data->isbn13, `isbn10`=$data->isbn10, `status`='$data->status' WHERE `id`=$data->id";
 Database::query($sql);
 Core::result("sql", $sql);
 Core::success("Save successful");
@@ -19,7 +19,7 @@ class Data
     public $description;
     public $authors;
     public $categories;
-    public $publisher;
+    public $publishers;
     public $isbn13;
     public $isbn10;
     public $date;
@@ -36,7 +36,7 @@ class Data
         $this->description = $this->validateString("description");
         $this->authors = $this->validateStringList("authors");
         $this->categories = $this->validateStringList("categories");
-        $this->publisher = $this->validateString("publisher");
+        $this->publishers = $this->validateStringList("publishers");
         $this->status = $this->validateStatus();
     }
 

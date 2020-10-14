@@ -138,10 +138,10 @@ class TableLayout
         fit: true
     },
     {
-        header: "Publisher",
+        header: "Publishers",
         display: function(book)
         {
-            return book["publisher"];
+            return book["publishers"];
         },
         headerClick: TableLayout.headerClickSort(3),
         hidable: true,
@@ -370,8 +370,12 @@ class Filter
         index: "categories"
     },
     {
-        title: "Added",
-        index: "added"
+        title: "Publishers",
+        index: "publishers"
+    },
+    {
+        title: "Status",
+        index: "status"
     },
     {
         title: "Release Date",
@@ -386,12 +390,8 @@ class Filter
         index: "isbn13"
     },
     {
-        title: "Publisher",
-        index: "publisher"
-    },
-    {
-        title: "Status",
-        index: "status"
+        title: "Added",
+        index: "added"
     }]
 
     static ready()
@@ -570,10 +570,10 @@ class Sorting
         }
     },
     {
-        title: "Publisher",
+        title: "Publishers",
         sorting: function(a, b)
         {
-            return Sorting.stringSorting(a["publisher"], b["publisher"])
+            return Sorting.stringSorting(a["publishers"], b["publishers"])
         }
     },
     {
@@ -584,10 +584,10 @@ class Sorting
         }
     },
     {
-        title: "Publisher",
+        title: "Publishers",
         sorting: function(a, b)
         {
-            return Sorting.stringSorting(a["publisher"], b["publisher"])
+            return Sorting.stringSorting(a["publishers"], b["publishers"])
         }
     },
     {

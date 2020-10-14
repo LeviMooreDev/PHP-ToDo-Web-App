@@ -27,7 +27,7 @@ if ($googleAPIResult->totalItems > 0)
         $book["title"] = $item->volumeInfo->title;
         $book["subtitle"] = $item->volumeInfo->subtitle;
         $book["authors"] = $item->volumeInfo->authors;
-        $book["publisher"] = $item->volumeInfo->publisher;
+        $book["publishers"] = $item->volumeInfo->publisher;
         $book["date"] = $item->volumeInfo->publishedDate;
 
         $book["categories"] = $item->volumeInfo->categories;
