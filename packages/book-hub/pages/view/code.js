@@ -18,7 +18,6 @@ function ready()
 
 function loadStarted(elements)
 {
-    console.log(1);
     $(elements["download"]).attr("href", "/packages/book-hub/api/download.php?id=" + id)
     $(elements["download-secondary"]).attr("href", "/packages/book-hub/api/download.php?id=" + id)
     $(elements["edit"]).attr("href", "/books/edit?id=" + id)
