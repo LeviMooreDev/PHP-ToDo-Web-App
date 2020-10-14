@@ -6,7 +6,7 @@ Database::connect();
 $data = new Data();
 Core::validateBookExists($data->id);
 
-$sql = "UPDATE `book-hub` SET `title`=$data->title, `subtitle`=$data->subtitle, `categories`=$data->categories, `description`=$data->description, `authors`=$data->authors, `publishers`=$data->publishers, `date`=$data->date, `isbn13`=$data->isbn13, `isbn10`=$data->isbn10, `status`='$data->status' WHERE `id`=$data->id";
+$sql = "UPDATE `book-hub` SET `title`=$data->title, `subtitle`=$data->subtitle, `categories`=$data->categories, `description`=$data->description, `authors`=$data->authors, `publishers`=$data->publishers, `date`=$data->date, `isbn13`=$data->isbn13, `isbn10`=$data->isbn10, `status`=$data->status WHERE `id`=$data->id";
 Database::query($sql);
 Core::result("sql", $sql);
 Core::success("Save successful");
@@ -52,11 +52,15 @@ class Data
 
         Core::validatePostIsset("status");
         $data = Database::escape($_POST["status"]);
-        if (!in_array($data, $values))
+        if (in_array($data, $values))
+        {
+            $data = "'" . $data . "'";
+        }
+        else
         {
             Core::fail("$data is not a valid status. Use " . implode(", ", $values));
         }
-        return Database::escape($_POST["status"]);
+        return $data;
     }
 
     function validateDate()
