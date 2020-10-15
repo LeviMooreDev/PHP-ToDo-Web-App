@@ -618,7 +618,7 @@ class Sorting
         title: "Pages",
         sorting: function(a, b)
         {
-            return Sorting.stringSorting(a["pages"], b["pages"])
+            return Sorting.numberSorting(a["pages"], b["pages"])
         }
     },
     {
@@ -687,6 +687,15 @@ class Sorting
         if (a.toLowerCase() > b.toLowerCase()) return 1;
         if (a.toLowerCase() < b.toLowerCase()) return -1;
         return 0;
+    };
+
+    static numberSorting(a, b)
+    {
+        if (a == null) return 1;
+        if (b == null) return -1;
+        if(isNaN(a) == true) return 1;
+        if(isNaN(b) == true) return -1;
+        return a - b;
     };
 
     static colorHSorting(a, b)
