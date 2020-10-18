@@ -749,6 +749,10 @@ class SearchMetadataGoogleBooks
         {}
 
         var status = $('select[name="status"]').val();
+        var pages = $('input[name="pages"]').val();
+        if(!pages){
+            pages = 0;
+        }
 
         var data = {
             id: id,
@@ -761,7 +765,8 @@ class SearchMetadataGoogleBooks
             date: date,
             isbn13: data.isbn13,
             isbn10: data.isbn10,
-            status: status
+            status: status,
+            pages: pages
         }
         API.simple("book-hub", "edit/save", data,
             function(result)
