@@ -50,7 +50,20 @@ class Data
 
     function validateStatus()
     {
-        $values = ["unread", "reading", "finished"];
+        $values = null;
+        $result = Database::query("SHOW COLUMNS FROM `book-hub` WHERE Field = 'status'");
+        if ($result->num_rows > 0)
+        {
+            while ($row = $result->fetch_assoc())
+            {
+                preg_match("/^enum\(\'(.*)\'\)$/", $row["Type"], $matches);
+                $values = explode("','", $matches[1]);
+            }
+        }
+        if ($values === null)
+        {
+            Core::fail("Unable to validate status. Server Error #1");
+        }
 
         Core::validatePostIsset("status");
         $data = Database::escape($_POST["status"]);

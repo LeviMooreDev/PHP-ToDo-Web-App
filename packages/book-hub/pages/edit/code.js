@@ -3,6 +3,12 @@ var coverPlaceholder = "/packages/book-hub/cover-placeholder.jpg";
 
 $(document).ready(function()
 {
+
+    ready();
+});
+
+function ready()
+{
     $('input[name="pages"]').on('change', onPagesChange);
 
     $('#save').on('click', save);
@@ -13,22 +19,20 @@ $(document).ready(function()
     $('#cover-upload').on('click', uploadCover);
     $('#cover-delete').on('click', deleteCover);
 
-    $(window).resize(onResize);
-
-    ready();
-});
-
-function ready()
-{
-    id = getUrlParameter("id");
-    load();
-    onResize();
     $("#progress-bar").width('0%');
     $("#progress-bar").html('0%');
+
+    id = getUrlParameter("id");
+
+    $(window).resize(onResize);
+    onResize();
 
     setCategoriesAutocomplete();
     setAuthorsAutocomplete();
     setPublisherAutocomplete();
+    setStatusOptions(function(){
+        load();
+    });
 
     SearchMetadataGoogleBooks.ready();
     SearchCoverOpenLibraryCom.ready();
@@ -174,6 +178,47 @@ function save()
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
             enableForm();
+        }
+    );
+}
+
+function setStatusOptions(callback)
+{
+    API.simple("book-hub", "view/all-status", "",
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                var options = result["options"];
+                var html = "";
+                options.forEach(option => {
+                    html += `<option value="${option}">${toTitleCase(option)}</option>`;
+                });
+                $('select[name="status"]').html(html);
+                if(callback){
+                    callback();
+                }
+            }
+            else if (result["success"] == false)
+            {
+                console.log(result["message"]);
+                Alert.error("Unable to get status options. Server error.");
+            }
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+}
+function toTitleCase(str)
+{
+    return str.replace(
+        /\w\S*/g,
+        function(txt)
+        {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }
     );
 }

@@ -426,6 +426,9 @@ class Filter
         });
 
         Filter.setupSearchInclude();
+
+        //status
+        Filter.setStatusOptions();
     }
 
     static setupSearchInclude()
@@ -548,6 +551,49 @@ class Filter
         var value = Filter.statusSelectElement.val();
         Cookie.set(Filter.statusCookieName, value);
         Layout.refresh();
+    }
+
+    static setStatusOptions(callback)
+    {
+        API.simple("book-hub", "view/all-status", "",
+            function(result)
+            {
+                if (result["success"] == true)
+                {
+                    var options = result["options"];
+                    var html = "";
+                    options.forEach(option =>
+                    {
+                        html += `<option value="${option}">${Filter.toTitleCase(option)}</option>`;
+                    });
+                    Filter.statusSelectElement.html(html);
+                    if (callback)
+                    {
+                        callback();
+                    }
+                }
+                else if (result["success"] == false)
+                {
+                    console.log(result["message"]);
+                    Alert.error("Unable to get status options. Server error.");
+                }
+            },
+            function(result)
+            {
+                Alert.error("Something went wrong. See console (F12) for more info.");
+                console.log(result);
+            }
+        );
+    }
+    static toTitleCase(str)
+    {
+        return str.replace(
+            /\w\S*/g,
+            function(txt)
+            {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            }
+        );
     }
 }
 
@@ -693,8 +739,8 @@ class Sorting
     {
         if (a == null) return 1;
         if (b == null) return -1;
-        if(isNaN(a) == true) return 1;
-        if(isNaN(b) == true) return -1;
+        if (isNaN(a) == true) return 1;
+        if (isNaN(b) == true) return -1;
         return a - b;
     };
 

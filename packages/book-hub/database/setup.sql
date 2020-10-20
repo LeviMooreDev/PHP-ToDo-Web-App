@@ -11,7 +11,7 @@ CREATE TABLE `book-hub` (
   `date` date DEFAULT NULL,
   `pages` int(11) NOT NULL DEFAULT '0',
   `page` int(11) NOT NULL DEFAULT '1',
-  `status` enum('unread', 'reading', 'finished') COLLATE utf8_bin NOT NULL DEFAULT 'unread',
+  `status` enum('unread', 'reading', 'finished', 'abandoned') COLLATE utf8_bin NOT NULL DEFAULT 'unread',
   `isbn13` varchar(13) COLLATE utf8_bin DEFAULT NULL,
   `isbn10` varchar(10) COLLATE utf8_bin DEFAULT NULL,
   `cover-color` varchar(6) COLLATE utf8_bin NOT NULL DEFAULT 'FFFFFF',

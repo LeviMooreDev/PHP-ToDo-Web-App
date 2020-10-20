@@ -28,7 +28,9 @@ function loadStarted(elements)
     {
         onStatusChange();
     })
-    updateStatusUI();
+    setStatusOptions(function(){
+        updateStatusUI();
+    });
 }
 function loadDone()
 {
@@ -97,6 +99,46 @@ function pageNumberDatabaseUpdateTimer()
     }, 1000);
 }
 
+function setStatusOptions(callback)
+{
+    API.simple("book-hub", "view/all-status", "",
+        function(result)
+        {
+            if (result["success"] == true)
+            {
+                var options = result["options"];
+                var html = "";
+                options.forEach(option => {
+                    html += `<option value="${option}">${toTitleCase(option)}</option>`;
+                });
+                statusElement.html(html);
+                if(callback){
+                    callback();
+                }
+            }
+            else if (result["success"] == false)
+            {
+                console.log(result["message"]);
+                Alert.error("Unable to get status options. Server error.");
+            }
+        },
+        function(result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+}
+function toTitleCase(str)
+{
+    return str.replace(
+        /\w\S*/g,
+        function(txt)
+        {
+            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+        }
+    );
+}
 function updateStatusUI()
 {
     var data = {
