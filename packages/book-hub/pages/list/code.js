@@ -561,7 +561,7 @@ class Filter
                 if (result["success"] == true)
                 {
                     var options = result["options"];
-                    var html = "";
+                    var html = `<option value="all">All</option>`;
                     options.forEach(option =>
                     {
                         html += `<option value="${option}">${Filter.toTitleCase(option)}</option>`;
