@@ -406,10 +406,6 @@ class Filter
 
     static ready()
     {
-        //status select
-        Filter.statusSelectElement.val(Cookie.get(Filter.statusCookieName, Filter.statusDefault));
-        Filter.statusSelectElement.on("change", Filter.onStatusChange);
-
         //search query
         Filter.searchQueryElement.keyup(function(e)
         {
@@ -553,7 +549,7 @@ class Filter
         Layout.refresh();
     }
 
-    static setStatusOptions(callback)
+    static setStatusOptions()
     {
         API.simple("book-hub", "view/all-status", "",
             function(result)
@@ -567,10 +563,8 @@ class Filter
                         html += `<option value="${option}">${Filter.toTitleCase(option)}</option>`;
                     });
                     Filter.statusSelectElement.html(html);
-                    if (callback)
-                    {
-                        callback();
-                    }
+                    Filter.statusSelectElement.val(Cookie.get(Filter.statusCookieName, Filter.statusDefault));
+                    Filter.statusSelectElement.on("change", Filter.onStatusChange);
                 }
                 else if (result["success"] == false)
                 {
