@@ -27,7 +27,7 @@ foreach ($databaseEntries as $entry)
         addIssues("(id: $id) $title is missing entry folder", "Fixed by removing database entry", "delete-entry", "{\"id\":$id}");
     }
     //book file is missing
-    else if (!file_exists(Core::bookFilePathServer($entry["id"])))
+    else if (!file_exists(Core::pdfFilePathServer($entry["id"])))
     {
         addIssues("(id: $id) $title is missing book file", "Fixed by removing database entry", "delete-entry", "{\"id\":$id}");
     }
@@ -50,9 +50,9 @@ foreach (array_diff(scandir(Core::booksFolderServer()), array('..', '.')) as $fo
     if ($missingDatabaseEntry === true)
     {
         //there is a book file to create a entry from
-        if (file_exists(Core::bookFilePathServer($folder)))
+        if (file_exists(Core::pdfFilePathServer($folder)))
         {
-            $title = basename(Core::bookFilePathServer($folder));
+            $title = basename(Core::pdfFilePathServer($folder));
             if (file_exists(Core::originalFileNamePathServer($folder)))
             {
                 $fileReader = fopen(Core::originalFileNamePathServer($folder), "r");

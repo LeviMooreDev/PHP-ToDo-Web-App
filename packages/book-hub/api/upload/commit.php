@@ -35,7 +35,7 @@ if (!empty($postFile))
 
         if (isset($id))
         {
-            $bookFile = Core::bookFilePathServer($id);
+            $bookFile = Core::pdfFilePathServer($id);
 
             //move from upload to book folder
             Core::createFolder(Core::bookFolderPathServer($id));

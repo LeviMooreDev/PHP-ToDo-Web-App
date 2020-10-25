@@ -15,13 +15,13 @@ $(document).ready(function ()
 function load()
 {
     iframe = $("iframe");
-    iframe.attr('src', "/packages/book-hub/pdfjs/iframe.html?file=" + encodeURIComponent("/packages/book-hub/api/download.php?id=" + id));
+    iframe.attr('src', "/packages/book-hub/pdfjs/iframe.html?file=" + encodeURIComponent(`/packages/book-hub/api/download.php?id=${id}&format=pdf`));
 }
 
 function setElements(elements)
 {
-    $(elements["download"]).attr("href", "/packages/book-hub/api/download.php?id=" + id)
-    $(elements["download-secondary"]).attr("href", "/packages/book-hub/api/download.php?id=" + id)
+    $(elements["download"]).attr("href", `/packages/book-hub/api/download.php?id=${id}&format=pdf`)
+    $(elements["download-secondary"]).attr("href", `/packages/book-hub/api/download.php?id=${id}&format=pdf`)
     $(elements["edit"]).attr("href", "/books/edit?id=" + id)
     $(elements["edit-secondary"]).attr("href", "/books/edit?id=" + id)
 

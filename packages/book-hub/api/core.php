@@ -40,13 +40,22 @@ class Core
         return Core::booksFolderHTTP() . "$id/";
     }
 
-    static function bookFilePathServer($id)
+    static function pdfFilePathServer($id)
     {
         return Core::booksFolderServer() . "$id/book.pdf";
     }
-    static function bookFilePathHTTP($id)
+    static function pdfFilePathHTTP($id)
     {
         return Core::booksFolderHTTP() . "$id/book.pdf";
+    }
+
+    static function epubFilePathServer($id)
+    {
+        return Core::booksFolderServer() . "$id/book.epub";
+    }
+    static function epubFilePathHTTP($id)
+    {
+        return Core::booksFolderHTTP() . "$id/book.epub";
     }
 
     static function originalFileNamePathServer($id)

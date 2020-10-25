@@ -7,6 +7,8 @@ var rendition;
 var displayed;
 
 //elements
+var downloadElement;
+var editElement;
 var fullscreenElement;
 var printElement;
 var statusElement;
@@ -26,9 +28,13 @@ function ready()
     statusElement = $("#status");
     printElement = $("#print");
     fullscreenElement = $("#fullscreen");
+    editElement = $("#edit");
+    downloadElement = $("#download");
 
     printElement.on("click", print);
     fullscreenElement.on("click", fullscreen);
+    editElement.attr("href", `/books/edit?id=${id}`)
+    downloadElement.attr("href", `/packages/book-hub/api/download.php?id=${id}&format=epub`)
 
     $("#loader-root").remove();
     load();
@@ -36,30 +42,43 @@ function ready()
 
 function load()
 {
+    reader = $("#reader");
+
     setStatusOptions();
 
-    reader = $("#reader");
-    book = ePub(`/packages/book-hub/books/${id}/book.epub`);
-    rendition = book.renderTo(reader.get(0),
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", `/packages/book-hub/api/download.php?id=${id}&format=epub`);
+    xhr.responseType = "arraybuffer";
+    xhr.onload = function ()
+    {
+        if (this.status === 200)
         {
-            width: parseInt(reader.width()),
-            height: parseInt(reader.height())
-        });
-    rendition.settings.spread = "none";
-    displayed = rendition.display();
+            book = ePub(xhr.response);
+            book.ready.then(done)
 
-    $(window).resize(resize);
+            rendition = book.renderTo(reader.get(0), {
+                width: parseInt(reader.width()),
+                height: parseInt(reader.height())
+            });
+            rendition.settings.spread = "none";
+            rendition.themes.default({
+                "p": {
+                    "font-size": "large !important"
+                },
+                "body": {
+                    "background-color": "white !important"
+                }
+            });
 
-    rendition.themes.default({
-        "p": {
-            "font-size": "large !important"
-        },
-        "body": {
-            "background-color": "white !important"
+            displayed = rendition.display();
+
+            $(window).resize(resize);
         }
-    });
-
-    book.ready.then(done)
+        else{
+            Alert.error("Unable to load book");
+        }
+    };
+    xhr.send();
 }
 
 function done()

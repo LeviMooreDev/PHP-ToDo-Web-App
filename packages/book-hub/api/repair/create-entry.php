@@ -10,7 +10,7 @@ if (!file_exists(Core::bookFolderPathServer($oldFolder)))
 {
     Core::fail("Can't find folder $oldFolder");
 }
-if (!file_exists(Core::bookFilePathServer($oldFolder)))
+if (!file_exists(Core::pdfFilePathServer($oldFolder)))
 {
     Core::fail("Can't find book in folder $oldFolder");
 }
