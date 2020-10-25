@@ -1,20 +1,43 @@
 var id;
+
+//epubjs
 var reader;
 var book;
 var rendition;
 var displayed;
 
+//elements
+var fullscreenElement;
+var printElement;
+var statusElement;
+
+//timers
 var resizeTimer;
 var setDatabasePageTimer;
 
 $(document).ready(function ()
 {
-    id = getUrlParameter("id");
-    load();
+    ready();
 });
+
+function ready()
+{
+    id = getUrlParameter("id");
+    statusElement = $("#status");
+    printElement = $("#print");
+    fullscreenElement = $("#fullscreen");
+
+    printElement.on("click", print);
+    fullscreenElement.on("click", fullscreen);
+
+    $("#loader-root").remove();
+    load();
+}
 
 function load()
 {
+    setStatusOptions();
+
     reader = $("#reader");
     book = ePub(`/packages/book-hub/books/${id}/book.epub`);
     rendition = book.renderTo(reader.get(0),
@@ -164,6 +187,111 @@ function onScroll(e)
         nextPage();
     }
 }
+
+function print()
+{
+    $("iframe").get(0).contentWindow.focus();
+    $("iframe").get(0).contentWindow.print();
+}
+
+function fullscreen()
+{
+    var reader = $("#reader-root").get(0);
+    if (reader.requestFullscreen)
+    {
+        reader.requestFullscreen();
+    }
+    else if (elem.webkitRequestFullscreen)
+    { /* Safari */
+        reader.webkitRequestFullscreen();
+    }
+    else if (elem.msRequestFullscreen)
+    { /* IE11 */
+        reader.msRequestFullscreen();
+    }
+}
+
+function setStatusOptions()
+{
+    API.simple("book-hub", "view/all-status", "",
+        function (result)
+        {
+            if (result["success"] == true)
+            {
+                var options = result["options"];
+                var html = "";
+                options.forEach(option =>
+                {
+                    html += `<option value="${option}">${toTitleCase(option)}</option>`;
+                });
+                statusElement.html(html);
+                setStatusSelected();
+            }
+            else if (result["success"] == false)
+            {
+                console.log(result["message"]);
+                Alert.error("Unable to get status options. Server error.");
+            }
+        },
+        function (result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+}
+function setStatusSelected()
+{
+    var data = {
+        id: id
+    }
+    API.simple("book-hub", "view/status", data,
+        function (result)
+        {
+            if (result["success"] == true)
+            {
+                var status = result["status"];
+                statusElement.val(status);
+
+                statusElement.on("change", function ()
+                {
+                    onStatusChange();
+                })
+            }
+            else if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function (result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+}
+function onStatusChange()
+{
+    var data = {
+        id: id,
+        status: statusElement.val()
+    }
+    API.simple("book-hub", "edit/status", data,
+        function (result)
+        {
+            if (result["success"] == false)
+            {
+                Alert.error(result["message"]);
+            }
+        },
+        function (result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+}
+
 
 function getUrlParameter(sParam)
 {
