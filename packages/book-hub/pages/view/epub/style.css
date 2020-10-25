@@ -1,64 +1,41 @@
 body {
     background-color: #2a2a2e;
 }
-
 .content {
     position: relative;
     width: 100%;
+    padding: 0px;
 }
 
-#use-root {
+/* Reader */
+#reader-root {
     position: absolute;
-    top: 0px;
+    top: 32px;
     left: 0px;
-    height: 100%;
+    height: calc(100% - 32px);
     width: 100%;
     padding: 0px;
     margin: 0px;
 }
 
-#use-root button {
-    width: 200px;
-}
-
-@media only screen and (max-width: 574px) {
-    #use-root button {
-        width: 100%;
-        margin-top: 20px;
-    }
-}
-
-/* PDF */
-#pdf-viewer {
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 100%;
-    border: none;
-}
-
-/* EPUB */
-#epub-viewer-root {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    height: 100%;
-    width: 100%;
-    padding: 0px;
-    margin: 0px;
-}
-
-#epub-viewer {
+#reader {
     height: 100%;
     width: 100%;
     max-width: 1080px;
-    /* background-color: white; */
 }
 
+
+/* Tools */
+#tool-bar {
+    background-color: rgb(56 56 61) !important;
+    height: 32px;
+    box-shadow: 0 1px 0 rgba(12, 12, 13, 1);
+    box-shadow: 0 1px 0 rgba(12, 12, 13, 1);
+}
+
+
 /* Loader */
-#loader-root{
+#loader-root {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -67,7 +44,8 @@ body {
     padding: 0px;
     margin: 0px;
 }
-#loader-root .d-flex{
+
+#loader-root .d-flex {
     height: 100%;
 }
 

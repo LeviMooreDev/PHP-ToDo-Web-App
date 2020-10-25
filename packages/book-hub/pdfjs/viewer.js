@@ -16852,19 +16852,19 @@ function loadStarted()
     elements["edit-secondary"] = document.getElementById("book-hub-edit-secondary");
     elements["status"] = document.getElementById("book-hub-status");
 
-    parent.pdfLoaderRelay.setElements(elements);
+    parent.setElements(elements);
 }
 function loadDone()
 {
-    parent.pdfLoaderRelay.done();
+    parent.done();
 }
 
 function bookHubPageCount(number)
 {
-    parent.pdfLoaderRelay.setTotalPages(number);
+    parent.setTotalPages(number);
 }
 
 function bookHubPageChanged(number)
 {
-    parent.pdfLoaderRelay.onPageChange(number);
+    parent.onPageChange(number);
 }
