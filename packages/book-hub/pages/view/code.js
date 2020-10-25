@@ -205,7 +205,7 @@ class PDFLoader
         var data = {
             id: PDFLoader.id,
         }
-        API.simple("book-hub", "view/page", data,
+        API.simple("book-hub", "view/pdf-page", data,
             function (result)
             {
                 if (result["success"] == true)
@@ -244,7 +244,7 @@ class PDFLoader
                     id: id,
                     page: number
                 }
-                API.simple("book-hub", "edit/page", data,
+                API.simple("book-hub", "edit/pdf-page", data,
                     function (result)
                     {
                         if (result["success"] == true)

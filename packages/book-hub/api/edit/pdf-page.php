@@ -3,12 +3,12 @@ header('Content-Type: application/json');
 include("../core.php");
 
 Core::validatePostIsset("id");
+Core::validatePostIsset("page");
 Database::connect();
 $id = Database::escape($_POST["id"]);
+$page = Database::escape($_POST["page"]);
 Core::validateBookExists($id);
 
-$result = Database::query("SELECT `page` FROM `book-hub` WHERE `id`=$id");
-$status = $result->fetch_assoc()["page"];
+Database::query("UPDATE `book-hub` SET `pdf-page`=$page WHERE `id`=$id");
 
-Core::result("page", $status);
 Core::success("Successful");
