@@ -4,6 +4,7 @@ $(document).ready(function ()
 
     $("#pdf").attr("href", "/books/view/pdf?id=" + id);
     $("#epub").attr("href", "/books/view/epub?id=" + id);
+    $("#edit").attr("href", "/books/edit?id=" + id);
 
     var data = {
         id: id,
