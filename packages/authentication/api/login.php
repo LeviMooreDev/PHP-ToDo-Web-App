@@ -17,10 +17,12 @@ if (password_verify($password, $result->fetch_row()[0]))
     }
     $_SESSION["logged_in"] = true;
 
+    Authentication::RegisterSuccess();
     $return["result"]["success"] = true;
 }
 else
 {
+    Authentication::RegisterFail(4);
     $return["result"]["success"] = false;
 }
 $return["status"] = "OK";

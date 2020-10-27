@@ -32,6 +32,7 @@ if ($result->num_rows === 0)
 }
 else
 {
+    Authentication::RegisterFail(0);
     $return["result"]["error"] = "Password already exist.";
 }
 $return["status"] = "OK";
