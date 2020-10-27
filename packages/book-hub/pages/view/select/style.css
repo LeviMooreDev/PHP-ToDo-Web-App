@@ -18,14 +18,20 @@ body {
     margin: 0px;
 }
 
-#select-root a {
-    width: 200px;
+#select-root ul{
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+#select-root li{
+    margin: auto;
+    max-width: 300px;
+    margin-top: 20px;
     color: white;
 }
 
 @media only screen and (max-width: 574px) {
-    #select-root button {
-        width: 100%;
-        margin-top: 20px;
+    #select-root a {
+        margin: 0px;
     }
 }

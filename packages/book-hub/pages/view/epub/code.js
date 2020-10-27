@@ -74,7 +74,8 @@ function load()
 
             $(window).resize(resize);
         }
-        else{
+        else
+        {
             Alert.error("Unable to load book");
         }
     };
