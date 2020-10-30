@@ -111,6 +111,8 @@ function bookReady()
     rendition.on('relocated', (location) =>
     {
         setDatabasePage(location.start.cfi);
+        console.log(location);
+        updateChaptersActive(location.start.href);
     });
 
     getDatabasePage();
@@ -118,22 +120,35 @@ function bookReady()
 
 function bookLoadedNavigation(navigation)
 {
-    console.log(navigation.toc);
+    setupChaptersList(navigation.toc);
+}
 
+function setupChaptersList(toc)
+{
     var list = ``;
 
-    navigation.toc.forEach(item =>
+    toc.forEach(item =>
     {
         var subitems = "";
         item.subitems.forEach(subitem =>
         {
-            subitems += `<li class="chapter-list-subitem" onClick="goTo('${subitem.href}')">${subitem.label}</li>`;
+            subitems += `<li class="chapters-list-subitem" id="chapters-list-item-${idSafe(subitem.id)}" onClick="goTo('${subitem.href}')">${subitem.label}</li>`;
         })
 
-        list += `<li class="chapter-list-item" onClick="goTo('${item.href}')">${item.label}${subitems}</li>`;
+        list += `<li class="chapters-list-item" id="chapters-list-item-${idSafe(item.id)}" onClick="goTo('${item.href}')">${item.label}${subitems}</li>`;
     });
 
     chaptersRootElement.append(list);
+}
+function updateChaptersActive(href)
+{
+    var className = "chapters-list-item-active";
+    var active = $("." + className);
+    if (active)
+    {
+        active.removeClass(className);
+    }
+    $(`#chapters-list-item-${idSafe(href)}`).addClass(className);
 }
 
 function goToPage(cfi)
@@ -380,11 +395,14 @@ function openSidebar()
 {
     sidebarElement.css("left", "0");
     readerRootElement.css("padding-left", "250px");
+    sidebarToggleElement.addClass("open");
+
 }
 function closeSidebar()
 {
     sidebarElement.css("left", "-250");
     readerRootElement.css("padding-left", "0px");
+    sidebarToggleElement.removeClass("open");
 }
 function toggleSidebar()
 {
@@ -396,4 +414,9 @@ function toggleSidebar()
     {
         openSidebar();
     }
+}
+
+function idSafe(id)
+{
+    return id.replace(/[^\w\s]/gi, '_')
 }

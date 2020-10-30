@@ -1,5 +1,6 @@
 body {
     background-color: #2a2a2e;
+    overflow: hidden;
 }
 
 .content {
@@ -88,6 +89,10 @@ body {
     margin-right: 5px;
 }
 
+#toggle-sidebar.open {
+    background-color: rgba(102, 102, 103, 1);
+}
+
 /* Loader */
 #loader-root {
     position: absolute;
@@ -171,8 +176,8 @@ body {
     margin: 0px;
 }
 
-.chapter-list-item,
-.chapter-list-subitem {
+.chapters-list-item,
+.chapters-list-subitem {
     user-select: none;
     font-size: 13px;
     line-height: 20px;
@@ -184,20 +189,25 @@ body {
     margin-left: 25px;
 }
 
-.chapter-list-subitem {
+.chapters-list-subitem {
     margin-left: 45px;
     list-style-type: square;
     white-space: pre-wrap;
 }
 
-.chapter-list-item:nth-child(even) {
+.chapters-list-item:nth-child(even) {
     background: #ffffff05;
 }
 
-.chapter-list-item:hover,
-.chapter-list-subitem:hover {
+.chapters-list-item:hover,
+.chapters-list-subitem:hover {
     background-color: rgba(255, 255, 255, 0.15);
     border-radius: 5px;
+}
+
+.chapters-list-item-active{
+    font-weight: bolder;
+    text-decoration: underline;
 }
 
 #reader-root {
