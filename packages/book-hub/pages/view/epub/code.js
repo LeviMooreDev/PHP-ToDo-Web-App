@@ -12,6 +12,10 @@ var editElement;
 var fullscreenElement;
 var printElement;
 var statusElement;
+var sidebarToggleElement;
+var sidebarElement;
+var readerRootElement;
+var chaptersRootElement;
 
 //timers
 var resizeTimer;
@@ -30,10 +34,15 @@ function ready()
     fullscreenElement = $("#fullscreen");
     editElement = $("#edit");
     downloadElement = $("#download");
+    sidebarToggleElement = $("#toggle-sidebar");
+    sidebarElement = $("#sidebar");
+    readerRootElement = $("#reader-root");
+    chaptersRootElement = $("#chapters-root");
 
     printElement.on("click", print);
     fullscreenElement.on("click", fullscreen);
     editElement.attr("href", `/books/edit?id=${id}`)
+    sidebarToggleElement.on("click", toggleSidebar);
     downloadElement.attr("href", `/packages/book-hub/api/download.php?id=${id}&format=epub`)
 
     $("#loader-root").remove();
@@ -54,7 +63,8 @@ function load()
         if (this.status === 200)
         {
             book = ePub(xhr.response);
-            book.ready.then(done)
+            book.ready.then(bookReady)
+            book.loaded.navigation.then(bookLoadedNavigation);
 
             rendition = book.renderTo(reader.get(0), {
                 width: parseInt(reader.width()),
@@ -70,6 +80,7 @@ function load()
                 }
             });
 
+
             displayed = rendition.display();
 
             $(window).resize(resize);
@@ -82,7 +93,7 @@ function load()
     xhr.send();
 }
 
-function done()
+function bookReady()
 {
     $("#loader-root").remove();
     reader.css('background-color', 'white');
@@ -90,7 +101,7 @@ function done()
     document.addEventListener("keyup", onKeyUp, false);
     rendition.on("keyup", onKeyUp);
 
-    $(window).bind('mousewheel', onScroll);
+    $(readerRootElement).bind('mousewheel', onScroll);
     rendition.on("rendered", (e, i) =>
     {
         i.document.documentElement.addEventListener('keyup', onKeyUp, false);
@@ -105,10 +116,34 @@ function done()
     getDatabasePage();
 }
 
+function bookLoadedNavigation(navigation)
+{
+    console.log(navigation.toc);
+
+    var list = ``;
+
+    navigation.toc.forEach(item =>
+    {
+        var subitems = "";
+        item.subitems.forEach(subitem =>
+        {
+            subitems += `<li class="chapter-list-subitem" onClick="goTo('${subitem.href}')">${subitem.label}</li>`;
+        })
+
+        list += `<li class="chapter-list-item" onClick="goTo('${item.href}')">${item.label}${subitems}</li>`;
+    });
+
+    chaptersRootElement.append(list);
+}
 
 function goToPage(cfi)
 {
     rendition.display(cfi);
+}
+function goTo(id)
+{
+    console.log(id);
+    rendition.display(id);
 }
 
 function getDatabasePage()
@@ -339,4 +374,26 @@ function toTitleCase(str)
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }
     );
+}
+
+function openSidebar()
+{
+    sidebarElement.css("left", "0");
+    readerRootElement.css("padding-left", "250px");
+}
+function closeSidebar()
+{
+    sidebarElement.css("left", "-250");
+    readerRootElement.css("padding-left", "0px");
+}
+function toggleSidebar()
+{
+    if (sidebarElement.css("left") == "0px")
+    {
+        closeSidebar();
+    }
+    else
+    {
+        openSidebar();
+    }
 }

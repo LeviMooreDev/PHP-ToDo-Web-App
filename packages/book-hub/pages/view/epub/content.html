@@ -1,11 +1,19 @@
-<div id="tool-bar">
-    <select id="status" class="select-sm float-right"></select>
-    <div class="separator"></div>
-    <button id="print">Print</button>
-    <button id="fullscreen">Fullscreen</button>
-    <div class="separator"></div>
-    <a id="edit"><button>Edit</button></a>
-    <a id="download"><button>Download</button></a>
+<div id="toolbar">
+    <div id="toolbar-left">
+        <button id="toggle-sidebar"><i class="fas fa-bars"></i></button>
+    </div>
+    <div id="toolbar-right">
+        <a id="download"><button>Download</button></a>
+        <a id="edit"><button>Edit</button></a>
+        <div class="separator"></div>
+        <button id="fullscreen">Fullscreen</button>
+        <button id="print">Print</button>
+        <div class="separator"></div>
+        <select id="status" class="select-sm float-right"></select>
+    </div>
+</div>
+<div id="sidebar" class="sidebar">
+    <ul id="chapters-root"></ul>
 </div>
 
 <div id="reader-root" class="d-flex justify-content-center">
