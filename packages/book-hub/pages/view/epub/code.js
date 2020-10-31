@@ -12,10 +12,11 @@ var editElement;
 var fullscreenElement;
 var printElement;
 var statusElement;
-var sidebarToggleElement;
 var sidebarElement;
+var sidebarToggleElement;
 var readerRootElement;
 var chaptersRootElement;
+
 
 //timers
 var resizeTimer;
@@ -45,6 +46,8 @@ function ready()
     sidebarToggleElement.on("click", toggleSidebar);
     downloadElement.attr("href", `/packages/book-hub/api/download.php?id=${id}&format=epub`)
 
+    Searchbar.ready();
+
     $("#loader-root").remove();
     load();
 }
@@ -63,10 +66,14 @@ function load()
         if (this.status === 200)
         {
             book = ePub(xhr.response);
-            book.ready.then(bookReady)
+            book.ready.then(() =>
+            {
+                bookReady();
+            })
             book.loaded.navigation.then(bookLoadedNavigation);
 
             rendition = book.renderTo(reader.get(0), {
+                method: "continuous",
                 width: parseInt(reader.width()),
                 height: parseInt(reader.height())
             });
@@ -106,12 +113,12 @@ function bookReady()
     {
         i.document.documentElement.addEventListener('keyup', onKeyUp, false);
         $(i.document.documentElement).bind('mousewheel', onScroll);
+        Searchbar.renditionRendered(i.document);
     });
 
     rendition.on('relocated', (location) =>
     {
         setDatabasePage(location.start.cfi);
-        console.log(location);
         updateChaptersActive(location.start.href);
     });
 
@@ -157,7 +164,6 @@ function goToPage(cfi)
 }
 function goTo(id)
 {
-    console.log(id);
     rendition.display(id);
 }
 
@@ -419,4 +425,158 @@ function toggleSidebar()
 function idSafe(id)
 {
     return id.replace(/[^\w\s]/gi, '_')
+}
+
+class Searchbar
+{
+    static toggleElement;
+    static inputElement;
+    static searchbarElement;
+
+    static ready()
+    {
+        Searchbar.toggleElement = $("#toggle-searchbar");
+        Searchbar.inputElement = $("#searchbar-input");
+        Searchbar.searchbarElement = $("#searchbar");
+
+        Searchbar.toggleElement.on("click", Searchbar.toggle);
+        Searchbar.inputElement.keyup(function (e)
+        {
+            if (e.keyCode == 13)
+            {
+                e.preventDefault();
+                Searchbar.onEnterKeyDown();
+            }
+        });
+
+        $(document).keydown(function (e)
+        {
+            if (e.keyCode == 27)
+            {
+                e.preventDefault();
+                Searchbar.onEscapeKeyDown();
+            }
+        });
+
+        $(document).keydown(function (e)
+        {
+            if (e.keyCode == 114)
+            {
+                e.preventDefault();
+                Searchbar.onCtrlFKeyDown();
+            }
+            if (e.keyCode == 70)
+            {
+                e.preventDefault();
+                Searchbar.onCtrlFKeyDown();
+            }
+        });
+    }
+
+    static onEscapeKeyDown()
+    {
+        if (Searchbar.isOpen())
+        {
+            Searchbar.close();
+        }
+    }
+    static onCtrlFKeyDown()
+    {
+        Searchbar.open();
+    }
+    static onEnterKeyDown()
+    {
+        Searchbar.search();
+    }
+
+    static renditionRendered(document)
+    {
+        if (document != "undefined")
+        {
+            $(document).find("body").append(`
+            <script>
+                document.addEventListener("keydown", keydown, false);
+                function keydown(e)
+                {
+                    if (e.keyCode == 114)
+                    {
+                        e.preventDefault();
+                        parent.searchbarRelay.onCtrlFKeyDown();
+                    }
+                    if (e.keyCode == 70)
+                    {
+                        e.preventDefault();
+                        parent.searchbarRelay.onCtrlFKeyDown();
+                    }
+                    if (e.keyCode == 27)
+                    {
+                        e.preventDefault();
+                        parent.searchbarRelay.onEscapeKeyDown();
+                    }
+                }
+            </script>`);
+        }
+    }
+
+    static open()
+    {
+        Searchbar.searchbarElement.show();
+        Searchbar.inputElement.val("");
+        Searchbar.inputElement.focus();
+    }
+    static close()
+    {
+        Searchbar.searchbarElement.hide();
+        Searchbar.clear();
+    }
+    static toggle()
+    {
+        if (Searchbar.isOpen())
+        {
+            Searchbar.close();
+        }
+        else
+        {
+            Searchbar.open();
+        }
+    }
+    static isOpen()
+    {
+        return Searchbar.searchbarElement.css("display") != "none";
+    }
+
+    static async search()
+    {
+        Searchbar.clear();
+
+        var query = Searchbar.inputElement.val();
+        var highlights = [];
+        for (let i = 0; i < book.spine.spineItems.length; i++)
+        {
+            const item = book.spine.spineItems[i];
+            await item.load(book.load.bind(book));
+            var result = item.find(query);
+            result.forEach(element =>
+            {
+                highlights.push(element);
+                rendition.annotations.highlight(element.cfi);
+            });
+        }
+        console.log(highlights.length);
+    }
+
+    static clear()
+    {
+        rendition.annotations.removeAll();
+    }
+}
+var searchbarRelay = {
+    onCtrlFKeyDown()
+    {
+        Searchbar.onCtrlFKeyDown();
+    },
+    onEscapeKeyDown()
+    {
+        Searchbar.onEscapeKeyDown();
+    }
 }
