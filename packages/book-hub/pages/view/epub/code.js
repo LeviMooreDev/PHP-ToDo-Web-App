@@ -113,13 +113,14 @@ function bookReady()
     {
         i.document.documentElement.addEventListener('keyup', onKeyUp, false);
         $(i.document.documentElement).bind('mousewheel', onScroll);
-        Searchbar.renditionRendered(i.document);
+        Searchbar.onRenditionRendered(i.document);
     });
 
     rendition.on('relocated', (location) =>
     {
         setDatabasePage(location.start.cfi);
         updateChaptersActive(location.start.href);
+        Searchbar.onRelocated();
     });
 
     getDatabasePage();
@@ -432,14 +433,25 @@ class Searchbar
     static toggleElement;
     static inputElement;
     static searchbarElement;
+    static countElement;
+    static nextElement;
+    static preElement;
+
+    static resultsIndex = 0;
+    static results = [];
 
     static ready()
     {
+        Searchbar.searchbarElement = $("#searchbar");
         Searchbar.toggleElement = $("#toggle-searchbar");
         Searchbar.inputElement = $("#searchbar-input");
-        Searchbar.searchbarElement = $("#searchbar");
+        Searchbar.countElement = $("#searchbar-count");
+        Searchbar.nextElement = $("#searchbar-next");
+        Searchbar.preElement = $("#searchbar-pre");
 
         Searchbar.toggleElement.on("click", Searchbar.toggle);
+        Searchbar.nextElement.on("click", Searchbar.next);
+        Searchbar.preElement.on("click", Searchbar.pre);
         Searchbar.inputElement.keyup(function (e)
         {
             if (e.keyCode == 13)
@@ -489,7 +501,7 @@ class Searchbar
         Searchbar.search();
     }
 
-    static renditionRendered(document)
+    static onRenditionRendered(document)
     {
         if (document != "undefined")
         {
@@ -516,6 +528,21 @@ class Searchbar
                 }
             </script>`);
         }
+    }
+    static onRelocated(){
+        rendition.annotations.removeAll();
+
+        Searchbar.results.forEach(element =>
+        {
+            if (element.cfi == Searchbar.results[Searchbar.resultsIndex].cfi)
+            {
+                rendition.annotations.add("highlight", Searchbar.results[Searchbar.resultsIndex].cfi, {}, (e) => { }, "hl", { "fill": "red", "fill-opacity": "0.3", "mix-blend-mode": "multiply" })
+            }
+            else
+            {
+                rendition.annotations.highlight(element.cfi);
+            }
+        });
     }
 
     static open()
@@ -550,7 +577,8 @@ class Searchbar
         Searchbar.clear();
 
         var query = Searchbar.inputElement.val();
-        var highlights = [];
+        Searchbar.resultsIndex = 0;
+        Searchbar.results = [];
         for (let i = 0; i < book.spine.spineItems.length; i++)
         {
             const item = book.spine.spineItems[i];
@@ -558,16 +586,51 @@ class Searchbar
             var result = item.find(query);
             result.forEach(element =>
             {
-                highlights.push(element);
+                Searchbar.results.push(element);
                 rendition.annotations.highlight(element.cfi);
             });
         }
-        console.log(highlights.length);
+
+        Searchbar.goTo(0);
+    }
+
+
+    static next()
+    {
+        if (Searchbar.resultsIndex < Searchbar.results.length - 1)
+        {
+            Searchbar.goTo(Searchbar.resultsIndex + 1);
+        }
+        else
+        {
+            Searchbar.goTo(0);
+        }
+    }
+    static pre()
+    {
+        if (Searchbar.resultsIndex > 0)
+        {
+            Searchbar.goTo(Searchbar.resultsIndex - 1);
+        }
+        else
+        {
+            Searchbar.goTo(Searchbar.results.length - 1);
+        }
+    }
+
+    static goTo(index)
+    {
+        Searchbar.resultsIndex = index;
+        Searchbar.countElement.html((index + 1) + "/" + Searchbar.results.length);
+        
+        goTo(Searchbar.results[index].cfi);
     }
 
     static clear()
     {
         rendition.annotations.removeAll();
+        Searchbar.results = [];
+        Searchbar.resultsIndex = 0;
     }
 }
 var searchbarRelay = {
