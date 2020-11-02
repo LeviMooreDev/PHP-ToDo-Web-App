@@ -1,60 +1,33 @@
 var id;
-
-//epubjs
+var readerRootElement;
 var reader;
 var book;
 var rendition;
 var displayed;
 
-//elements
-var downloadElement;
-var editElement;
-var fullscreenElement;
-var printElement;
-var sidebarElement;
-var sidebarToggleElement;
-var readerRootElement;
-var chaptersRootElement;
-
-
-//timers
 var resizeTimer;
-var setDatabasePageTimer;
 
 $(document).ready(function ()
 {
-    ready();
+    documentReady();
 });
 
-function ready()
+function documentReady()
 {
     id = getUrlParameter("id");
-    printElement = $("#print");
-    fullscreenElement = $("#fullscreen");
-    editElement = $("#edit");
-    downloadElement = $("#download");
-    sidebarToggleElement = $("#toggle-sidebar");
-    sidebarElement = $("#sidebar");
     readerRootElement = $("#reader-root");
-    chaptersRootElement = $("#chapters-root");
-
-    printElement.on("click", print);
-    fullscreenElement.on("click", fullscreen);
-    editElement.attr("href", `/books/edit?id=${id}`)
-    sidebarToggleElement.on("click", toggleSidebar);
-    downloadElement.attr("href", `/packages/book-hub/api/download.php?id=${id}&format=epub`)
-
-    Status.ready();
-    Searchbar.ready();
-
-    $("#loader-root").remove();
-    load();
-}
-
-function load()
-{
     reader = $("#reader");
 
+    Print.documentReady();
+    Fullscreen.documentReady();
+    Download.documentReady();
+    Edit.documentReady();
+    Status.documentReady();
+    Searchbar.documentReady();
+    Settings.documentReady();
+    Chapters.documentReady();
+
+    //load book
     var xhr = new XMLHttpRequest();
     xhr.open("GET", `/packages/book-hub/api/download.php?id=${id}&format=epub`);
     xhr.responseType = "arraybuffer";
@@ -62,19 +35,22 @@ function load()
     {
         if (this.status === 200)
         {
+            //load
             book = ePub(xhr.response);
-            book.ready.then(() =>
-            {
-                bookReady();
-            })
-            book.loaded.navigation.then(bookLoadedNavigation);
 
+            //book events
+            book.ready.then(onBookLoaded);
+            book.loaded.navigation.then(onBookNavigationLoaded);
+
+            //render
             rendition = book.renderTo(reader.get(0), {
                 method: "continuous",
                 width: parseInt(reader.width()),
                 height: parseInt(reader.height())
             });
+            //settings
             rendition.settings.spread = "none";
+            //theme
             rendition.themes.default({
                 "p": {
                     "font-size": "large !important"
@@ -84,10 +60,10 @@ function load()
                 }
             });
 
-
+            //display
             displayed = rendition.display();
 
-            $(window).resize(resize);
+            $(window).resize(onResize);
         }
         else
         {
@@ -97,125 +73,60 @@ function load()
     xhr.send();
 }
 
-function bookReady()
+function onBookLoaded()
 {
     $("#loader-root").remove();
     reader.css('background-color', 'white');
 
+    //rendition events
+    rendition.on("rendered", onRenditionRendered);
+    rendition.on('relocated', onRenditionRelocated);
+
+    //keyup event
     document.addEventListener("keyup", onKeyUp, false);
     rendition.on("keyup", onKeyUp);
 
+    //keydown event
+    $(document).keydown(onKeyDown);
+
+    //scroll event
     $(readerRootElement).bind('mousewheel', onScroll);
-    rendition.on("rendered", (e, i) =>
-    {
-        i.document.documentElement.addEventListener('keyup', onKeyUp, false);
-        $(i.document.documentElement).bind('mousewheel', onScroll);
-        Searchbar.onRenditionRendered(i.document);
-    });
 
-    rendition.on('relocated', (location) =>
-    {
-        setDatabasePage(location.start.cfi);
-        updateChaptersActive(location.start.href);
-        Searchbar.onRelocated();
-    });
-
-    getDatabasePage();
+    Page.onBookLoaded();
 }
-
-function bookLoadedNavigation(navigation)
+function onRenditionRelocated(location)
 {
-    setupChaptersList(navigation.toc);
+    Page.onRenditionRelocated(location);
+    Chapters.onRenditionRelocated(location);
+    Searchbar.onRelocated();
 }
-
-function setupChaptersList(toc)
+function onRenditionRendered(e, i)
 {
-    var list = ``;
+    //keyup event
+    i.document.documentElement.addEventListener('keyup', onKeyUp, false);
+    //scroll event
+    $(i.document.documentElement).bind('mousewheel', onScroll);
 
-    toc.forEach(item =>
-    {
-        var subitems = "";
-        item.subitems.forEach(subitem =>
-        {
-            subitems += `<li class="chapters-list-subitem" id="chapters-list-item-${idSafe(subitem.id)}" onClick="goTo('${subitem.href}')">${subitem.label}</li>`;
-        })
-
-        list += `<li class="chapters-list-item" id="chapters-list-item-${idSafe(item.id)}" onClick="goTo('${item.href}')">${item.label}${subitems}</li>`;
-    });
-
-    chaptersRootElement.append(list);
+    Searchbar.onRenditionRendered(i.document);
 }
-function updateChaptersActive(href)
+function onBookNavigationLoaded(navigation)
 {
-    var className = "chapters-list-item-active";
-    var active = $("." + className);
-    if (active)
-    {
-        active.removeClass(className);
-    }
-    $(`#chapters-list-item-${idSafe(href)}`).addClass(className);
+    Chapters.onBookNavigationLoaded(navigation);
 }
-
-function goToPage(cfi)
+function onKeyUp(event)
 {
-    rendition.display(cfi);
+    Page.onKeyUp(event);
+    Searchbar.onKeyUp(event);
 }
-function goTo(id)
+function onKeyDown(event)
 {
-    rendition.display(id);
+    Searchbar.onKeyDown(event);
 }
-
-function getDatabasePage()
+function onScroll(event)
 {
-    var data = {
-        id: id,
-    }
-    API.simple("book-hub", "view/epub-page", data,
-        function (result)
-        {
-            if (result["success"] == true)
-            {
-                goToPage(result["page"]);
-            }
-            else if (result["success"] == false)
-            {
-                Alert.error(result["message"]);
-            }
-        },
-        function (result)
-        {
-            Alert.error("Something went wrong. See console (F12) for more info.");
-            console.log(result);
-        }
-    );
+    Page.onScroll(event);
 }
-function setDatabasePage(cfi)
-{
-    clearTimeout(setDatabasePageTimer);
-    setDatabasePageTimer = setTimeout(function ()
-    {
-        var data = {
-            id: id,
-            page: cfi
-        }
-        API.simple("book-hub", "edit/epub-page", data,
-            function (result)
-            {
-                if (result["success"] == false)
-                {
-                    Alert.error(result["message"]);
-                }
-            },
-            function (result)
-            {
-                Alert.error("Something went wrong. See console (F12) for more info.");
-                console.log(result);
-            }
-        );
-    }, 500);
-}
-
-function resize()
+function onResize()
 {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(function ()
@@ -226,65 +137,6 @@ function resize()
         );
     }, 200);
 }
-
-function nextPage()
-{
-    book.package.metadata.direction === "rtl" ? rendition.prev() : rendition.next();
-}
-function prevPage()
-{
-    book.package.metadata.direction === "rtl" ? rendition.next() : rendition.prev();
-}
-
-function onKeyUp(e)
-{
-    // Right Key
-    if ((e.keyCode || e.which) == 39)
-    {
-        nextPage();
-    }
-
-    // Left Key
-    if ((e.keyCode || e.which) == 37)
-    {
-        prevPage();
-    }
-}
-function onScroll(e)
-{
-    if (e.originalEvent.wheelDelta >= 0)
-    {
-        prevPage();
-    }
-    else
-    {
-        nextPage();
-    }
-}
-
-function print()
-{
-    $("iframe").get(0).contentWindow.focus();
-    $("iframe").get(0).contentWindow.print();
-}
-
-function fullscreen()
-{
-    var reader = $("#reader-root").get(0);
-    if (reader.requestFullscreen)
-    {
-        reader.requestFullscreen();
-    }
-    else if (elem.webkitRequestFullscreen)
-    { /* Safari */
-        reader.webkitRequestFullscreen();
-    }
-    else if (elem.msRequestFullscreen)
-    { /* IE11 */
-        reader.msRequestFullscreen();
-    }
-}
-
 
 function getUrlParameter(sParam)
 {
@@ -303,45 +155,251 @@ function getUrlParameter(sParam)
         }
     }
 }
-function toTitleCase(str)
+
+class Print
 {
-    return str.replace(
-        /\w\S*/g,
-        function (txt)
+    static button;
+
+    static documentReady()
+    {
+        Print.button = $("#print");
+        Print.button.on("click", Print.print);
+    }
+
+    static print()
+    {
+        $("iframe").get(0).contentWindow.focus();
+        $("iframe").get(0).contentWindow.print();
+    }
+}
+
+class Fullscreen
+{
+    static button;
+
+    static documentReady()
+    {
+        Fullscreen.button = $("#fullscreen");
+        Fullscreen.button.on("click", Fullscreen.fullscreen);
+    }
+
+    static fullscreen()
+    {
+        var readerDom = reader.get(0);
+        if (readerDom.requestFullscreen)
         {
-            return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            readerDom.requestFullscreen();
         }
-    );
-}
-
-function openSidebar()
-{
-    sidebarElement.css("left", "0");
-    readerRootElement.css("padding-left", "250px");
-    sidebarToggleElement.addClass("open");
-
-}
-function closeSidebar()
-{
-    sidebarElement.css("left", "-250");
-    readerRootElement.css("padding-left", "0px");
-    sidebarToggleElement.removeClass("open");
-}
-function toggleSidebar()
-{
-    if (sidebarElement.css("left") == "0px")
-    {
-        closeSidebar();
-    }
-    else
-    {
-        openSidebar();
+        else if (readerDom.webkitRequestFullscreen)
+        { /* Safari */
+            readerDom.webkitRequestFullscreen();
+        }
+        else if (readerDom.msRequestFullscreen)
+        { /* IE11 */
+            readerDom.msRequestFullscreen();
+        }
     }
 }
 
-function idSafe(id)
+class Download
 {
-    return id.replace(/[^\w\s]/gi, '_')
+    static button;
+
+    static documentReady()
+    {
+        Download.button = $("#download");
+        Download.button.attr("href", `/packages/book-hub/api/download.php?id=${id}&format=epub`)
+    }
+}
+
+class Edit
+{
+    static button;
+
+    static documentReady()
+    {
+        Download.button = $("#edit");
+        Download.button.attr("href", `/books/edit?id=${id}`)
+    }
+}
+
+class Chapters
+{
+    static toggleElement;
+    static sidebarElement;
+    static ulElement;
+
+    static documentReady()
+    {
+        Chapters.sidebarElement = $("#chapters-sidebar");
+        Chapters.toggleElement = $("#toggle-sidebar");
+
+        Chapters.toggleElement.on("click", Chapters.toggle);
+        Chapters.ulElement = $("#chapters-list");
+    }
+
+    static open()
+    {
+        Chapters.sidebarElement.css("left", "0");
+        Chapters.toggleElement.addClass("open");
+        readerRootElement.css("padding-left", "250px");
+
+    }
+
+    static close()
+    {
+        Chapters.sidebarElement.css("left", "-250");
+        Chapters.toggleElement.removeClass("open");
+        readerRootElement.css("padding-left", "0px");
+    }
+
+    static toggle()
+    {
+        if (Chapters.sidebarElement.css("left") == "0px")
+        {
+            Chapters.close();
+        }
+        else
+        {
+            Chapters.open();
+        }
+    }
+
+    static onBookNavigationLoaded(navigation)
+    {
+        var list = ``;
+
+        navigation.toc.forEach(item =>
+        {
+            var subitems = "";
+            item.subitems.forEach(subitem =>
+            {
+                subitems += `<li class="chapters-list-subitem" id="chapters-list-item-${Chapters.idSafe(subitem.id)}" onClick="Page.goTo('${subitem.href}')">${subitem.label}</li>`;
+            })
+
+            list += `<li class="chapters-list-item" id="chapters-list-item-${Chapters.idSafe(item.id)}" onClick="Page.goTo('${item.href}')">${item.label}${subitems}</li>`;
+        });
+
+        Chapters.ulElement.append(list);
+    }
+    static onRenditionRelocated(location)
+    {
+        var className = "chapters-list-item-active";
+        var active = $("." + className);
+        if (active)
+        {
+            active.removeClass(className);
+        }
+        $(`#chapters-list-item-${Chapters.idSafe(location.start.href)}`).addClass(className);
+    }
+
+    static idSafe(id)
+    {
+        return id.replace(/[^\w\s]/gi, '_')
+    }
+}
+
+class Page
+{
+    static updateLastVisitedDBTimer;
+
+    static goTo(pageId)
+    {
+        rendition.display(pageId);
+    }
+    static next()
+    {
+        book.package.metadata.direction === "rtl" ? rendition.prev() : rendition.next();
+    }
+    static prev()
+    {
+        book.package.metadata.direction === "rtl" ? rendition.next() : rendition.prev();
+    }
+
+    static goToLastVisitedDB()
+    {
+        var data = {
+            id: id,
+        }
+        API.simple("book-hub", "view/epub-page", data,
+            function (result)
+            {
+                if (result["success"] == true)
+                {
+                    Page.goTo(result["page"]);
+                }
+                else if (result["success"] == false)
+                {
+                    Alert.error(result["message"]);
+                }
+            },
+            function (result)
+            {
+                Alert.error("Something went wrong. See console (F12) for more info.");
+                console.log(result);
+            }
+        );
+    }
+    static updateLastVisitedDB(cfi)
+    {
+        clearTimeout(Page.updateLastVisitedDBTimer);
+        Page.updateLastVisitedDBTimer = setTimeout(function ()
+        {
+            var data = {
+                id: id,
+                page: cfi
+            }
+            API.simple("book-hub", "edit/epub-page", data,
+                function (result)
+                {
+                    if (result["success"] == false)
+                    {
+                        Alert.error(result["message"]);
+                    }
+                },
+                function (result)
+                {
+                    Alert.error("Something went wrong. See console (F12) for more info.");
+                    console.log(result);
+                }
+            );
+        }, 500);
+    }
+
+
+    static onBookLoaded()
+    {
+        Page.goToLastVisitedDB();
+    }
+    static onRenditionRelocated(location)
+    {
+        Page.updateLastVisitedDB(location.start.cfi);
+    }
+    static onKeyUp(event)
+    {
+        // Right Key
+        if ((event.keyCode || event.which) == 39)
+        {
+            Page.next();
+        }
+
+        // Left Key
+        if ((event.keyCode || event.which) == 37)
+        {
+            Page.prev();
+        }
+    }
+    static onScroll(event)
+    {
+        if (event.originalEvent.wheelDelta >= 0)
+        {
+            Page.prev();
+        }
+        else
+        {
+            Page.next();
+        }
+    }
 }
 
 class Settings
@@ -349,7 +407,7 @@ class Settings
     static mainElement;
     static toggleElement;
 
-    static ready()
+    static documentReady()
     {
         Settings.mainElement = $("#settings");
         Settings.toggleElement = $("#toggle-settings");
@@ -386,7 +444,7 @@ class Status
 {
     static selectElement;
 
-    static ready()
+    static documentReady()
     {
         Status.selectElement = $("#status");
         Status.setOptions();
@@ -403,7 +461,7 @@ class Status
                     var html = "";
                     options.forEach(option =>
                     {
-                        html += `<option value="${option}">${toTitleCase(option)}</option>`;
+                        html += `<option value="${option}">${Status.toTitleCase(option)}</option>`;
                     });
                     Status.selectElement.html(html);
                     Status.setSelected();
@@ -473,6 +531,16 @@ class Status
         );
     }
 
+    static toTitleCase(str)
+    {
+        return str.replace(
+            /\w\S*/g,
+            function (txt)
+            {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+            }
+        );
+    }
 }
 
 class Searchbar
@@ -487,7 +555,7 @@ class Searchbar
     static resultsIndex = 0;
     static results = [];
 
-    static ready()
+    static documentReady()
     {
         Searchbar.searchbarElement = $("#searchbar");
         Searchbar.toggleElement = $("#toggle-searchbar");
@@ -505,29 +573,6 @@ class Searchbar
             {
                 e.preventDefault();
                 Searchbar.onEnterKeyDown();
-            }
-        });
-
-        $(document).keydown(function (e)
-        {
-            if (e.keyCode == 27)
-            {
-                e.preventDefault();
-                Searchbar.onEscapeKeyDown();
-            }
-        });
-
-        $(document).keydown(function (e)
-        {
-            if (e.keyCode == 114)
-            {
-                e.preventDefault();
-                Searchbar.onCtrlFKeyDown();
-            }
-            if (e.keyCode == 70)
-            {
-                e.preventDefault();
-                Searchbar.onCtrlFKeyDown();
             }
         });
     }
@@ -548,6 +593,25 @@ class Searchbar
         Searchbar.search();
     }
 
+    static onKeyDown(event)
+    {
+        if (event.keyCode == 114 || event.keyCode == 70 || event.keyCode == 27)
+        {
+            event.preventDefault();
+        }
+    }
+    static onKeyUp(event)
+    {
+        if (event.keyCode == 114 || event.keyCode == 70)
+        {
+            Searchbar.onCtrlFKeyDown();
+        }
+        if (event.keyCode == 27)
+        {
+            Searchbar.onEscapeKeyDown();
+        }
+    }
+
     static onRenditionRendered(document)
     {
         if (document != "undefined")
@@ -557,20 +621,9 @@ class Searchbar
                 document.addEventListener("keydown", keydown, false);
                 function keydown(e)
                 {
-                    if (e.keyCode == 114)
+                    if (e.keyCode == 114 || e.keyCode == 70 || e.keyCode == 27)
                     {
                         e.preventDefault();
-                        parent.searchbarRelay.onCtrlFKeyDown();
-                    }
-                    if (e.keyCode == 70)
-                    {
-                        e.preventDefault();
-                        parent.searchbarRelay.onCtrlFKeyDown();
-                    }
-                    if (e.keyCode == 27)
-                    {
-                        e.preventDefault();
-                        parent.searchbarRelay.onEscapeKeyDown();
                     }
                 }
             </script>`);
@@ -642,7 +695,6 @@ class Searchbar
         Searchbar.goTo(0);
     }
 
-
     static next()
     {
         if (Searchbar.resultsIndex < Searchbar.results.length - 1)
@@ -671,7 +723,7 @@ class Searchbar
         Searchbar.resultsIndex = index;
         Searchbar.countElement.html((index + 1) + "/" + Searchbar.results.length);
 
-        goTo(Searchbar.results[index].cfi);
+        Page.goTo(Searchbar.results[index].cfi);
     }
 
     static clear()
@@ -679,15 +731,5 @@ class Searchbar
         rendition.annotations.removeAll();
         Searchbar.results = [];
         Searchbar.resultsIndex = 0;
-    }
-}
-var searchbarRelay = {
-    onCtrlFKeyDown()
-    {
-        Searchbar.onCtrlFKeyDown();
-    },
-    onEscapeKeyDown()
-    {
-        Searchbar.onEscapeKeyDown();
     }
 }
