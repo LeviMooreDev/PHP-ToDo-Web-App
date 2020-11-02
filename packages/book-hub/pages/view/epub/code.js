@@ -11,7 +11,6 @@ var downloadElement;
 var editElement;
 var fullscreenElement;
 var printElement;
-var statusElement;
 var sidebarElement;
 var sidebarToggleElement;
 var readerRootElement;
@@ -30,7 +29,6 @@ $(document).ready(function ()
 function ready()
 {
     id = getUrlParameter("id");
-    statusElement = $("#status");
     printElement = $("#print");
     fullscreenElement = $("#fullscreen");
     editElement = $("#edit");
@@ -46,6 +44,7 @@ function ready()
     sidebarToggleElement.on("click", toggleSidebar);
     downloadElement.attr("href", `/packages/book-hub/api/download.php?id=${id}&format=epub`)
 
+    Status.ready();
     Searchbar.ready();
 
     $("#loader-root").remove();
@@ -55,8 +54,6 @@ function ready()
 function load()
 {
     reader = $("#reader");
-
-    setStatusOptions();
 
     var xhr = new XMLHttpRequest();
     xhr.open("GET", `/packages/book-hub/api/download.php?id=${id}&format=epub`);
@@ -288,87 +285,6 @@ function fullscreen()
     }
 }
 
-function setStatusOptions()
-{
-    API.simple("book-hub", "view/all-status", "",
-        function (result)
-        {
-            if (result["success"] == true)
-            {
-                var options = result["options"];
-                var html = "";
-                options.forEach(option =>
-                {
-                    html += `<option value="${option}">${toTitleCase(option)}</option>`;
-                });
-                statusElement.html(html);
-                setStatusSelected();
-            }
-            else if (result["success"] == false)
-            {
-                console.log(result["message"]);
-                Alert.error("Unable to get status options. Server error.");
-            }
-        },
-        function (result)
-        {
-            Alert.error("Something went wrong. See console (F12) for more info.");
-            console.log(result);
-        }
-    );
-}
-function setStatusSelected()
-{
-    var data = {
-        id: id
-    }
-    API.simple("book-hub", "view/status", data,
-        function (result)
-        {
-            if (result["success"] == true)
-            {
-                var status = result["status"];
-                statusElement.val(status);
-
-                statusElement.on("change", function ()
-                {
-                    onStatusChange();
-                })
-            }
-            else if (result["success"] == false)
-            {
-                Alert.error(result["message"]);
-            }
-        },
-        function (result)
-        {
-            Alert.error("Something went wrong. See console (F12) for more info.");
-            console.log(result);
-        }
-    );
-}
-function onStatusChange()
-{
-    var data = {
-        id: id,
-        status: statusElement.val()
-    }
-    API.simple("book-hub", "edit/status", data,
-        function (result)
-        {
-            if (result["success"] == false)
-            {
-                Alert.error(result["message"]);
-            }
-        },
-        function (result)
-        {
-            Alert.error("Something went wrong. See console (F12) for more info.");
-            console.log(result);
-        }
-    );
-}
-
 
 function getUrlParameter(sParam)
 {
@@ -426,6 +342,137 @@ function toggleSidebar()
 function idSafe(id)
 {
     return id.replace(/[^\w\s]/gi, '_')
+}
+
+class Settings
+{
+    static mainElement;
+    static toggleElement;
+
+    static ready()
+    {
+        Settings.mainElement = $("#settings");
+        Settings.toggleElement = $("#toggle-settings");
+
+        Settings.toggleElement.on("click", Settings.toggle);
+    }
+
+    static open()
+    {
+        Settings.mainElement.show();
+    }
+    static close()
+    {
+        Settings.mainElement.hide();
+    }
+    static toggle()
+    {
+        if (Settings.isOpen())
+        {
+            Settings.close();
+        }
+        else
+        {
+            Settings.open();
+        }
+    }
+    static isOpen()
+    {
+        return Settings.mainElement.css("display") != "none";
+    }
+}
+
+class Status
+{
+    static selectElement;
+
+    static ready()
+    {
+        Status.selectElement = $("#status");
+        Status.setOptions();
+    }
+
+    static setOptions()
+    {
+        API.simple("book-hub", "view/all-status", "",
+            function (result)
+            {
+                if (result["success"] == true)
+                {
+                    var options = result["options"];
+                    var html = "";
+                    options.forEach(option =>
+                    {
+                        html += `<option value="${option}">${toTitleCase(option)}</option>`;
+                    });
+                    Status.selectElement.html(html);
+                    Status.setSelected();
+                }
+                else if (result["success"] == false)
+                {
+                    console.log(result["message"]);
+                    Alert.error("Unable to get status options. Server error.");
+                }
+            },
+            function (result)
+            {
+                Alert.error("Something went wrong. See console (F12) for more info.");
+                console.log(result);
+            }
+        );
+    }
+    static setSelected()
+    {
+        var data = {
+            id: id
+        }
+        API.simple("book-hub", "view/status", data,
+            function (result)
+            {
+                if (result["success"] == true)
+                {
+                    var status = result["status"];
+                    Status.selectElement.val(status);
+
+                    Status.selectElement.on("change", function ()
+                    {
+                        Status.onChange();
+                    })
+                }
+                else if (result["success"] == false)
+                {
+                    Alert.error(result["message"]);
+                }
+            },
+            function (result)
+            {
+                Alert.error("Something went wrong. See console (F12) for more info.");
+                console.log(result);
+            }
+        );
+    }
+    static onChange()
+    {
+        var data = {
+            id: id,
+            status: Status.selectElement.val()
+        }
+        API.simple("book-hub", "edit/status", data,
+            function (result)
+            {
+                if (result["success"] == false)
+                {
+                    Alert.error(result["message"]);
+                }
+            },
+            function (result)
+            {
+                Alert.error("Something went wrong. See console (F12) for more info.");
+                console.log(result);
+            }
+        );
+    }
+
 }
 
 class Searchbar
@@ -529,7 +576,8 @@ class Searchbar
             </script>`);
         }
     }
-    static onRelocated(){
+    static onRelocated()
+    {
         rendition.annotations.removeAll();
 
         Searchbar.results.forEach(element =>
@@ -622,7 +670,7 @@ class Searchbar
     {
         Searchbar.resultsIndex = index;
         Searchbar.countElement.html((index + 1) + "/" + Searchbar.results.length);
-        
+
         goTo(Searchbar.results[index].cfi);
     }
 

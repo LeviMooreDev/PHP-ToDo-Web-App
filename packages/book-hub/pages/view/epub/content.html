@@ -2,12 +2,7 @@
     <div id="toolbar-left">
         <button id="toggle-sidebar"><i class="fas fa-bars"></i></button>
         <button id="toggle-searchbar"><i class="fas fa-search"></i></button>
-        <div id="searchbar" style="display: none;">
-            <input id="searchbar-input" type="text" placeholder="search"></input>
-            <button id="searchbar-pre"><i class="fas fa-arrow-up"></i></button>
-            <button id="searchbar-next"><i class="fas fa-arrow-down"></i></button>
-            <span id="searchbar-count">0</span>
-        </div>
+        <button id="toggle-settings"><i class="fas fa-cog"></i></button>
     </div>
     <div id="toolbar-right">
         <a id="download"><button>Download</button></a>
@@ -17,6 +12,16 @@
         <button id="print">Print</button>
         <div class="separator"></div>
         <select id="status" class="select-sm float-right"></select>
+    </div>
+    
+    <div id="searchbar" style="display: none;">
+        <input id="searchbar-input" type="text" placeholder="search"></input>
+        <button id="searchbar-pre"><i class="fas fa-arrow-up"></i></button>
+        <button id="searchbar-next"><i class="fas fa-arrow-down"></i></button>
+        <span id="searchbar-count">0</span>
+    </div>
+    
+    <div id="settings" style="display: none;">
     </div>
 </div>
 <div id="sidebar" class="sidebar">
