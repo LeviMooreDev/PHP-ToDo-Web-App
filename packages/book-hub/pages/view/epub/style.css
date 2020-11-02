@@ -23,7 +23,7 @@ body {
 #reader {
     height: 100%;
     width: 100%;
-    max-width: 812px;
+    max-width: 820px;
 }
 
 
@@ -91,6 +91,25 @@ body {
 
 #toggle-sidebar.open {
     background-color: rgba(102, 102, 103, 1);
+}
+
+/* Search */
+#settings {
+    top: 37px;
+    left: 80px;
+    position: absolute;
+    z-index: 2;
+    height: auto;
+    padding: 4px;
+    color: rgba(217, 217, 217, 1);
+    font-size: 12px;
+    box-shadow: 0 1px 5px rgba(39, 39, 43, 1), 0 0 0 1px rgba(39, 39, 43, 1);
+    background-color: rgba(56, 56, 61, 1);
+}
+
+#settings label {
+    min-width: 80px;
+    text-align: center;
 }
 
 /* Search */

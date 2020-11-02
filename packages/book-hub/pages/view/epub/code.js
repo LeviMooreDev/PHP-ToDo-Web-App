@@ -52,9 +52,6 @@ function documentReady()
             rendition.settings.spread = "none";
             //theme
             rendition.themes.default({
-                "p": {
-                    "font-size": "large !important"
-                },
                 "body": {
                     "background-color": "white !important"
                 }
@@ -93,12 +90,13 @@ function onBookLoaded()
     $(readerRootElement).bind('mousewheel', onScroll);
 
     Page.onBookLoaded();
+    Settings.onBookLoaded();
 }
 function onRenditionRelocated(location)
 {
     Page.onRenditionRelocated(location);
     Chapters.onRenditionRelocated(location);
-    Searchbar.onRelocated();
+    Searchbar.onRenditionRelocated(location);
 }
 function onRenditionRendered(e, i)
 {
@@ -117,6 +115,7 @@ function onKeyUp(event)
 {
     Page.onKeyUp(event);
     Searchbar.onKeyUp(event);
+    Settings.onKeyUp(event);
 }
 function onKeyDown(event)
 {
@@ -406,13 +405,28 @@ class Settings
 {
     static mainElement;
     static toggleElement;
+    static fontSizeElement;
+    static widthElement;
 
     static documentReady()
     {
-        Settings.mainElement = $("#settings");
         Settings.toggleElement = $("#toggle-settings");
+        Settings.mainElement = $("#settings");
+        Settings.fontSizeElement = $("#settings-font-size-input");
+        Settings.widthElement = $("#settings-width-input");
 
         Settings.toggleElement.on("click", Settings.toggle);
+        Settings.fontSizeElement.on("change", Settings.updateFontSize);
+        Settings.widthElement.on("change", Settings.updateWidth);
+
+        Settings.loadWidth();
+        Settings.updateWidth();
+    }
+
+    static onBookLoaded()
+    {
+        Settings.loadFontSize();
+        Settings.updateFontSize();
     }
 
     static open()
@@ -437,6 +451,89 @@ class Settings
     static isOpen()
     {
         return Settings.mainElement.css("display") != "none";
+    }
+
+    static loadFontSize()
+    {
+        Settings.fontSizeElement.val(Settings.getCookie("font-size", 19));
+    }
+    static loadWidth()
+    {
+        Settings.widthElement.val(Settings.getCookie("width", 820));
+    }
+
+    static updateFontSize()
+    {
+        var fontSize = Settings.fontSizeElement.val();
+        fontSize = Math.min(fontSize, 100);
+        fontSize = Math.max(fontSize, 1);
+        Settings.fontSizeElement.val(fontSize);
+
+        rendition.themes.register("settings", {
+            "p": {
+                "font-size": `${fontSize}px !important`
+            }
+        });
+        rendition.themes.select("settings");
+
+
+        Settings.setCookie("font-size", fontSize)
+    }
+    static updateWidth()
+    {
+        var width = Settings.widthElement.val();
+        width = Math.min(width, 5000);
+        width = Math.max(width, 100);
+        Settings.widthElement.val(width);
+
+        reader.css("max-width", `${width}px`);
+        if (rendition != undefined)
+        {
+            rendition.resize(
+                parseInt(reader.width()),
+                parseInt(reader.height())
+            );
+        }
+
+        Settings.setCookie("width", width)
+    }
+
+    static onKeyUp(event)
+    {
+        if (event.keyCode == 27)
+        {
+            if (Settings.isOpen())
+            {
+                Settings.close();
+            }
+        }
+    }
+
+    static setCookie(name, value)
+    {
+        var d = new Date();
+        d.setTime(d.getTime() + (999 * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + d.toUTCString();
+        document.cookie = name + "-epub-reader-settings=" + value + ";" + expires + ";path=/";
+    }
+    static getCookie(name, defaultValue)
+    {
+        var name = name + "-epub-reader-settings=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for (var i = 0; i < ca.length; i++)
+        {
+            var c = ca[i];
+            while (c.charAt(0) == ' ')
+            {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0)
+            {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return defaultValue;
     }
 }
 
@@ -629,7 +726,7 @@ class Searchbar
             </script>`);
         }
     }
-    static onRelocated()
+    static onRenditionRelocated(location)
     {
         rendition.annotations.removeAll();
 
