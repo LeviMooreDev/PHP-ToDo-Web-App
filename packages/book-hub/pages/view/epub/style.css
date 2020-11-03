@@ -109,6 +109,7 @@ body {
 
 #settings label {
     min-width: 80px;
+    margin-bottom: 11px;
 }
 
 #settings input, #settings select {
