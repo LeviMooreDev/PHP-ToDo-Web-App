@@ -3,6 +3,8 @@
         <button id="toggle-sidebar"><i class="fas fa-bars"></i></button>
         <button id="toggle-searchbar"><i class="fas fa-search"></i></button>
         <button id="toggle-settings"><i class="fas fa-cog"></i></button>
+        <button id="toobar-prev-page"><i class="fas fa-arrow-circle-left"></i></button>
+        <button id="toobar-next-page"><i class="fas fa-arrow-circle-right"></i></button>
     </div>
     <div id="toolbar-right">
         <a id="download"><button>Download</button></a>
@@ -69,6 +71,9 @@
         <br>
         <label for="settings-night-mode-input">Night Mode</label>
         <input id="settings-night-mode-input" type="checkbox" name="settings-night-mode-input">
+        <br>
+        <label for="settings-show-arrows-input">Show Arrows</label>
+        <input id="settings-show-arrows-input" type="checkbox" name="settings-show-arrows-input">
     </div>
 </div>
 
@@ -79,6 +84,8 @@
 <div id="reader-root" class="d-flex justify-content-center">
     <div id="reader"></div>
 </div>
+<div id="page-arrow-prev" class="arrow">‹</div>
+<div id="page-arrow-next" class="arrow">›</div>
 
 <div id="loader-root">
     <div class="d-flex justify-content-center align-items-center">

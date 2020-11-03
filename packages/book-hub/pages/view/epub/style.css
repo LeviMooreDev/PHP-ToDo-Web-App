@@ -93,6 +93,14 @@ body {
     background-color: rgba(102, 102, 103, 1);
 }
 
+#toobar-prev-page {
+    margin-right: 0px !important;
+}
+
+#toobar-next-page {
+    margin-left: 0px !important;
+}
+
 /* Search */
 #settings {
     top: 37px;
@@ -112,7 +120,8 @@ body {
     margin-bottom: 11px;
 }
 
-#settings input, #settings select {
+#settings input,
+#settings select {
     width: 100px;
 }
 
@@ -292,4 +301,31 @@ body {
     .sidebar a {
         font-size: 18px;
     }
+}
+
+.arrow {
+    position: fixed;
+    top: 50%;
+    margin-top: -32px;
+    font-size: 64px;
+    color: white;
+    font-family: arial, sans-serif;
+    font-weight: bold;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    text-decoration: none;
+    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: black;
+    width: 70px;
+    text-align: center;
+}
+
+#page-arrow-prev {
+    left: 10px;
+}
+
+#page-arrow-next {
+    right: 10px;
 }

@@ -22,6 +22,7 @@ function documentReady()
     Fullscreen.documentReady();
     Download.documentReady();
     Edit.documentReady();
+    Navigation.documentReady();
     Status.documentReady();
     Searchbar.documentReady();
     Settings.documentReady();
@@ -44,6 +45,8 @@ function documentReady()
 
             //render
             rendition = book.renderTo(reader.get(0), {
+                manager: "continuous",
+                flow: "paginated",
                 method: "continuous",
                 width: parseInt(reader.width()),
                 height: parseInt(reader.height())
@@ -109,7 +112,7 @@ function onBookNavigationLoaded(navigation)
 }
 function onKeyUp(event)
 {
-    Page.onKeyUp(event);
+    Navigation.onKeyUp(event);
     Searchbar.onKeyUp(event);
     Settings.onKeyUp(event);
 }
@@ -119,7 +122,7 @@ function onKeyDown(event)
 }
 function onScroll(event)
 {
-    Page.onScroll(event);
+    Navigation.onScroll(event);
 }
 function onResize()
 {
@@ -148,6 +151,66 @@ function getUrlParameter(sParam)
         {
             return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
         }
+    }
+}
+
+class Navigation
+{
+    static toolbarNextElement;
+    static toolbarPrevElement;
+    static pageArrowPrevElement;
+    static pageArrowNextElement;
+
+    static documentReady()
+    {
+        Navigation.toolbarNextElement = $("#toobar-next-page");
+        Navigation.toolbarPrevElement = $("#toobar-prev-page");
+        Navigation.pageArrowNextElement = $("#page-arrow-next");
+        Navigation.pageArrowPrevElement = $("#page-arrow-prev");
+
+        Navigation.toolbarNextElement.on("click", Navigation.next);
+        Navigation.toolbarPrevElement.on("click", Navigation.prev);
+        Navigation.pageArrowNextElement.on("click", Navigation.next);
+        Navigation.pageArrowPrevElement.on("click", Navigation.prev);
+    }
+
+    static onKeyUp(event)
+    {
+        // Right Key
+        if ((event.keyCode || event.which) == 39)
+        {
+            Navigation.next();
+        }
+
+        // Left Key
+        if ((event.keyCode || event.which) == 37)
+        {
+            Navigation.prev();
+        }
+    }
+    static onScroll(event)
+    {
+        if (event.originalEvent.wheelDelta >= 0)
+        {
+            Navigation.prev();
+        }
+        else
+        {
+            Navigation.next();
+        }
+    }
+
+    static goTo(pageId)
+    {
+        rendition.display(pageId);
+    }
+    static next()
+    {
+        rendition.next();
+    }
+    static prev()
+    {
+        rendition.prev();
     }
 }
 
@@ -269,10 +332,10 @@ class Chapters
             var subitems = "";
             item.subitems.forEach(subitem =>
             {
-                subitems += `<li class="chapters-list-subitem" id="chapters-list-item-${Chapters.idSafe(subitem.id)}" onClick="Page.goTo('${subitem.href}')">${subitem.label}</li>`;
+                subitems += `<li class="chapters-list-subitem" id="chapters-list-item-${Chapters.idSafe(subitem.id)}" onClick="Navigation.goTo('${subitem.href}')">${subitem.label}</li>`;
             })
 
-            list += `<li class="chapters-list-item" id="chapters-list-item-${Chapters.idSafe(item.id)}" onClick="Page.goTo('${item.href}')">${item.label}${subitems}</li>`;
+            list += `<li class="chapters-list-item" id="chapters-list-item-${Chapters.idSafe(item.id)}" onClick="Navigation.goTo('${item.href}')">${item.label}${subitems}</li>`;
         });
 
         Chapters.ulElement.append(list);
@@ -298,19 +361,6 @@ class Page
 {
     static updateLastVisitedDBTimer;
 
-    static goTo(pageId)
-    {
-        rendition.display(pageId);
-    }
-    static next()
-    {
-        book.package.metadata.direction === "rtl" ? rendition.prev() : rendition.next();
-    }
-    static prev()
-    {
-        book.package.metadata.direction === "rtl" ? rendition.next() : rendition.prev();
-    }
-
     static goToLastVisitedDB()
     {
         var data = {
@@ -321,7 +371,7 @@ class Page
             {
                 if (result["success"] == true)
                 {
-                    Page.goTo(result["page"]);
+                    Navigation.goTo(result["page"]);
                 }
                 else if (result["success"] == false)
                 {
@@ -361,7 +411,6 @@ class Page
         }, 500);
     }
 
-
     static onBookLoaded()
     {
         Page.goToLastVisitedDB();
@@ -370,48 +419,29 @@ class Page
     {
         Page.updateLastVisitedDB(location.start.cfi);
     }
-    static onKeyUp(event)
-    {
-        // Right Key
-        if ((event.keyCode || event.which) == 39)
-        {
-            Page.next();
-        }
-
-        // Left Key
-        if ((event.keyCode || event.which) == 37)
-        {
-            Page.prev();
-        }
-    }
-    static onScroll(event)
-    {
-        if (event.originalEvent.wheelDelta >= 0)
-        {
-            Page.prev();
-        }
-        else
-        {
-            Page.next();
-        }
-    }
 }
 
 class Settings
 {
     static mainElement;
     static toggleElement;
+    static pageArrowPrevElement;
+    static pageArrowNextElement;
+
     static fontElement;
     static fontSizeElement;
     static lineHeightElement;
     static alignElement;
     static widthElement;
     static nightModeElement;
+    static showArrowsElement;
 
     static documentReady()
     {
         Settings.toggleElement = $("#toggle-settings");
         Settings.mainElement = $("#settings");
+        Settings.pageArrowPrevElement = $("#page-arrow-prev");
+        Settings.pageArrowNextElement = $("#page-arrow-next");
 
         Settings.widthElement = $("#settings-width-input");
         Settings.fontElement = $("#settings-font-input");
@@ -419,10 +449,12 @@ class Settings
         Settings.lineHeightElement = $("#settings-line-height-input");
         Settings.alignElement = $("#settings-align-input");
         Settings.nightModeElement = $("#settings-night-mode-input");
+        Settings.showArrowsElement = $("#settings-show-arrows-input");
 
         Settings.toggleElement.on("click", Settings.toggle);
-        
-        Settings.widthElement.on("change", Settings.updateWidth);
+
+        Settings.widthElement.on("change", Settings.updateLayout);
+        Settings.showArrowsElement.on("change", Settings.updateLayout);
         Settings.fontElement.on("change", Settings.updateCss);
         Settings.fontSizeElement.on("change", Settings.updateCss);
         Settings.lineHeightElement.on("change", Settings.updateCss);
@@ -430,7 +462,7 @@ class Settings
         Settings.nightModeElement.on("change", Settings.updateCss);
 
         Settings.loadSettings();
-        Settings.updateWidth();
+        Settings.updateLayout();
     }
 
     static onBookLoaded()
@@ -494,6 +526,10 @@ class Settings
         if (Settings.getCookie("night-mode", 0) == 1)
         {
             Settings.nightModeElement.prop('checked', true);
+        }
+        if (Settings.getCookie("show-arrows", 1) == 1)
+        {
+            Settings.showArrowsElement.prop('checked', true);
         }
     }
 
@@ -559,8 +595,10 @@ class Settings
             }
         };
     }
-    static updateWidth()
+
+    static updateLayout()
     {
+        //width
         var width = Settings.widthElement.val();
         width = Math.min(width, 5000);
         width = Math.max(width, 100);
@@ -576,6 +614,19 @@ class Settings
         }
 
         Settings.setCookie("width", width)
+
+        //arrows
+        if (Settings.showArrowsElement.is(':checked'))
+        {
+            Settings.pageArrowNextElement.show();
+            Settings.pageArrowPrevElement.show();
+        }
+        else
+        {
+            Settings.pageArrowNextElement.hide();
+            Settings.pageArrowPrevElement.hide();
+        }
+        Settings.setCookie("show-arrows", Settings.showArrowsElement.is(':checked') ? 1 : 0);
     }
 
     static onKeyUp(event)
@@ -900,7 +951,7 @@ class Searchbar
         Searchbar.resultsIndex = index;
         Searchbar.countElement.html((index + 1) + "/" + Searchbar.results.length);
 
-        Page.goTo(Searchbar.results[index].cfi);
+        Navigation.goTo(Searchbar.results[index].cfi);
     }
 
     static clear()
