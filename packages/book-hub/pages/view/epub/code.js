@@ -51,11 +51,7 @@ function documentReady()
             //settings
             rendition.settings.spread = "none";
             //theme
-            rendition.themes.default({
-                "body": {
-                    "background-color": "white !important"
-                }
-            });
+            rendition.themes.default(Settings.getCss());
 
             //display
             displayed = rendition.display();
@@ -73,7 +69,6 @@ function documentReady()
 function onBookLoaded()
 {
     $("#loader-root").remove();
-    reader.css('background-color', 'white');
 
     //rendition events
     rendition.on("rendered", onRenditionRendered);
@@ -407,26 +402,30 @@ class Settings
     static toggleElement;
     static fontSizeElement;
     static widthElement;
+    static nightModeElement;
 
     static documentReady()
     {
         Settings.toggleElement = $("#toggle-settings");
         Settings.mainElement = $("#settings");
-        Settings.fontSizeElement = $("#settings-font-size-input");
+
         Settings.widthElement = $("#settings-width-input");
+        Settings.fontSizeElement = $("#settings-font-size-input");
+        Settings.nightModeElement = $("#settings-night-mode-input");
 
         Settings.toggleElement.on("click", Settings.toggle);
-        Settings.fontSizeElement.on("change", Settings.updateFontSize);
-        Settings.widthElement.on("change", Settings.updateWidth);
 
-        Settings.loadWidth();
+        Settings.widthElement.on("change", Settings.updateWidth);
+        Settings.fontSizeElement.on("change", Settings.updateCss);
+        Settings.nightModeElement.on("change", Settings.updateCss);
+
+        Settings.loadSettings();
         Settings.updateWidth();
     }
 
     static onBookLoaded()
     {
-        Settings.loadFontSize();
-        Settings.updateFontSize();
+        Settings.updateCss();
     }
 
     static open()
@@ -453,31 +452,59 @@ class Settings
         return Settings.mainElement.css("display") != "none";
     }
 
-    static loadFontSize()
-    {
-        Settings.fontSizeElement.val(Settings.getCookie("font-size", 19));
-    }
-    static loadWidth()
+    static loadSettings()
     {
         Settings.widthElement.val(Settings.getCookie("width", 820));
+        Settings.fontSizeElement.val(Settings.getCookie("font-size", 19));
+
+        if (Settings.getCookie("night-mode", 0) == 1)
+        {
+            Settings.nightModeElement.prop('checked', true);
+        }
     }
 
-    static updateFontSize()
+    static updateCss()
     {
+        var backgroundColor = "white";
+        if (Settings.nightModeElement.is(':checked'))
+        {
+            backgroundColor = "#1d1d1d";
+        }
+        reader.css('background-color', backgroundColor);
+
+        rendition.themes.register("settings", Settings.getCss());
+        rendition.themes.select("settings");
+    }
+
+    static getCss()
+    {
+        //font size
         var fontSize = Settings.fontSizeElement.val();
         fontSize = Math.min(fontSize, 100);
         fontSize = Math.max(fontSize, 1);
         Settings.fontSizeElement.val(fontSize);
+        Settings.setCookie("font-size", fontSize);
 
-        rendition.themes.register("settings", {
+        //background color
+        var backgroundColor = "white";
+        var fontColor = "black";
+        if (Settings.nightModeElement.is(':checked'))
+        {
+            backgroundColor = "#1d1d1d";
+            fontColor = "#cecece";
+        }
+        Settings.setCookie("night-mode", Settings.nightModeElement.is(':checked') ? 1 : 0);
+
+        return {
             "p": {
-                "font-size": `${fontSize}px !important`
+                "font-size": `${fontSize}px !important`,
+                "color": `inherit !important;`
+            },
+            "body": {
+                "background-color": `${backgroundColor} !important`,
+                "color": `${fontColor} !important;`
             }
-        });
-        rendition.themes.select("settings");
-
-
-        Settings.setCookie("font-size", fontSize)
+        };
     }
     static updateWidth()
     {
