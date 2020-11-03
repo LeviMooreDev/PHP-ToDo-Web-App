@@ -401,6 +401,7 @@ class Settings
     static mainElement;
     static toggleElement;
     static fontSizeElement;
+    static lineHeightElement;
     static widthElement;
     static nightModeElement;
 
@@ -411,12 +412,14 @@ class Settings
 
         Settings.widthElement = $("#settings-width-input");
         Settings.fontSizeElement = $("#settings-font-size-input");
+        Settings.lineHeightElement = $("#settings-line-height-input");
         Settings.nightModeElement = $("#settings-night-mode-input");
 
         Settings.toggleElement.on("click", Settings.toggle);
-
+        
         Settings.widthElement.on("change", Settings.updateWidth);
         Settings.fontSizeElement.on("change", Settings.updateCss);
+        Settings.lineHeightElement.on("change", Settings.updateCss);
         Settings.nightModeElement.on("change", Settings.updateCss);
 
         Settings.loadSettings();
@@ -456,6 +459,7 @@ class Settings
     {
         Settings.widthElement.val(Settings.getCookie("width", 820));
         Settings.fontSizeElement.val(Settings.getCookie("font-size", 19));
+        Settings.lineHeightElement.val(Settings.getCookie("line-height", 21));
 
         if (Settings.getCookie("night-mode", 0) == 1)
         {
@@ -485,6 +489,13 @@ class Settings
         Settings.fontSizeElement.val(fontSize);
         Settings.setCookie("font-size", fontSize);
 
+        //line height
+        var lineHeight = Settings.lineHeightElement.val();
+        lineHeight = Math.min(lineHeight, 100);
+        lineHeight = Math.max(lineHeight, 1);
+        Settings.lineHeightElement.val(lineHeight);
+        Settings.setCookie("line-height", lineHeight);
+
         //background color
         var backgroundColor = "white";
         var fontColor = "black";
@@ -498,6 +509,7 @@ class Settings
         return {
             "p": {
                 "font-size": `${fontSize}px !important`,
+                "line-height": `${lineHeight}px !important;`,
                 "color": `inherit !important;`
             },
             "body": {
