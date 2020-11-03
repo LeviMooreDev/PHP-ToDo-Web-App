@@ -13,14 +13,14 @@
         <div class="separator"></div>
         <select id="status" class="select-sm float-right"></select>
     </div>
-    
+
     <div id="searchbar" style="display: none;">
         <input id="searchbar-input" type="text" placeholder="search"></input>
         <button id="searchbar-pre"><i class="fas fa-arrow-up"></i></button>
         <button id="searchbar-next"><i class="fas fa-arrow-down"></i></button>
         <span id="searchbar-count">0</span>
     </div>
-    
+
     <div id="settings" style="display: none;">
         <label for="settings-font-size-input">Font Size</label>
         <input id="settings-font-size-input" type="number" placeholder="font size" name="settings-font-size-input" min="1" max="100">
@@ -33,6 +33,34 @@
         <br>
         <label for="settings-night-mode-input">Night Mode</label>
         <input id="settings-night-mode-input" type="checkbox" name="settings-night-mode-input">
+        <br>
+        <label for="settings-font-input">Font</label>
+        <select id="settings-font-input">
+            <option value='' disabled class="select-label"><b>Serif</b></option>
+            <option value='"Times New Roman", Times, serif'>&nbsp;Times New Roman</option>
+            <option value='Calibri'>&nbsp;Calibri</option>
+            <option value='Georgia, serif'>&nbsp;Georgia</option>
+            <option value='"Palatino Linotype", "Book Antiqua", Palatino, serif'>&nbsp;Palatino Linotype</option>
+
+            <option value='' disabled class="select-label"><b>Sans-Serif</b></option>
+            <option value='Arial, Helvetica, sans-serif'>&nbsp;Arial</option>
+            <option value='"Arial Black", Gadget, sans-serif'>&nbsp;Arial Black</option>
+            <option value='"Comic Sans MS", cursive, sans-serif'>&nbsp;Comic Sans</option>
+            <option value='Impact, Charcoal, sans-serif'>&nbsp;Impact</option>
+            <option value='"Lucida Sans Unicode", "Lucida Grande", sans-serif'>&nbsp;Lucida</option>
+            <option value='Tahoma, Geneva, sans-serif'>&nbsp;Tahoma</option>
+            <option value='"Trebuchet MS", Helvetica, sans-serif'>&nbsp;Trebuchet</option>
+            <option value='Verdana, Geneva, sans-serif'>&nbsp;Verdana</option>
+
+            <option value='' disabled class="select-label"><b>Monospace</b></option>
+            <option value='"Courier New", Courier, monospace'>&nbsp;Courier</option>
+            <option value='"Lucida Console", Monaco, monospace'>&nbsp;Lucida</option>
+
+            <option value='' disabled class="select-label"><b>Open Dyslexic</b></option>
+            <option value='OpenDyslexic-Regular'>&nbsp;OpenDyslexic Regular</option>
+            <option value='OpenDyslexic-Bold'>&nbsp;OpenDyslexic Bold</option>
+            <option value='OpenDyslexic-Italic'>&nbsp;OpenDyslexic Italic</option>
+        </select>
     </div>
 </div>
 
@@ -49,4 +77,3 @@
         <div class="loader">Loading...</div>
     </div>
 </div>
-

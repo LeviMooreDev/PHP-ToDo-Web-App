@@ -109,7 +109,15 @@ body {
 
 #settings label {
     min-width: 80px;
-    text-align: center;
+}
+
+#settings input, #settings select {
+    width: 100px;
+}
+
+.select-label {
+    color: white !important;
+    font-weight: bold;
 }
 
 /* Search */

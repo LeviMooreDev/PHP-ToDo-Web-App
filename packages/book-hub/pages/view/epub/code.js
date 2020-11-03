@@ -101,6 +101,7 @@ function onRenditionRendered(e, i)
     $(i.document.documentElement).bind('mousewheel', onScroll);
 
     Searchbar.onRenditionRendered(i.document);
+    Settings.onRenditionRendered(i.document);
 }
 function onBookNavigationLoaded(navigation)
 {
@@ -400,6 +401,7 @@ class Settings
 {
     static mainElement;
     static toggleElement;
+    static fontElement;
     static fontSizeElement;
     static lineHeightElement;
     static widthElement;
@@ -411,6 +413,7 @@ class Settings
         Settings.mainElement = $("#settings");
 
         Settings.widthElement = $("#settings-width-input");
+        Settings.fontElement = $("#settings-font-input");
         Settings.fontSizeElement = $("#settings-font-size-input");
         Settings.lineHeightElement = $("#settings-line-height-input");
         Settings.nightModeElement = $("#settings-night-mode-input");
@@ -418,6 +421,7 @@ class Settings
         Settings.toggleElement.on("click", Settings.toggle);
         
         Settings.widthElement.on("change", Settings.updateWidth);
+        Settings.fontElement.on("change", Settings.updateCss);
         Settings.fontSizeElement.on("change", Settings.updateCss);
         Settings.lineHeightElement.on("change", Settings.updateCss);
         Settings.nightModeElement.on("change", Settings.updateCss);
@@ -429,6 +433,27 @@ class Settings
     static onBookLoaded()
     {
         Settings.updateCss();
+    }
+    static onRenditionRendered(document)
+    {
+        if (document != "undefined")
+        {
+            $(document).find("head").append(`
+            <style>
+            @font-face {
+                font-family: 'OpenDyslexic-Regular';
+                src: url('https://books.levimoore.dk/packages/book-hub/fonts/OpenDyslexic-Regular.otf');
+            }
+            @font-face {
+                font-family: 'OpenDyslexic-Bold';
+                src: url('https://books.levimoore.dk/packages/book-hub/fonts/OpenDyslexic-Bold.otf');
+            }
+            @font-face {
+                font-family: 'OpenDyslexic-Italic';
+                src: url('https://books.levimoore.dk/packages/book-hub/fonts/OpenDyslexic-Italic.otf');
+            }
+            </style>`);
+        }
     }
 
     static open()
@@ -458,6 +483,7 @@ class Settings
     static loadSettings()
     {
         Settings.widthElement.val(Settings.getCookie("width", 820));
+        Settings.fontElement.val(Settings.getCookie("font", "Calibri"));
         Settings.fontSizeElement.val(Settings.getCookie("font-size", 19));
         Settings.lineHeightElement.val(Settings.getCookie("line-height", 21));
 
@@ -482,6 +508,10 @@ class Settings
 
     static getCss()
     {
+        //font size
+        var font = Settings.fontElement.val();
+        Settings.setCookie("font", font);
+
         //font size
         var fontSize = Settings.fontSizeElement.val();
         fontSize = Math.min(fontSize, 100);
@@ -510,9 +540,11 @@ class Settings
             "p": {
                 "font-size": `${fontSize}px !important`,
                 "line-height": `${lineHeight}px !important;`,
-                "color": `inherit !important;`
+                "color": `inherit !important;`,
+                "font-family": `inherit !important;`
             },
             "body": {
+                "font-family": `${font} !important`,
                 "background-color": `${backgroundColor} !important`,
                 "color": `${fontColor} !important;`
             }
