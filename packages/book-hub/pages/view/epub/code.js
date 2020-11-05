@@ -332,10 +332,10 @@ class Chapters
             var subitems = "";
             item.subitems.forEach(subitem =>
             {
-                subitems += `<li class="chapters-list-subitem" id="chapters-list-item-${Chapters.idSafe(subitem.id)}" onClick="Navigation.goTo('${subitem.href}')">${subitem.label}</li>`;
+                subitems += `<li class="chapters-list-subitem" id="chapters-list-item-${Chapters.idSafe(subitem.id)}" onClick="Navigation.goTo('${subitem.href}')">${subitem.label.trim()}</li>`;
             })
 
-            list += `<li class="chapters-list-item" id="chapters-list-item-${Chapters.idSafe(item.id)}" onClick="Navigation.goTo('${item.href}')">${item.label}${subitems}</li>`;
+            list += `<li class="chapters-list-item" id="chapters-list-item-${Chapters.idSafe(item.id)}" onClick="Navigation.goTo('${item.href}')">${item.label.trim()}${subitems}</li>`;
         });
 
         Chapters.ulElement.append(list);
