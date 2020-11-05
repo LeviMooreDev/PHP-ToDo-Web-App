@@ -95,6 +95,7 @@
                             <button id="search-metadata-google-books-open" class="dropdown-item">Search Metadata (books.google.com)</button>
                             <button id="search-cover-open-library-open" class="dropdown-item">Search Cover (OpenLibrary.com)</button>
                             <button id="search-good-reads" class="dropdown-item">Search GoodReads.com (new tab)</button>
+                            <button id="files-action" class="dropdown-item">Files</button>
                             <a id="download" class="dropdown-item" href="#">Download</a>
                             <button id="original-title" class="dropdown-item">Reset Title</button>
                             <button id="delete" class="dropdown-item">Delete</button>
@@ -181,8 +182,8 @@
 </div>
 
 <!-- Search Cover OpenLibrary.com -->
-<div class="modal fade" id="search-cover-open-library-modal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="search-cover-open-library-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="form-group w-100">
@@ -206,6 +207,51 @@
                         <button class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload -->
+<div id="files-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Book files</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="submit" id="files-submit" class="btn btn-primary float-right" value="Upload">
+                    <input type="file" id="files-upload-input" accept=".pdf,.epub" multiple required>
+                </div>
+
+                <div class="progress">
+                    <div class="progress-bar" id="files-progress-bar" style="width: 0%;">0%</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <table id="uploaded-files" class="table table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>Uploaded</th>
+                            <th class="button-col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="uploaded-pdf">
+                            <td>PDF</td>
+                            <td class="button-col">
+                                <button class="btn btn-danger" onClick="Files.remove('pdf')"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                        <tr id="uploaded-epub">
+                            <td>EPUB</td>
+                            <td class="button-col">
+                                <button class="btn btn-danger" onClick="Files.remove('epub')"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

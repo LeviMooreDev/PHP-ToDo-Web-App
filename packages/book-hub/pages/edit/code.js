@@ -1,7 +1,7 @@
 var id;
 var coverPlaceholder = "/packages/book-hub/cover-placeholder.jpg";
 
-$(document).ready(function()
+$(document).ready(function ()
 {
 
     ready();
@@ -30,19 +30,21 @@ function ready()
     setCategoriesAutocomplete();
     setAuthorsAutocomplete();
     setPublisherAutocomplete();
-    setStatusOptions(function(){
+    setStatusOptions(function ()
+    {
         load();
     });
 
     SearchMetadataGoogleBooks.ready();
     SearchCoverOpenLibraryCom.ready();
     GoodReads.ready();
+    Files.ready();
 }
 
 function setCategoriesAutocomplete()
 {
     API.simple("book-hub", "view/all-categories", "",
-        function(result)
+        function (result)
         {
             if (result["success"] == true)
             {
@@ -54,7 +56,7 @@ function setCategoriesAutocomplete()
                 console.log(result);
             }
         },
-        function(result) //failed
+        function (result) //failed
         {
             console.log("Set categories autocomplete failed");
             console.log(result);
@@ -65,7 +67,7 @@ function setCategoriesAutocomplete()
 function setAuthorsAutocomplete()
 {
     API.simple("book-hub", "view/all-authors", "",
-        function(result)
+        function (result)
         {
             if (result["success"] == true)
             {
@@ -77,7 +79,7 @@ function setAuthorsAutocomplete()
                 console.log(result);
             }
         },
-        function(result) //failed
+        function (result) //failed
         {
             console.log("Set authors autocomplete failed");
             console.log(result);
@@ -88,7 +90,7 @@ function setAuthorsAutocomplete()
 function setPublisherAutocomplete()
 {
     API.simple("book-hub", "view/all-publishers", "",
-        function(result)
+        function (result)
         {
             if (result["success"] == true)
             {
@@ -100,7 +102,7 @@ function setPublisherAutocomplete()
                 console.log(result);
             }
         },
-        function(result) //failed
+        function (result) //failed
         {
             console.log("Set publishers autocomplete failed");
             console.log(result);
@@ -112,23 +114,23 @@ function setAutocomplete(finder, values)
 {
     $(finder).attr("data-list", values);
     new Awesomplete(finder,
-    {
-        filter: function(text, input)
         {
-            return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);
-        },
+            filter: function (text, input)
+            {
+                return Awesomplete.FILTER_CONTAINS(text, input.match(/[^,]*$/)[0]);
+            },
 
-        item: function(text, input)
-        {
-            return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);
-        },
+            item: function (text, input)
+            {
+                return Awesomplete.ITEM(text, input.match(/[^,]*$/)[0]);
+            },
 
-        replace: function(text)
-        {
-            var before = this.input.value.match(/^.+,\s*|/)[0];
-            this.input.value = before + text + ", ";
-        }
-    });
+            replace: function (text)
+            {
+                var before = this.input.value.match(/^.+,\s*|/)[0];
+                this.input.value = before + text + ", ";
+            }
+        });
 }
 
 function onResize()
@@ -161,7 +163,7 @@ function save()
         status: $('select[name="status"]').val()
     }
     API.simple("book-hub", "edit/save", data,
-        function(result)
+        function (result)
         {
             if (result["success"] == true)
             {
@@ -173,7 +175,7 @@ function save()
             }
             enableForm();
         },
-        function(result)
+        function (result)
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
@@ -185,17 +187,19 @@ function save()
 function setStatusOptions(callback)
 {
     API.simple("book-hub", "view/all-status", "",
-        function(result)
+        function (result)
         {
             if (result["success"] == true)
             {
                 var options = result["options"];
                 var html = "";
-                options.forEach(option => {
+                options.forEach(option =>
+                {
                     html += `<option value="${option}">${toTitleCase(option)}</option>`;
                 });
                 $('select[name="status"]').html(html);
-                if(callback){
+                if (callback)
+                {
                     callback();
                 }
             }
@@ -205,7 +209,7 @@ function setStatusOptions(callback)
                 Alert.error("Unable to get status options. Server error.");
             }
         },
-        function(result)
+        function (result)
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
@@ -216,7 +220,7 @@ function toTitleCase(str)
 {
     return str.replace(
         /\w\S*/g,
-        function(txt)
+        function (txt)
         {
             return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
         }
@@ -230,7 +234,7 @@ function load()
         id: id
     };
     API.simple("book-hub", "view/book", data,
-        function(result)
+        function (result)
         {
             if (result["success"] == true)
             {
@@ -265,7 +269,7 @@ function load()
                 Alert.error(result["message"]);
             }
         },
-        function(result) //failed
+        function (result) //failed
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
@@ -276,18 +280,18 @@ function load()
 function deleteBook()
 {
     Alert.yesNo("Are you sure you want to delete the book?",
-        function()
+        function ()
         {
             var data = {
                 id: id
             };
             API.simple("book-hub", "edit/delete", data,
-                function(result)
+                function (result)
                 {
                     if (result["success"] == true)
                     {
                         Alert.success(result["message"]);
-                        setTimeout(function()
+                        setTimeout(function ()
                         {
                             window.location = "/books/list";
                         }, 750);
@@ -297,14 +301,15 @@ function deleteBook()
                         Alert.error(result["message"]);
                     }
                 },
-                function(result)
+                function (result)
                 {
                     Alert.error("Something went wrong. See console (F12) for more info.");
                     console.log(result);
                 }
             );
         },
-        function() {
+        function ()
+        {
 
         }
     );
@@ -313,13 +318,13 @@ function deleteBook()
 function deleteCover()
 {
     Alert.yesNo("Are you sure you want to remove the cover?",
-        function()
+        function ()
         {
             var data = {
                 id: id
             };
             API.simple("book-hub", "edit/delete-cover", data,
-                function(result)
+                function (result)
                 {
                     if (result["success"] == true)
                     {
@@ -331,14 +336,15 @@ function deleteCover()
                         Alert.error(result["message"]);
                     }
                 },
-                function(result)
+                function (result)
                 {
                     Alert.error("Something went wrong. See console (F12) for more info.");
                     console.log(result);
                 }
             );
         },
-        function() {
+        function ()
+        {
 
         }
     );
@@ -372,7 +378,7 @@ function uploadCover()
 
     disableForm();
     API.upload("book-hub", "edit/upload-cover", data, progress,
-        function(result)
+        function (result)
         {
             if (result["success"] == true)
             {
@@ -386,7 +392,7 @@ function uploadCover()
             clearCoverSelect();
             enableForm();
         },
-        function(result) //failed
+        function (result) //failed
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
@@ -469,7 +475,7 @@ function originalTitle()
         id: id
     };
     API.simple("book-hub", "view/original-title", data,
-        function(result)
+        function (result)
         {
             if (result["success"] == true)
             {
@@ -481,7 +487,7 @@ function originalTitle()
             }
             enableForm();
         },
-        function(result)
+        function (result)
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
@@ -521,22 +527,22 @@ class SearchMetadataGoogleBooks
 
     static ready()
     {
-        $(SearchMetadataGoogleBooks.applyEverythingButton).on('click', function()
+        $(SearchMetadataGoogleBooks.applyEverythingButton).on('click', function ()
         {
             SearchMetadataGoogleBooks.apply("everything");
         });
-        $(SearchMetadataGoogleBooks.applyTextButton).on('click', function()
+        $(SearchMetadataGoogleBooks.applyTextButton).on('click', function ()
         {
             SearchMetadataGoogleBooks.apply("text");
         });
-        $(SearchMetadataGoogleBooks.applyCoverButton).on('click', function()
+        $(SearchMetadataGoogleBooks.applyCoverButton).on('click', function ()
         {
             SearchMetadataGoogleBooks.apply("cover");
         });
 
         $(SearchMetadataGoogleBooks.openButton).on('click', SearchMetadataGoogleBooks.open);
         $(SearchMetadataGoogleBooks.searchButton).on('click', SearchMetadataGoogleBooks.search);
-        $(SearchMetadataGoogleBooks.searchQueryInput).keyup(function(e)
+        $(SearchMetadataGoogleBooks.searchQueryInput).keyup(function (e)
         {
             if (e.keyCode == 13)
             {
@@ -581,7 +587,7 @@ class SearchMetadataGoogleBooks
                 query: $(SearchMetadataGoogleBooks.searchQueryInput).val()
             };
             API.simple("book-hub", "edit/search-metadata-google-book", data,
-                function(result)
+                function (result)
                 {
                     if (result["success"] == true)
                     {
@@ -602,7 +608,7 @@ class SearchMetadataGoogleBooks
                         Alert.error(result["message"]);
                     }
                 },
-                function(result)
+                function (result)
                 {
                     Alert.error("Something went wrong. See console (F12) for more info.");
                     console.log(result);
@@ -678,30 +684,30 @@ class SearchMetadataGoogleBooks
             if (what == "everything")
             {
                 SearchMetadataGoogleBooks.applyCover(
-                    function(coverResult)
+                    function (coverResult)
                     { // cover success
                         SearchMetadataGoogleBooks.applyText(
-                            function(textResult)
+                            function (textResult)
                             { // cover success, text success
                                 Alert.success(coverResult + ". " + textResult);
                                 $(SearchMetadataGoogleBooks.modal).modal('hide');
                             },
-                            function(textResult)
+                            function (textResult)
                             { // cover success, text fail
                                 Alert.success(coverResult + ". " + textResult);
                                 $(SearchMetadataGoogleBooks.modal).modal('hide');
                             }
                         );
                     },
-                    function(coverResult)
+                    function (coverResult)
                     { // cover fail
                         SearchMetadataGoogleBooks.applyText(
-                            function(textResult)
+                            function (textResult)
                             { // cover fail, text success
                                 Alert.success(coverResult + ". " + textResult);
                                 $(SearchMetadataGoogleBooks.modal).modal('hide');
                             },
-                            function(textResult)
+                            function (textResult)
                             { // cover fail, text fail
                                 Alert.success(coverResult + ". " + textResult);
                                 $(SearchMetadataGoogleBooks.modal).modal('hide');
@@ -713,12 +719,12 @@ class SearchMetadataGoogleBooks
             if (what == "text")
             {
                 SearchMetadataGoogleBooks.applyText(
-                    function(textResult)
+                    function (textResult)
                     { // cover success, text success
                         Alert.success(textResult);
                         $(SearchMetadataGoogleBooks.modal).modal('hide');
                     },
-                    function(textResult)
+                    function (textResult)
                     { // cover success, text fail
                         Alert.success(textResult);
                         $(SearchMetadataGoogleBooks.modal).modal('hide');
@@ -728,12 +734,12 @@ class SearchMetadataGoogleBooks
             if (what == "cover")
             {
                 SearchMetadataGoogleBooks.applyCover(
-                    function(coverResult)
+                    function (coverResult)
                     { // cover success, text success
                         Alert.success(coverResult);
                         $(SearchMetadataGoogleBooks.modal).modal('hide');
                     },
-                    function(coverResult)
+                    function (coverResult)
                     { // cover success, text fail
                         Alert.success(coverResult);
                         $(SearchMetadataGoogleBooks.modal).modal('hide');
@@ -753,7 +759,7 @@ class SearchMetadataGoogleBooks
                 url: cover
             }
             API.simple("book-hub", "edit/upload-cover-from-url", data,
-                function(result)
+                function (result)
                 {
                     if (result["success"] == true)
                     {
@@ -766,7 +772,7 @@ class SearchMetadataGoogleBooks
                         callbackFail("Cover apply failed");
                     }
                 },
-                function(result)
+                function (result)
                 {
                     console.log(result);
                     callbackFail("Cover apply failed");
@@ -791,11 +797,12 @@ class SearchMetadataGoogleBooks
             date = new Date(data.date).toISOString().substring(0, 10);
         }
         catch (error)
-        {}
+        { }
 
         var status = $('select[name="status"]').val();
         var pages = $('input[name="pages"]').val();
-        if(!pages){
+        if (!pages)
+        {
             pages = 0;
         }
 
@@ -814,7 +821,7 @@ class SearchMetadataGoogleBooks
             pages: pages
         }
         API.simple("book-hub", "edit/save", data,
-            function(result)
+            function (result)
             {
                 if (result["success"] == true)
                 {
@@ -835,7 +842,7 @@ class SearchMetadataGoogleBooks
                     callbackFail("Text apply failed");
                 }
             },
-            function(result)
+            function (result)
             {
                 console.log(result);
                 callbackFail("Text apply failed");
@@ -869,7 +876,7 @@ class SearchCoverOpenLibraryCom
         $(SearchCoverOpenLibraryCom.openButton).on('click', SearchCoverOpenLibraryCom.open);
         $(SearchCoverOpenLibraryCom.searchButton).on('click', SearchCoverOpenLibraryCom.search);
         $(SearchCoverOpenLibraryCom.applyButton).on('click', SearchCoverOpenLibraryCom.apply);
-        $(SearchCoverOpenLibraryCom.searchQueryInput).keyup(function(e)
+        $(SearchCoverOpenLibraryCom.searchQueryInput).keyup(function (e)
         {
             if (e.keyCode == 13)
             {
@@ -900,7 +907,7 @@ class SearchCoverOpenLibraryCom
                 query: query
             };
             API.simple("book-hub", "edit/search-cover-open-library", data,
-                function(result)
+                function (result)
                 {
                     if (result["success"] == true)
                     {
@@ -921,7 +928,7 @@ class SearchCoverOpenLibraryCom
                     SearchCoverOpenLibraryCom.pageIndex = 0;
                     SearchCoverOpenLibraryCom.updatePage();
                 },
-                function(result)
+                function (result)
                 {
                     Alert.error("Something went wrong. See console (F12) for more info.");
                     console.log(result);
@@ -970,7 +977,7 @@ class SearchCoverOpenLibraryCom
                     url: coverUrl
                 }
                 API.simple("book-hub", "edit/upload-cover-from-url", data,
-                    function(result)
+                    function (result)
                     {
                         if (result["success"] == true)
                         {
@@ -985,7 +992,7 @@ class SearchCoverOpenLibraryCom
                             Alert.workingDone();
                         }
                     },
-                    function(result)
+                    function (result)
                     {
                         Alert.error("Unable to apply cover");
                         console.log(result["message"]);
@@ -1011,5 +1018,198 @@ class GoodReads
         var query = $('input[name="title"]').val();
         query = encodeURI(query);
         window.open("https://www.goodreads.com/search?q=" + query, "_blank");
+    }
+}
+
+class Files
+{
+    static modal;
+    static openButton;
+    static submitButton;
+    static files;
+    static progressBar;
+
+    static ready()
+    {
+        Files.modal = $("#files-modal");
+        Files.openButton = $("#files-action");
+        Files.submitButton = $("#files-submit");
+        Files.files = $("#files-upload-input");
+        Files.progressBar = $("#files-progress-bar");
+
+        Files.openButton.on('click', Files.open);
+        Files.files.on('change', Files.filesSelectUpdate);
+        Files.submitButton.on('click', Files.upload);
+
+        Files.progressBar.width('0%');
+        Files.progressBar.html('0%');
+
+        Files.updateList();
+    }
+
+    static open()
+    {
+        Files.clearFiles();
+        Files.modal.modal('show');
+    }
+
+    static upload()
+    {
+        var files = Files.files.get(0).files;
+        var count = files.length;
+    
+        //check if no files are selected
+        if (count === 0)
+        {
+            Alert.error("No file selected.");
+            return;
+        }
+    
+        //prepare data
+        var data = new FormData();
+        for (var i = 0; i < count; i++)
+        {
+            data.append("files[]", files[i]);
+        }
+        data.append("id", id);
+    
+        //call upload api
+        Files.disableForm();
+        API.upload("book-hub", "edit/upload", data, Files.progressBar,
+            function(result)
+            {
+                if (result["success"] == true)
+                {
+                    Alert.success(result["message"]);
+                }
+                else if (result["success"] == false)
+                {
+                    Alert.error(result["message"]);
+                }
+                Files.enableForm();
+                Files.clearFiles();
+                Files.updateList();
+            },
+            function(result) //failed
+            {
+                Alert.error("Something went wrong. See console (F12) for more info.");
+                Files.enableForm();
+                Files.clearFiles();
+            }
+        );
+    }
+
+    static remove(type)
+    {
+        var data = {
+            id: id,
+            type: type,
+        }
+        API.simple("book-hub", "edit/remove-file", data,
+            function (result)
+            {
+                if (result["success"] == true)
+                {
+                    Alert.success(result["message"]);
+                }
+                else if (result["success"] == false)
+                {
+                    Alert.error(result["message"]);
+                }
+                Files.updateList();
+            },
+            function (result)
+            {
+                Alert.error("Something went wrong. See console (F12) for more info.");
+                console.log(result);
+            }
+        );
+    }
+
+    static filesSelectUpdate()
+    {
+        var files = Files.files.get(0).files;
+        var count = files.length;
+
+        //check for unsupported files
+        var supportedFormat = ['pdf', 'epub'];
+        for (var i = 0; i < count; i++)
+        {
+            var type = files[i]["name"].split('.').pop();
+            if ($.inArray(type, supportedFormat) < 0)
+            {
+                Alert.error("Format " + type + " not supported. Use " + supportedFormat.join(', '));
+                Files.clearFiles();
+                return;
+            }
+        }
+
+        //file size
+        var totalSize = 0;
+        var maxMB = maxUploadSize - 10;
+        for (var i = 0; i < count; i++)
+        {
+            totalSize += files[i]["size"];
+        }
+        if (totalSize > 1048576 * maxMB)
+        {
+            Alert.error("Files are too big. Can only upload a combined " + maxMB + "MB");
+            Files.clearFiles();
+        }
+    }
+
+    static clearFiles()
+    {
+        Files.files.val(null);
+    }
+
+    static disableForm()
+    {
+        Files.submitButton.attr("disabled", "disabled");
+        Files.files.attr("disabled", "disabled");
+    }
+
+    static enableForm()
+    {
+        Files.submitButton.removeAttr("disabled");
+        Files.files.removeAttr("disabled");
+    }
+
+    static updateList()
+    {
+        var data = {
+            id: id,
+        }
+        API.simple("book-hub", "view/files", data,
+            function (result)
+            {
+                if (result["success"] == true)
+                {
+                    $("#uploaded-files").hide();
+                    $("#uploaded-epub").hide();
+                    $("#uploaded-pdf").hide();
+
+                    if(result["files"]["epub"])
+                    {
+                        $("#uploaded-files").show();
+                        $("#uploaded-epub").show();
+                    }
+                    if(result["files"]["pdf"])
+                    {
+                        $("#uploaded-files").show();
+                        $("#uploaded-pdf").show();
+                    }
+                }
+                else if (result["success"] == false)
+                {
+                    Alert.error(result["message"]);
+                }
+            },
+            function (result)
+            {
+                Alert.error("Something went wrong. See console (F12) for more info.");
+                console.log(result);
+            }
+        );
     }
 }

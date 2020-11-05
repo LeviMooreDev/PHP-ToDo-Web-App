@@ -108,3 +108,11 @@
 .awesomplete {
     display: block;
 }
+
+#files-upload-input{
+    white-space: normal;
+}
+.button-col{
+    width: 42px;
+    padding: 5px !important;
+}
