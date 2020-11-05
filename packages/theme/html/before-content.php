@@ -32,7 +32,11 @@ usort($menuItems, function($a, $b) {
                 <?php if(isset($item["separator"])) : ?>
                 <span class="nav-link menu-separator"> | </span>
                 <?php elseif(isset($item["url"])) : ?>
-                <a class="nav-link" href="/<?= $item["url"] ?>"><?= ucfirst($item["name"]); ?></a>
+                    <?php if(strpos($item["url"], 'javascript:') !== false) : ?>
+                        <a class="nav-link" href="<?= $item["url"] ?>"><?= ucfirst($item["name"]); ?></a>
+                    <?php else : ?>
+                        <a class="nav-link" href="/<?= $item["url"] ?>"><?= ucfirst($item["name"]); ?></a>
+                    <?php endif; ?>
                 <?php else : ?>
                 <span class="nav-link"><?= ucfirst($item["name"]); ?></span>
                 <?php endif; ?>
