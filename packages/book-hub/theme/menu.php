@@ -6,8 +6,8 @@ return [
         "order" => 1,
     ],
     [
-        'name' => "Upload",
-        'url' => "books/upload",
+        'name' => "New",
+        'url' => "javascript:NewBook.open()",
         "order" => 2,
     ],
     [

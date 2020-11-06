@@ -198,6 +198,61 @@ class Core
         return strtoupper($hex);
     }
 
+    function fileFormatSupported($fileNames)
+    {
+        $allowTypes = array('pdf','epub');
+        $count = sizeof($fileNames);
+        for ($i = 0; $i < $count; $i++)
+        {
+            $fileType = pathinfo(basename($fileNames[$i]), PATHINFO_EXTENSION);
+            if (!in_array($fileType, $allowTypes))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function uploadFiles($id, $files)
+    {
+        Core::createFolder(Core::bookFolderPathServer($id));
+
+        $count = sizeof($files["files"]["name"]);
+        for ($i = 0; $i < $count; $i++)
+        {
+            $fileName = Helper::escapeFileName(basename($files["files"]["name"][$i]));
+            $fileType = pathinfo(basename($files["files"]["name"][$i]), PATHINFO_EXTENSION);
+    
+            $uploaded = [];
+    
+            if (move_uploaded_file($files["files"]["tmp_name"][$i], Core::bookFolderPathServer($id) . "book." . $fileType))
+            {
+                $uploaded[] = $fileName;
+            }
+            else
+            {
+                foreach ($uploaded as $file)
+                {
+                    Core::deleteFile(Core::uploadFilePath($file));
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+
+    function setPageTotalFromPdf($id)
+    {
+        $filePath = Core::pdfFilePathServer($id);
+        if(file_exists($filePath))
+        {
+            $bookDate = file_get_contents($filePath);
+            $pages = preg_match_all("/\/Page\W/", $bookDate, $dummy);
+            Database::connect();
+            Database::query("UPDATE `book-hub` SET `pages`='$pages' WHERE `id`=$id");
+        }
+    }
+
     //https://stackoverflow.com/questions/14549446/how-can-i-convert-all-images-to-jpg
     //Davide Berra
     function convertCoverImage($originalType, $originalImage, $id)

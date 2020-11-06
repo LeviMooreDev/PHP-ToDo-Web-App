@@ -35,3 +35,7 @@
         background-color: #ffffff36
     }
 }
+
+input[type=file]{
+    white-space: normal;
+}
