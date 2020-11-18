@@ -22,7 +22,7 @@ if (file_exists(Core::coverFileTmpPathServer($id)))
             
             $coverColor = CORE::getMainColor(Core::coverFile100PathServer($id));
             $coverColor = Database::escape($coverColor);
-            Database::query("UPDATE `book-hub` SET `cover-color`='$coverColor' WHERE `id`=$id");
+            Database::query("UPDATE `$bookHubTable` SET `cover-color`='$coverColor' WHERE `id`=$id");
     
             Core::result("cover-color", $coverColor);
             Core::result("file", Core::coverFile100PathHTTP($id));

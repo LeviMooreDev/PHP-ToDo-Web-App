@@ -9,7 +9,7 @@ $id = Database::escape($_GET["id"]);
 
 $format = $_GET["format"];
 
-$result = Database::query("SELECT `title` FROM `book-hub` WHERE `id`=$id");
+$result = Database::query("SELECT `title` FROM `$bookHubTable` WHERE `id`=$id");
 if ($result->num_rows === 1)
 {
     $filename = $result->fetch_assoc()["title"];

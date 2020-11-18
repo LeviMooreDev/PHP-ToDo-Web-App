@@ -6,7 +6,7 @@ $issues = [];
 
 $databaseEntries = [];
 Database::connect();
-$result = Database::query("SELECT `id`,`title` FROM `book-hub`");
+$result = Database::query("SELECT `id`,`title` FROM `$bookHubTable`");
 if ($result->num_rows > 0)
 {
     while ($book = $result->fetch_assoc())

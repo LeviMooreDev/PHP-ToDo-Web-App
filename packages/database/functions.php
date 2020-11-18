@@ -78,4 +78,13 @@ class Database
         }
         return Database::escape($_POST[$name]);
     }
+
+    public static function tableName($name)
+    {
+        if(defined('DB_PREFIX'))
+        {
+            return DB_PREFIX . "_" . $name;
+        }
+        return $name;
+    }
 }

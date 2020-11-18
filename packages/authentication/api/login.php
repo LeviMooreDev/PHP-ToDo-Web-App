@@ -7,7 +7,8 @@ Database::connect();
 
 $password = Database::validatePOST("password");
 
-$result = Database::query("SELECT `password` FROM `authentication`");
+$tableName = Database::tableName("authentication");
+$result = Database::query("SELECT `password` FROM `$tableName`");
 
 if (password_verify($password, $result->fetch_row()[0]))
 {

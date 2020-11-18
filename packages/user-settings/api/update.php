@@ -11,11 +11,12 @@ if (Packages::exist("authentication"))
 
 Database::connect();
 
+$userSettingsTable = Database::tableName("user_settings");
 foreach ($_POST as $id => $value)
 {
     $id = Database::escape($id);
     $selected = Database::escape($value);
-    Database::query("UPDATE `user-settings` SET `selected`='$selected' WHERE `id`='$id'");
+    Database::query("UPDATE `$userSettingsTable` SET `selected`='$selected' WHERE `id`='$id'");
 }
 
 $return["status"] = "OK";

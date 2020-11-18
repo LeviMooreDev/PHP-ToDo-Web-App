@@ -20,7 +20,7 @@ if(Core::fileFormatSupported($_FILES["files"]["name"]) == false)
 }
 
 //insert entry
-$result = Database::queries("INSERT INTO `book-hub`(`title`, `pages`) VALUES ('$name', 0); SELECT LAST_INSERT_ID();");
+$result = Database::queries("INSERT INTO `$bookHubTable` (`title`, `pages`) VALUES ('$name', 0); SELECT LAST_INSERT_ID();");
 
 //get id
 $id;
@@ -65,5 +65,5 @@ else
 
 function removeEntry($id)
 {
-    Database::query("DELETE FROM `book-hub` WHERE `id`=$id");
+    Database::query("DELETE FROM `$bookHubTable` WHERE `id`=$id");
 }

@@ -3,7 +3,6 @@ var coverPlaceholder = "/packages/book-hub/cover-placeholder.jpg";
 
 $(document).ready(function ()
 {
-
     ready();
 });
 
@@ -261,7 +260,6 @@ function load()
                 }
 
                 $('#read').attr("href", "/books/view?id=" + id)
-                $('#download').attr("href", "/packages/book-hub/api/download.php?id=" + id)
                 enableForm();
             }
             else if (result["success"] == false)
@@ -1124,6 +1122,11 @@ class Files
                 console.log(result);
             }
         );
+    }
+
+    static download(format)
+    {
+        window.open(`/packages/book-hub/api/download.php?id=${id}&format=${format}`);
     }
 
     static filesSelectUpdate()

@@ -7,7 +7,7 @@ Database::connect();
 $id = Database::escape($_POST["id"]);
 Core::validateBookExists($id);
 
-$result = Database::query("SELECT `status` FROM `book-hub` WHERE `id`=$id");
+$result = Database::query("SELECT `status` FROM `$bookHubTable` WHERE `id`=$id");
 $status = $result->fetch_assoc()["status"];
 
 Core::result("status", $status);

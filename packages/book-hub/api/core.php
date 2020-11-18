@@ -9,6 +9,8 @@ if (Packages::exist("authentication"))
 Core::createFolder(Core::booksFolderServer());
 Core::createFolder(Core::uploadFolder());
 
+$bookHubTable = Database::tableName("book_hub");
+
 class Core
 {
     static $response = [];
@@ -161,8 +163,9 @@ class Core
 
     static function validateBookExists($id)
     {
+        global $bookHubTable;
         $id = Database::escape($id);
-        $result = Database::query("SELECT `id` FROM `book-hub` WHERE `id`=$id");
+        $result = Database::query("SELECT `id` FROM `$bookHubTable` WHERE `id`=$id");
         if ($result->num_rows !== 1)
         {
             Core::fail("Unable to find book with id $id");
@@ -243,13 +246,14 @@ class Core
 
     function setPageTotalFromPdf($id)
     {
+        global $bookHubTable;
         $filePath = Core::pdfFilePathServer($id);
         if(file_exists($filePath))
         {
             $bookDate = file_get_contents($filePath);
             $pages = preg_match_all("/\/Page\W/", $bookDate, $dummy);
             Database::connect();
-            Database::query("UPDATE `book-hub` SET `pages`='$pages' WHERE `id`=$id");
+            Database::query("UPDATE `$bookHubTable` SET `pages`='$pages' WHERE `id`=$id");
         }
     }
 

@@ -3,7 +3,7 @@ header('Content-Type: application/json');
 include("../core.php");
 
 Database::connect();
-$result = Database::query("SHOW COLUMNS FROM `book-hub` WHERE Field = 'status'");
+$result = Database::query("SHOW COLUMNS FROM `$bookHubTable` WHERE Field = 'status'");
 if ($result->num_rows > 0)
 {
     while ($row = $result->fetch_assoc())

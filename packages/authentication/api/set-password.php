@@ -5,7 +5,8 @@ include_once($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
 Functions::collect();
 Database::connect();
 
-$result = Database::query("SELECT * FROM `authentication` LIMIT 1");
+$tableName = Database::tableName("authentication");
+$result = Database::query("SELECT * FROM `$tableName` LIMIT 1");
 if ($result->num_rows === 0)
 {
     $password = Database::validatePOST("password");
@@ -26,7 +27,7 @@ if ($result->num_rows === 0)
     else
     {
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
-        Database::query("INSERT INTO `authentication`(`password`) VALUES ('$hashPassword')");
+        Database::query("INSERT INTO `$tableName` (`password`) VALUES ('$hashPassword')");
         $return["result"]["success"] = true;
     }
 }

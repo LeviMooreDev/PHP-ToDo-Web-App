@@ -10,7 +10,7 @@ Core::validateBookExists($id);
 
 if (file_exists(Core::coverFile100PathServer($id)))
 {
-    Database::query("UPDATE `book-hub` SET `update_timestamp`=CURRENT_TIMESTAMP() WHERE `id`=$id");
+    Database::query("UPDATE `$bookHubTable` SET `update_timestamp`=CURRENT_TIMESTAMP() WHERE `id`=$id");
     Core::deleteFile(Core::coverFile20PathServer($id));
     Core::deleteFile(Core::coverFile50PathServer($id));
     Core::deleteFile(Core::coverFile100PathServer($id));

@@ -9,6 +9,6 @@ $id = Database::escape($_POST["id"]);
 $status = Database::escape($_POST["status"]);
 Core::validateBookExists($id);
 
-Database::query("UPDATE `book-hub` SET `status`='$status' WHERE `id`=$id");
+Database::query("UPDATE `$bookHubTable` SET `status`='$status' WHERE `id`=$id");
 
 Core::success("Successful");

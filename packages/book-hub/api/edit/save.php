@@ -6,7 +6,7 @@ Database::connect();
 $data = new Data();
 Core::validateBookExists($data->id);
 
-$sql = "UPDATE `book-hub` SET `title`=$data->title, `subtitle`=$data->subtitle, `categories`=$data->categories, `description`=$data->description, `authors`=$data->authors, `publishers`=$data->publishers, `date`=$data->date, `isbn13`=$data->isbn13, `isbn10`=$data->isbn10, `pages`=$data->pages, `status`=$data->status WHERE `id`=$data->id";
+$sql = "UPDATE `$bookHubTable` SET `title`=$data->title, `subtitle`=$data->subtitle, `categories`=$data->categories, `description`=$data->description, `authors`=$data->authors, `publishers`=$data->publishers, `date`=$data->date, `isbn13`=$data->isbn13, `isbn10`=$data->isbn10, `pages`=$data->pages, `status`=$data->status WHERE `id`=$data->id";
 Database::query($sql);
 Core::result("sql", $sql);
 Core::success("Save successful");
@@ -50,8 +50,9 @@ class Data
 
     function validateStatus()
     {
+        global $bookHubTable;
         $values = null;
-        $result = Database::query("SHOW COLUMNS FROM `book-hub` WHERE Field = 'status'");
+        $result = Database::query("SHOW COLUMNS FROM `$bookHubTable` WHERE Field = 'status'");
         if ($result->num_rows > 0)
         {
             while ($row = $result->fetch_assoc())

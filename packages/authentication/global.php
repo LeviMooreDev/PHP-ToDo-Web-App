@@ -1,4 +1,5 @@
 <?php
+$authenticationTable = Database::tableName("authentication");
 if (Routing::url() === "auth/login")
 {
     if (Authentication::Auth())
@@ -8,7 +9,7 @@ if (Routing::url() === "auth/login")
     }
 
     Database::connect();
-    $result = Database::query("SELECT * FROM `authentication` LIMIT 1");
+    $result = Database::query("SELECT * FROM `$authenticationTable` LIMIT 1");
     if ($result->num_rows == 0)
     {
         header("Location: /auth/setup");
@@ -18,7 +19,7 @@ if (Routing::url() === "auth/login")
 else if (Routing::url() === "auth/setup")
 {
     Database::connect();
-    $result = Database::query("SELECT * FROM `authentication` LIMIT 1");
+    $result = Database::query("SELECT * FROM `$authenticationTable` LIMIT 1");
     if ($result->num_rows !== 0)
     {
         header("Location: /auth/login");

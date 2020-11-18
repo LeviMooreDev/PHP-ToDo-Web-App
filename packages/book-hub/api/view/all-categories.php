@@ -3,7 +3,7 @@ header('Content-Type: application/json');
 include("../core.php");
 
 Database::connect();
-$result = Database::query("SELECT `categories` FROM `book-hub`");
+$result = Database::query("SELECT `categories` FROM `$bookHubTable`");
 
 $categories = [];
 if ($result->num_rows > 0)

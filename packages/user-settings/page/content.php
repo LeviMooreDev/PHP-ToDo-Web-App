@@ -7,7 +7,8 @@
                 <div class="card-body">
                     <?php
                     Database::connect();
-                    $result = Database::query("SELECT * FROM `user-settings` ORDER BY `package`, `name`");
+                    $userSettingsTable = Database::tableName("user_settings");
+                    $result = Database::query("SELECT * FROM `$userSettingsTable` ORDER BY `package`, `name`");
                     Database::disconnect();
                     if ($result->num_rows > 0)
                     {

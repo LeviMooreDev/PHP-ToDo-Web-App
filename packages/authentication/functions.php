@@ -43,12 +43,13 @@ class Authentication
         Database::connect();
         $ip = Database::escape(Authentication::GetIP());
 
-        Database::query("INSERT INTO `authentication-ips` (`ip`) VALUES('$ip') ON DUPLICATE KEY UPDATE `fails` = `fails` + 1");
+        $authenticationIpsTable = Database::tableName("authentication_ips");
+        Database::query("INSERT INTO `$authenticationIpsTable` (`ip`) VALUES('$ip') ON DUPLICATE KEY UPDATE `fails` = `fails` + 1");
 
-        $result = Database::query("SELECT `id` FROM `authentication-ips` WHERE `ip`='$ip' AND `fails` > $max");
+        $result = Database::query("SELECT `id` FROM `$authenticationIpsTable` WHERE `ip`='$ip' AND `fails` > $max");
         if ($result->num_rows !== 0)
         {
-            Database::query("UPDATE `authentication-ips` SET `banned`=1 WHERE `ip`='$ip'");
+            Database::query("UPDATE `$authenticationIpsTable` SET `banned`=1 WHERE `ip`='$ip'");
         }
     }
 
@@ -57,7 +58,8 @@ class Authentication
         Database::connect();
         $ip = Database::escape(Authentication::GetIP());
 
-        Database::query("INSERT INTO `authentication-ips` (`ip`) VALUES('$ip') ON DUPLICATE KEY UPDATE `fails`=0");
+        $authenticationIpsTable = Database::tableName("authentication_ips");
+        Database::query("INSERT INTO `$authenticationIpsTable` (`ip`) VALUES('$ip') ON DUPLICATE KEY UPDATE `fails`=0");
     }
 
     static function IsBanned()
@@ -65,7 +67,8 @@ class Authentication
         Database::connect();
         $ip = Database::escape(Authentication::GetIP());
 
-        $result = Database::query("SELECT `id` FROM `authentication-ips` WHERE `ip`='$ip' AND `banned`=1");
+        $authenticationIpsTable = Database::tableName("authentication_ips");
+        $result = Database::query("SELECT `id` FROM `$authenticationIpsTable` WHERE `ip`='$ip' AND `banned`=1");
         if ($result->num_rows === 0)
         {
             return false;

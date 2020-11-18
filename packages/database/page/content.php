@@ -33,6 +33,10 @@
                             <label for="password">Password</label>
                             <input id="password" name="password" class="form-control" type="password" placeholder="password" required>
                         </div>
+                        <div class="form-group">
+                            <label for="prefix">Table prefix</label>
+                            <input id="prefix" name="prefix" class="form-control" type="text" placeholder="table prefix" required>
+                        </div>
                     </div>
                     <div class="card-footer">
                         <button name="submit" class="btn btn-primary" type="submit">Setup Database</button>

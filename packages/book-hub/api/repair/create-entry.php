@@ -15,7 +15,7 @@ if (!file_exists(Core::pdfFilePathServer($oldFolder)))
     Core::fail("Can't find book in folder $oldFolder");
 }
 
-$result = Database::query("SELECT * FROM `book-hub` WHERE `id`='$oldFolder'");
+$result = Database::query("SELECT * FROM `$bookHubTable` WHERE `id`='$oldFolder'");
 if ($result->num_rows !== 0)
 {
     Core::fail("Database entry using folder $oldFolder already exists");
@@ -33,7 +33,7 @@ if (file_exists(Core::originalFileNamePathServer($oldFolder)))
 }
 
 $id;
-$result = Database::queries("INSERT INTO `book-hub`(`title`) VALUES ('$title'); SELECT LAST_INSERT_ID();");
+$result = Database::queries("INSERT INTO `$bookHubTable`(`title`) VALUES ('$title'); SELECT LAST_INSERT_ID();");
 if ($result->field_count == 1 && $result->num_rows == 0)
 {
     $row = $result->fetch_assoc();

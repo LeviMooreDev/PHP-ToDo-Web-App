@@ -17,6 +17,7 @@ $host = $_POST["host"];
 $database = $_POST["database"];
 $username = $_POST["username"];
 $password = $_POST["password"];
+$prefix = $_POST["prefix"];
 
 //Disable error messages and try to login to database.
 ini_set('display_errors', 0);
@@ -40,22 +41,14 @@ else
         $content .= "define('DB_DATABASE', '$database');\n";
         $content .= "define('DB_USERNAME', '$username');\n";
         $content .= "define('DB_PASSWORD', '$password');\n";
+        $content .= "define('DB_PREFIX', '$prefix');\n";
         fwrite($file, $content);
         fclose($file);
-
+ 
         //Create database tables.
         Database::connect();
 
         $packages = Packages::names();
-        foreach ($packages as &$package)
-        {
-            $file = Packages::serverPath($package) . "/database/setup.sql";
-
-            if (file_exists($file))
-            {
-                Database::queryFile($file);
-            }
-        }
         foreach ($packages as &$package)
         {
             $file = Packages::serverPath($package) . "/database/setup.php";

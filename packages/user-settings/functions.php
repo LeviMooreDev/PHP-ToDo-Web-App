@@ -6,7 +6,8 @@ class UserSettings
         if (Database::isReady())
         {
             Database::connect();
-            $result = Database::query("SELECT * FROM `user-settings` WHERE `package` = '$package' AND `name` = '$name'");
+            $userSettingsTable = Database::tableName("user_settings");
+            $result = Database::query("SELECT * FROM `$userSettingsTable` WHERE `package` = '$package' AND `name` = '$name'");
             if ($result->num_rows > 0)
             {
                 while ($row = $result->fetch_assoc())
@@ -40,7 +41,8 @@ class UserSettings
         if (Database::isReady())
         {
             Database::connect();
-            Database::query("INSERT INTO `user-settings`(`package`, `name`, `selected`, `options`, `tooltip`) VALUES ('$package','$name','$selected','$options','$tooltip') 
+            $userSettingsTable = Database::tableName("user_settings");
+            Database::query("INSERT INTO `$userSettingsTable`(`package`, `name`, `selected`, `options`, `tooltip`) VALUES ('$package','$name','$selected','$options','$tooltip') 
             ON DUPLICATE KEY UPDATE `selected`='$selected'");
         }
     }

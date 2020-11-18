@@ -4,7 +4,7 @@ include("../core.php");
 
 Database::connect();
 $id = Database::escape($_POST["id"]);
-$result = Database::query("SELECT * FROM `book-hub` WHERE `id`=$id");
+$result = Database::query("SELECT * FROM `$bookHubTable` WHERE `id`=$id");
 if ($result->num_rows === 1)
 {
     $data = $result->fetch_assoc();

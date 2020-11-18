@@ -96,7 +96,6 @@
                             <button id="search-cover-open-library-open" class="dropdown-item">Search Cover (OpenLibrary.com)</button>
                             <button id="search-good-reads" class="dropdown-item">Search GoodReads.com (new tab)</button>
                             <button id="files-action" class="dropdown-item">Files</button>
-                            <a id="download" class="dropdown-item" href="#">Download</a>
                             <button id="original-title" class="dropdown-item">Reset Title</button>
                             <button id="delete" class="dropdown-item">Delete</button>
                         </div>
@@ -241,11 +240,17 @@
                         <tr id="uploaded-pdf">
                             <td>PDF</td>
                             <td class="button-col">
+                                <button class="btn btn-primary" onClick="Files.download('pdf')"><i class="fas fa-download"></i></button>
+                            </td>
+                            <td class="button-col">
                                 <button class="btn btn-danger" onClick="Files.remove('pdf')"><i class="fas fa-trash-alt"></i></button>
                             </td>
                         </tr>
                         <tr id="uploaded-epub">
                             <td>EPUB</td>
+                            <td class="button-col">
+                                <button class="btn btn-primary" onClick="Files.download('epub')"><i class="fas fa-download"></i></button>
+                            </td>
                             <td class="button-col">
                                 <button class="btn btn-danger" onClick="Files.remove('epub')"><i class="fas fa-trash-alt"></i></button>
                             </td>
