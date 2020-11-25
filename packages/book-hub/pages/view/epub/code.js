@@ -487,6 +487,10 @@ class Settings
                 font-family: 'OpenDyslexic-Italic';
                 src: url('https://books.levimoore.dk/packages/book-hub/fonts/OpenDyslexic-Italic.otf');
             }
+            @font-face {
+                font-family: 'Atkinson-Hyperlegible-Regular';
+                src: url('https://books.levimoore.dk/packages/book-hub/fonts/Atkinson-Hyperlegible-Regular.otf');
+            }
             </style>`);
         }
     }
