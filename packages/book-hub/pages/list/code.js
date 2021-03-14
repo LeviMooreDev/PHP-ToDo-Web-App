@@ -125,7 +125,7 @@ class TableLayout
         },
         headerClick: TableLayout.headerClickSort(1),
         hidable: true,
-        fit: true
+        fit: false
     },
     {
         header: "Categories",
@@ -135,7 +135,7 @@ class TableLayout
         },
         headerClick: TableLayout.headerClickSort(2),
         hidable: true,
-        fit: true
+        fit: false
     },
     {
         header: "Publishers",
