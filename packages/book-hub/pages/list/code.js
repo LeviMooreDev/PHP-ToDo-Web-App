@@ -1,6 +1,6 @@
 var books = [];
 
-$(document).ready(function()
+$(document).ready(function ()
 {
     Layout.ready();
     Sorting.ready();
@@ -10,13 +10,13 @@ $(document).ready(function()
 
     Alert.workingSmall();
     API.simple("book-hub", "view/all-books", "",
-        function(result)
+        function (result)
         {
             books = result["books"];
             Sorting.sort();
             Layout.refresh(false);
         },
-        function(result)
+        function (result)
         {
             Alert.error("Something went wrong. See console (F12) for more info.");
             console.log(result);
@@ -110,110 +110,110 @@ class TableLayout
     static showColumnsDefault = ["Title", "Authors", "Categories", "Release date"];
 
     static columns = [
-    {
-        header: "Title",
-        display: TableLayout.displayTitle,
-        headerClick: TableLayout.headerClickSort(0),
-        hidable: false,
-        fit: false
-    },
-    {
-        header: "Authors",
-        display: function(book)
         {
-            return book["authors"];
+            header: "Title",
+            display: TableLayout.displayTitle,
+            headerClick: TableLayout.headerClickSort(0),
+            hidable: false,
+            fit: false
         },
-        headerClick: TableLayout.headerClickSort(1),
-        hidable: true,
-        fit: false
-    },
-    {
-        header: "Categories",
-        display: function(book)
         {
-            return book["categories"];
+            header: "Authors",
+            display: function (book)
+            {
+                return book["authors"];
+            },
+            headerClick: TableLayout.headerClickSort(1),
+            hidable: true,
+            fit: false
         },
-        headerClick: TableLayout.headerClickSort(2),
-        hidable: true,
-        fit: false
-    },
-    {
-        header: "Publishers",
-        display: function(book)
         {
-            return book["publishers"];
+            header: "Categories",
+            display: function (book)
+            {
+                return book["categories"];
+            },
+            headerClick: TableLayout.headerClickSort(2),
+            hidable: true,
+            fit: false
         },
-        headerClick: TableLayout.headerClickSort(3),
-        hidable: true,
-        fit: true
-    },
-    {
-        header: "Release date",
-        display: function(book)
         {
-            return book["date"];
+            header: "Publishers",
+            display: function (book)
+            {
+                return book["publishers"];
+            },
+            headerClick: TableLayout.headerClickSort(3),
+            hidable: true,
+            fit: true
         },
-        headerClick: TableLayout.headerClickSort(4),
-        hidable: true,
-        fit: true
-    },
-    {
-        header: "ISBN10",
-        display: function(book)
         {
-            return book["isbn10"];
+            header: "Release date",
+            display: function (book)
+            {
+                return book["date"];
+            },
+            headerClick: TableLayout.headerClickSort(4),
+            hidable: true,
+            fit: true
         },
-        headerClick: TableLayout.headerClickSort(5),
-        hidable: true,
-        fit: true
-    },
-    {
-        header: "ISBN13",
-        display: function(book)
         {
-            return book["isbn13"];
+            header: "ISBN10",
+            display: function (book)
+            {
+                return book["isbn10"];
+            },
+            headerClick: TableLayout.headerClickSort(5),
+            hidable: true,
+            fit: true
         },
-        headerClick: TableLayout.headerClickSort(6),
-        hidable: true,
-        fit: true
-    },
-    {
-        header: "Status",
-        display: function(book)
         {
-            return book["status"];
+            header: "ISBN13",
+            display: function (book)
+            {
+                return book["isbn13"];
+            },
+            headerClick: TableLayout.headerClickSort(6),
+            hidable: true,
+            fit: true
         },
-        headerClick: TableLayout.headerClickSort(7),
-        hidable: true,
-        fit: true
-    },
-    {
-        header: "Pages",
-        display: function(book)
         {
-            return book["pages"];
+            header: "Status",
+            display: function (book)
+            {
+                return book["status"];
+            },
+            headerClick: TableLayout.headerClickSort(7),
+            hidable: true,
+            fit: true
         },
-        headerClick: TableLayout.headerClickSort(8),
-        hidable: true,
-        fit: true
-    },
-    {
-        header: "Added",
-        display: function(book)
         {
-            return book["added"];
+            header: "Pages",
+            display: function (book)
+            {
+                return book["pages"];
+            },
+            headerClick: TableLayout.headerClickSort(8),
+            hidable: true,
+            fit: true
         },
-        headerClick: TableLayout.headerClickSort(9),
-        hidable: true,
-        fit: true
-    },
-    {
-        header: "Actions",
-        display: TableLayout.displayActions,
-        headerClick: "",
-        hidable: false,
-        fit: true
-    }]
+        {
+            header: "Added",
+            display: function (book)
+            {
+                return book["added"];
+            },
+            headerClick: TableLayout.headerClickSort(9),
+            hidable: true,
+            fit: true
+        },
+        {
+            header: "Actions",
+            display: TableLayout.displayActions,
+            headerClick: "",
+            hidable: false,
+            fit: true
+        }]
 
     static ready()
     {
@@ -273,7 +273,7 @@ class TableLayout
 
         $(`#${TableLayout.showColumnsElementId}`).selectpicker();
         $(`#${TableLayout.showColumnsElementId}`).selectpicker('val', TableLayout.showColumns);
-        $(`#${TableLayout.showColumnsElementId}`).on('hidden.bs.select', function(e, clickedIndex, isSelected, previousValue)
+        $(`#${TableLayout.showColumnsElementId}`).on('hidden.bs.select', function (e, clickedIndex, isSelected, previousValue)
         {
             TableLayout.onShowSelectChange();
         });
@@ -363,51 +363,51 @@ class Filter
     static searchInclude;
 
     static searchable = [
-    {
-        title: "Title",
-        index: "title"
-    },
-    {
-        title: "Subtitle",
-        index: "subtitle"
-    },
-    {
-        title: "Authors",
-        index: "authors"
-    },
-    {
-        title: "Categories",
-        index: "categories"
-    },
-    {
-        title: "Publishers",
-        index: "publishers"
-    },
-    {
-        title: "Status",
-        index: "status"
-    },
-    {
-        title: "Release Date",
-        index: "date"
-    },
-    {
-        title: "ISBN10",
-        index: "isbn10"
-    },
-    {
-        title: "ISBN13",
-        index: "isbn13"
-    },
-    {
-        title: "Added",
-        index: "added"
-    }]
+        {
+            title: "Title",
+            index: "title"
+        },
+        {
+            title: "Subtitle",
+            index: "subtitle"
+        },
+        {
+            title: "Authors",
+            index: "authors"
+        },
+        {
+            title: "Categories",
+            index: "categories"
+        },
+        {
+            title: "Publishers",
+            index: "publishers"
+        },
+        {
+            title: "Status",
+            index: "status"
+        },
+        {
+            title: "Release Date",
+            index: "date"
+        },
+        {
+            title: "ISBN10",
+            index: "isbn10"
+        },
+        {
+            title: "ISBN13",
+            index: "isbn13"
+        },
+        {
+            title: "Added",
+            index: "added"
+        }]
 
     static ready()
     {
         //search query
-        Filter.searchQueryElement.keyup(function(e)
+        Filter.searchQueryElement.keyup(function (e)
         {
             Filter.startSearchQueryTimer();
             if (e.keyCode == 13)
@@ -416,7 +416,7 @@ class Filter
             }
         });
         Filter.searchQueryElement.tooltip();
-        Filter.searchQueryElement.on('focus', function()
+        Filter.searchQueryElement.on('focus', function ()
         {
             Filter.searchQueryElement.tooltip('hide');
         });
@@ -447,7 +447,7 @@ class Filter
         Filter.searchIncludeElement.html(includeOptions);
         Filter.searchIncludeElement.selectpicker();
         Filter.searchIncludeElement.selectpicker('val', Filter.searchInclude);
-        Filter.searchIncludeElement.on('hidden.bs.select', function(e, clickedIndex, isSelected, previousValue)
+        Filter.searchIncludeElement.on('hidden.bs.select', function (e, clickedIndex, isSelected, previousValue)
         {
             Filter.onSearchIncludeSelectChange();
         });
@@ -460,7 +460,7 @@ class Filter
     static startSearchQueryTimer(sec = 500)
     {
         clearTimeout(Filter.searchQueryTimer);
-        Filter.searchQueryTimer = setTimeout(function()
+        Filter.searchQueryTimer = setTimeout(function ()
         {
             Layout.refresh();
         }, sec);
@@ -496,20 +496,43 @@ class Filter
         var blocks = Filter.searchQueryElement.val();
         if (!(blocks === null || blocks.match(/^ *$/) !== null))
         {
-            blocks = blocks.toLowerCase();
-
             match = false;
-            blocks.split(",").forEach(block =>
+            blocks.split("OR").forEach(block =>
             {
                 var foundAll = true;
-                block.split(".").forEach(needs =>
+                let operators = [];
+                operators["AND"] = function (text, searchable)
                 {
-                    needs = needs.trim();
-
-                    if (!searchable.includes(needs))
+                    if (searchable.includes(text))
                     {
-                        foundAll = false;
+                        return true;
                     }
+                };
+                operators["NOT"] = function (text, searchable)
+                {
+                    if (!searchable.includes(text))
+                    {
+                        return true;
+                    }
+                };
+
+                const regexStr = '(?=' + Object.keys(operators).join("|") + ')';
+                const searchRegEx = new RegExp(regexStr, 'g');
+
+                block.split(searchRegEx).forEach(text =>
+                {
+                    let operator = text.split(" ")[0];
+                    if (operator in operators)
+                    {
+                        text = text.substring(operator.length);
+                    }
+                    else
+                    {
+                        operator = Object.keys(operators)[0];
+                    }
+                    text = text.trim();
+
+                    foundAll = operators[operator](text.toLowerCase(), searchable) ? foundAll : false;
                 });
 
                 if (foundAll)
@@ -552,7 +575,7 @@ class Filter
     static setStatusOptions()
     {
         API.simple("book-hub", "view/all-status", "",
-            function(result)
+            function (result)
             {
                 if (result["success"] == true)
                 {
@@ -572,7 +595,7 @@ class Filter
                     Alert.error("Unable to get status options. Server error.");
                 }
             },
-            function(result)
+            function (result)
             {
                 Alert.error("Something went wrong. See console (F12) for more info.");
                 console.log(result);
@@ -583,7 +606,7 @@ class Filter
     {
         return str.replace(
             /\w\S*/g,
-            function(txt)
+            function (txt)
             {
                 return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
             }
@@ -598,90 +621,90 @@ class Sorting
     static sortByElement = $("#sort-by");
 
     static sortingOptions = [
-    {
-        title: "Title",
-        sorting: function(a, b)
         {
-            return Sorting.stringSorting(a["title"], b["title"])
-        }
-    },
-    {
-        title: "Authors",
-        sorting: function(a, b)
+            title: "Title",
+            sorting: function (a, b)
+            {
+                return Sorting.stringSorting(a["title"], b["title"])
+            }
+        },
         {
-            return Sorting.stringSorting(a["authors"], b["authors"])
-        }
-    },
-    {
-        title: "Categories",
-        sorting: function(a, b)
+            title: "Authors",
+            sorting: function (a, b)
+            {
+                return Sorting.stringSorting(a["authors"], b["authors"])
+            }
+        },
         {
-            return Sorting.stringSorting(a["categories"], b["categories"])
-        }
-    },
-    {
-        title: "Publishers",
-        sorting: function(a, b)
+            title: "Categories",
+            sorting: function (a, b)
+            {
+                return Sorting.stringSorting(a["categories"], b["categories"])
+            }
+        },
         {
-            return Sorting.stringSorting(a["publishers"], b["publishers"])
-        }
-    },
-    {
-        title: "Release date",
-        sorting: function(a, b)
+            title: "Publishers",
+            sorting: function (a, b)
+            {
+                return Sorting.stringSorting(a["publishers"], b["publishers"])
+            }
+        },
         {
-            return Sorting.stringSorting(a["date"], b["date"])
-        }
-    },
-    {
-        title: "ISBN10",
-        sorting: function(a, b)
+            title: "Release date",
+            sorting: function (a, b)
+            {
+                return Sorting.stringSorting(a["date"], b["date"])
+            }
+        },
         {
-            return Sorting.stringSorting(a["isbn10"], b["isbn10"])
-        }
-    },
-    {
-        title: "ISBN13",
-        sorting: function(a, b)
+            title: "ISBN10",
+            sorting: function (a, b)
+            {
+                return Sorting.stringSorting(a["isbn10"], b["isbn10"])
+            }
+        },
         {
-            return Sorting.stringSorting(a["categories"], b["categories"])
-        }
-    },
-    {
-        title: "Status",
-        sorting: function(a, b)
+            title: "ISBN13",
+            sorting: function (a, b)
+            {
+                return Sorting.stringSorting(a["categories"], b["categories"])
+            }
+        },
         {
-            return Sorting.stringSorting(a["status"], b["status"])
-        }
-    },
-    {
-        title: "Pages",
-        sorting: function(a, b)
+            title: "Status",
+            sorting: function (a, b)
+            {
+                return Sorting.stringSorting(a["status"], b["status"])
+            }
+        },
         {
-            return Sorting.numberSorting(a["pages"], b["pages"])
-        }
-    },
-    {
-        title: "Added",
-        sorting: function(a, b)
+            title: "Pages",
+            sorting: function (a, b)
+            {
+                return Sorting.numberSorting(a["pages"], b["pages"])
+            }
+        },
         {
-            return Sorting.stringSorting(a["added"], b["added"])
-        }
-    },
-    {
-        title: "Cover color",
-        sorting: function(a, b)
+            title: "Added",
+            sorting: function (a, b)
+            {
+                return Sorting.stringSorting(a["added"], b["added"])
+            }
+        },
         {
-            return Sorting.colorHSorting(a["cover-color"], b["cover-color"])
-        }
-    },
-    {
-        title: "Cover brightness",
-        sorting: function(a, b)
+            title: "Cover color",
+            sorting: function (a, b)
+            {
+                return Sorting.colorHSorting(a["cover-color"], b["cover-color"])
+            }
+        },
         {
-            return Sorting.colorLSorting(a["cover-color"], b["cover-color"])
-        }
-    }, ]
+            title: "Cover brightness",
+            sorting: function (a, b)
+            {
+                return Sorting.colorLSorting(a["cover-color"], b["cover-color"])
+            }
+        },]
 
     static ready()
     {
