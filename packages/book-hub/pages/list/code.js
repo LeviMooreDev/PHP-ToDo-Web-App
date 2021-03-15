@@ -13,6 +13,7 @@ $(document).ready(function ()
         function (result)
         {
             books = result["books"];
+            Filter.setupAutocomplete();
             Sorting.sort();
             Layout.refresh(false);
         },
@@ -22,6 +23,7 @@ $(document).ready(function ()
             console.log(result);
         }
     );
+
 });
 
 class Layout
@@ -425,6 +427,26 @@ class Filter
 
         //status
         Filter.setStatusOptions();
+    }
+
+    static setupAutocomplete()
+    {
+        let values = [];
+        books.forEach(function (book)
+        {
+            if(book["authors"]){
+                values.push(...book["authors"].split(","));
+            }
+            if(book["categories"]){
+                values.push(...book["categories"].split(","));
+            }
+            if(book["title"]){
+                values.push(book["title"]);
+            }
+        })
+        values = [...new Set(values)].map(function(x){ return x.toLocaleLowerCase(); })
+        values.push(...["AND", "OR", "NOT"]);
+        $("#search-query").asuggest(values);
     }
 
     static setupSearchInclude()
