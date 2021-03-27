@@ -113,7 +113,7 @@ class Packages
                 {
                     if (Packages::exist($dName))
                     {
-                        if($packages[$pName] !== $dVersion)
+                        if($packages[$dName] !== $dVersion)
                         {
                             $installVersion = $packages[$pName];
                             die("Package $pName has $dName version $dVersion as a dependency but version $installVersion is installed.");
