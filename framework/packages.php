@@ -113,11 +113,25 @@ class Packages
                 {
                     if (Packages::exist($dName))
                     {
-                        if($packages[$dName] !== $dVersion)
+                        $biggerIsOkay = false;
+                        if ($dVersion[0] == ">")
                         {
-                            $installVersion = $packages[$pName];
-                            die("Package $pName has $dName version $dVersion as a dependency but version $installVersion is installed.");
+                            $dVersion = substr($dVersion, 1);
+                            $biggerIsOkay = true;
                         }
+
+                        $check = version_compare($packages[$dName], $dVersion);
+                        if ($check == 0)
+                        {
+                            continue;
+                        }
+                        else if ($check == 1 && $biggerIsOkay)
+                        {
+                            continue;
+                        }
+
+                        $installVersion = $packages[$dName];
+                        die("Package $pName has $dName version $dVersion as a dependency but version $installVersion is installed.");
                     }
                     else
                     {
