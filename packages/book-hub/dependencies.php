@@ -8,5 +8,6 @@ return [
     "font-awesome" => ">5",
     "user-settings" => "any",
     "bootstrap-select" => "any",
-    "awesomplete" => "any"
+    "awesomplete" => "any", 
+    "asuggest" => "any"
 ];

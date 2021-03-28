@@ -12,5 +12,6 @@ return [
     'theme' => "1.0",
 	'book-hub' => "1.0",
     "bootstrap-select" => "1.13.14",
-    "awesomplete" => "1.1.5"
+    "awesomplete" => "1.1.5",
+    "asuggest" => "1.0"
 ];
