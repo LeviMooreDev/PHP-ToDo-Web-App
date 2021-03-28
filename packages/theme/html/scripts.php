@@ -1,2 +1,2 @@
-<script src="<?= Packages::httpPath("theme") ?>/static/popper.min.js"></script>
-<script src="<?= Packages::httpPath("theme") ?>/static/bootstrap.min.js"></script>
+<script src="<?= Packages::selfHttpPath() ?>/static/popper.min.js"></script>
+<script src="<?= Packages::selfHttpPath() ?>/static/bootstrap.min.js"></script>
