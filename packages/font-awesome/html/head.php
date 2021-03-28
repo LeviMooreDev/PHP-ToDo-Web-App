@@ -1,1 +1,1 @@
-<link rel="stylesheet" href="<?= Packages::httpPath("font-awesome") ?>/files/css/all.min.css">
+<link rel="stylesheet" href="<?= Packages::selfHttpPath() ?>/static/css/all.min.css">

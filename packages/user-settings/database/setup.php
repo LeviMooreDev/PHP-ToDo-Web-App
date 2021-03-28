@@ -1,13 +1,4 @@
 <?php
-foreach ($packages as $package)
-{
-    $file = Packages::serverPath($package) . "/user-settings/setup.php";
-    if (file_exists($file))
-    {
-        include($file);
-    }
-}
-
 $table = Database::tableName("user_settings");
 Database::queries("
 DROP TABLE IF EXISTS `$table`;
@@ -23,3 +14,12 @@ CREATE TABLE `$table` (
   UNIQUE KEY `full_name` (`package`, `name`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8 COLLATE = utf8_bin;
 ");
+
+foreach ($packages as $package)
+{
+    $file = Packages::serverPath($package) . "/user-settings/setup.php";
+    if (file_exists($file))
+    {
+        include($file);
+    }
+}

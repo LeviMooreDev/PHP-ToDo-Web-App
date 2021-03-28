@@ -1,1 +1,1 @@
-<link rel="stylesheet" href="<?= Packages::httpPath("alert") ?>/sweetalert2.min.css">
+<link rel="stylesheet" href="<?= Packages::selfHttpPath() ?>/static/sweetalert2.min.css">
