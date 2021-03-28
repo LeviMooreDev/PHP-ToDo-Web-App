@@ -1,4 +1,0 @@
-<Files iframe.html>
-    Order Allow,Deny
-    Allow from all
-</Files>
