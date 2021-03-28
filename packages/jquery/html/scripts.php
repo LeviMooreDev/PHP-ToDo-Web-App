@@ -1,1 +1,1 @@
-<script src="<?= Packages::httpPath("jquery") ?>/jquery.min.js"></script>
+<script src="<?= Packages::httpPath("jquery") ?>/static/jquery.min.js"></script>

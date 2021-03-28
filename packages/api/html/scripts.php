@@ -1,1 +1,1 @@
-<script src="<?= Packages::httpPath("api") ?>/core.js"></script>
+<script src="<?= Packages::httpPath("api") ?>/static/core.js"></script>
