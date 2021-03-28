@@ -11,5 +11,6 @@ return [
     'user-settings' => "1.0",
     'theme' => "1.0",
 	'book-hub' => "1.0",
-    "bootstrap-select" => "1.13.14"
+    "bootstrap-select" => "1.13.14",
+    "awesomplete" => "1.1.5"
 ];

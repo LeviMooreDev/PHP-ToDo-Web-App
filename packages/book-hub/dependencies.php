@@ -7,5 +7,6 @@ return [
     "alert" => "any",
     "font-awesome" => ">5",
     "user-settings" => "any",
-    "bootstrap-select" => "any"
+    "bootstrap-select" => "any",
+    "awesomplete" => "any"
 ];
