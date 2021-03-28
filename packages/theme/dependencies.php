@@ -1,6 +1,6 @@
 <?php
 return [
-    'user-settings' => "1.0",
+    'user-settings' => "any",
     'jquery' => ">3",
     "font-awesome" => ">5"
 ];

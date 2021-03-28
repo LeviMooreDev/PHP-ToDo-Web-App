@@ -113,6 +113,11 @@ class Packages
                 {
                     if (Packages::exist($dName))
                     {
+                        if ($dVersion == "any")
+                        {
+                            continue;
+                        }
+
                         $biggerIsOkay = false;
                         if ($dVersion[0] == ">")
                         {

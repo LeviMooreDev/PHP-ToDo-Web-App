@@ -1,10 +1,10 @@
 <?php
 return [
-    "api" => "1.0",
-    "authentication" => "1.0",
-    "database" => "1.0",
+    "api" => "any",
+    "authentication" => "any",
+    "database" => "any",
     'jquery' => ">3",
-    "alert" => "1.0",
+    "alert" => "any",
     "font-awesome" => ">5",
-    "user-settings" => "1.0"
+    "user-settings" => "any"
 ];
