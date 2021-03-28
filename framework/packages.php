@@ -44,6 +44,38 @@ class Packages
         return Packages::$_versions[$name];
     }
 
+    public static function selfServerPath(): string
+    {
+        $bt = debug_backtrace();
+
+        $packagesPath = $_SERVER['DOCUMENT_ROOT'] . "/packages/";
+        foreach ($bt as &$path)
+        {
+            $path = $path['file'];
+            $packagesFolderSplit = explode($packagesPath, $path);
+            if (count($packagesFolderSplit) == 2)
+            {
+                return $packagesPath . explode("/", $packagesFolderSplit[1])[0];
+            }
+        }
+        return null;
+    }
+    public static function selfHttpPath(): string
+    {
+        $bt = debug_backtrace();
+
+        $packagesPath = $_SERVER['DOCUMENT_ROOT'] . "/packages/";
+        foreach ($bt as &$path)
+        {
+            $path = $path['file'];
+            $packagesFolderSplit = explode($packagesPath, $path);
+            if (count($packagesFolderSplit) == 2)
+            {
+                return "/packages/" . explode("/", $packagesFolderSplit[1])[0];
+            }
+        }
+        return null;
+    }
 
     public static function serverPath($name): string
     {
