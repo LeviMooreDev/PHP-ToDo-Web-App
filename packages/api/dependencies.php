@@ -1,4 +1,4 @@
 <?php
 return [
-    'jquery' => "1.0"
+    'jquery' => ">3"
 ];

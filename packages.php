@@ -2,7 +2,7 @@
 return [
     'force-ssl' => "1.0",
     '404' => "1.0",
-    'jquery' => "1.0",
+    'jquery' => "3.4.1",
     "font-awesome" => "5.11.2",
     'api' => "1.0",
     'alert' => "1.0",
