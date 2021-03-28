@@ -68,8 +68,9 @@ class Alert
         Swal.fire(
         {
             title: 'Working',
+            html: '',
             timerProgressBar: true,
-            onBeforeOpen: () =>
+            didOpen: () =>
             {
                 Swal.showLoading()
                 work();
@@ -82,9 +83,10 @@ class Alert
         {
             position: 'top',
             title: 'Working',
+            html: '<br>',
             timerProgressBar: true,
             toast: true,
-            onBeforeOpen: () =>
+            didOpen: () =>
             {
                 Swal.showLoading()
             }

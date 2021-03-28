@@ -5,7 +5,7 @@ return [
     'jquery' => "3.4.1",
     "font-awesome" => "5.11.2",
     'api' => "1.0",
-    'alert' => "1.0",
+    'alert' => "10.15.7",
     'database' => "1.0",
     'authentication' => "1.0",
     'user-settings' => "1.0",
