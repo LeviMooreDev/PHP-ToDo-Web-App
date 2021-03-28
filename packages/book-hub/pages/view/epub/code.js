@@ -477,19 +477,19 @@ class Settings
             <style>
             @font-face {
                 font-family: 'OpenDyslexic-Regular';
-                src: url('https://books.levimoore.dk/packages/book-hub/fonts/OpenDyslexic-Regular.otf');
+                src: url('https://books.levimoore.dk/packages/book-hub/static/fonts/OpenDyslexic-Regular.otf');
             }
             @font-face {
                 font-family: 'OpenDyslexic-Bold';
-                src: url('https://books.levimoore.dk/packages/book-hub/fonts/OpenDyslexic-Bold.otf');
+                src: url('https://books.levimoore.dk/packages/book-hub/static/fonts/OpenDyslexic-Bold.otf');
             }
             @font-face {
                 font-family: 'OpenDyslexic-Italic';
-                src: url('https://books.levimoore.dk/packages/book-hub/fonts/OpenDyslexic-Italic.otf');
+                src: url('https://books.levimoore.dk/packages/book-hub/static/fonts/OpenDyslexic-Italic.otf');
             }
             @font-face {
                 font-family: 'Atkinson-Hyperlegible-Regular';
-                src: url('https://books.levimoore.dk/packages/book-hub/fonts/Atkinson-Hyperlegible-Regular.otf');
+                src: url('https://books.levimoore.dk/packages/book-hub/static/fonts/Atkinson-Hyperlegible-Regular.otf');
             }
             </style>`);
         }

@@ -100,11 +100,11 @@ class Core
 
     static function coverPlaceholderFilePathServer()
     {
-        return Packages::serverPath("book-hub") . "/cover-placeholder.jpg";
+        return Packages::selfServerPath() . "/static/cover-placeholder.jpg";
     }
     static function coverPlaceholderFilePathHTTP()
     {
-        return Packages::httpPath("book-hub") . "/cover-placeholder.jpg";
+        return Packages::selfHttpPath() . "/static/cover-placeholder.jpg";
     }
 
     static function createFolder($path)

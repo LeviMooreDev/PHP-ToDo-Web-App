@@ -15,7 +15,7 @@ $(document).ready(function ()
 function load()
 {
     iframe = $("iframe");
-    iframe.attr('src', "/packages/book-hub/pdfjs/iframe.html?file=" + encodeURIComponent(`/packages/book-hub/api/download.php?id=${id}&format=pdf`));
+    iframe.attr('src', "/packages/book-hub/static/pdfjs/iframe.html?file=" + encodeURIComponent(`/packages/book-hub/api/download.php?id=${id}&format=pdf`));
 }
 
 function setElements(elements)
