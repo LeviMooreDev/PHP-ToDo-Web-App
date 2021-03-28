@@ -6,5 +6,6 @@ return [
     'jquery' => ">3",
     "alert" => "any",
     "font-awesome" => ">5",
-    "user-settings" => "any"
+    "user-settings" => "any",
+    "bootstrap-select" => "any"
 ];
