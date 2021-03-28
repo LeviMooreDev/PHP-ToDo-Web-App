@@ -411,10 +411,9 @@ class Filter
         //search query
         Filter.searchQueryElement.keyup(function (e)
         {
-            Filter.startSearchQueryTimer();
             if (e.keyCode == 13)
             {
-                Filter.startSearchQueryTimer(0);
+                Layout.refresh();
             }
         });
         Filter.searchQueryElement.tooltip();
@@ -477,15 +476,6 @@ class Filter
         {
             Filter.searchIncludeElement.selectpicker('mobile');
         }
-    }
-
-    static startSearchQueryTimer(sec = 500)
-    {
-        clearTimeout(Filter.searchQueryTimer);
-        Filter.searchQueryTimer = setTimeout(function ()
-        {
-            Layout.refresh();
-        }, sec);
     }
 
     static pass(book)
