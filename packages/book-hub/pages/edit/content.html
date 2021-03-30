@@ -1,0 +1,263 @@
+<div class="d-flex justify-content-center">
+    <div class="card">
+        <h3 class="card-header">Edit Book Metadata</h3>
+        <div class="card-body">
+            <form id="cover-form" autocomplete="off">
+                <fieldset>
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="title">Title</label>
+                            <input type="text" class="form-control" name="title" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label for="subtitle">Subtitle</label>
+                            <input type="text" class="form-control" name="subtitle">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" name="description" rows="6"></textarea>
+                    </div>
+
+                    <div id="rowSplit" class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="categories">Categories</label>
+                                <input type="text" class="form-control" name="categories">
+                            </div>
+                            <div class="form-group">
+                                <label for="authors">Authors</label>
+                                <input type="text" class="form-control" name="authors">
+                            </div>
+                            <div class="form-group">
+                                <label for="publishers">Publishers</label>
+                                <input type="text" class="form-control" name="publishers">
+                            </div>
+                            <div class="form-group">
+                                <label for="date">Release Date</label>
+                                <input type="date" class="form-control" name="date">
+                            </div>
+                            <div class="form-group">
+                                <label for="isbn13">ISBN 13</label>
+                                <input type="text" class="form-control" name="isbn13">
+                            </div>
+                            <div class="form-group">
+                                <label for="isbn10">ISBN 10</label>
+                                <input type="text" class="form-control" name="isbn10">
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="pages">Pages</label>
+                                    <input type="number" class="form-control" name="pages" min="0">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="status">Status</label>
+                                    <select class="form-control" name="status"></select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col d-flex justify-content-center">
+                            <div id="cover-root">
+                                <label>Cover</label>
+                                <br>
+                                <img id="cover">
+                                <div id="cover-file-group">
+                                    <input id="cover-file" type="file" name="file" class="w-100" accept=".jpg, .png, .jpeg, .png, .gif, .bmp" required>
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <button type="button" id="cover-upload" class="btn btn-primary btn-sm">Upload</button>
+                                        </div>
+                                        <div class="col-4">
+                                            <button type="button" id="cover-delete" class="btn btn-primary btn-sm">Remove</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar" id="progress-bar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </form>
+
+            <br>
+            <div class="row">
+                <div class="col">
+                    <button id="save" class="btn btn-primary bottom-button">Save</button>
+                </div>
+                <div class="col d-flex justify-content-end">
+                    <a id="read" href="#" class="btn btn-primary bottom-button">Read</a>
+                    <div id="action-button" class="btn-group bottom-button">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action</button>
+                        <div class="dropdown-menu">
+                            <button id="search-metadata-google-books-open" class="dropdown-item">Search Metadata (books.google.com)</button>
+                            <button id="search-cover-open-library-open" class="dropdown-item">Search Cover (OpenLibrary.com)</button>
+                            <button id="search-good-reads" class="dropdown-item">Search GoodReads.com (new tab)</button>
+                            <button id="files-action" class="dropdown-item">Files</button>
+                            <button id="original-title" class="dropdown-item">Reset Title</button>
+                            <button id="delete" class="dropdown-item">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="row">
+                <div class="col d-flex justify-content-center">
+                    <i id="added">Added: </i>
+                </div>
+                <div class="col d-flex justify-content-center">
+                    <i id="updated">Updated: </i><br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Metadata Google Books -->
+<div class="modal fade" id="search-metadata-google-books-modal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="form-group w-100">
+                    <div class="input-group">
+                        <select id="search-metadata-google-books-search-language" class="form-control">
+                            <option>en</option>
+                            <option>da</option>
+                        </select>
+                        <input id="search-metadata-google-books-search-query" type="search" class="form-control" placeholder="search title or ISBN">
+                        <span class="input-group-btn">
+                            <button type="button" id="search-metadata-google-books-search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div id="search-metadata-google-books-body" class="modal-body">
+
+                <div class="row">
+                    <div class="col col-md-4">
+                        <img id="search-metadata-google-books-cover" src="/packages/book-hub/static/cover-placeholder.jpg">
+                    </div>
+                    <div class="col col-md-8">
+                        <p><b>Title:</b> <span id="search-metadata-google-books-title">N/A</span></p>
+                        <p><b>Subtitle:</b> <span id="search-metadata-google-books-subtitle">N/A</span></p>
+                        <p><b>Categories:</b> <span id="search-metadata-google-books-categories">N/A</span></p>
+                        <p><b>Authors:</b> <span id="search-metadata-google-books-authors">N/A</span></p>
+                        <p><b>Publishers:</b> <span id="search-metadata-google-books-publishers">N/A</span></p>
+                        <p><b>Date:</b> <span id="search-metadata-google-books-date">N/A</span></p>
+                        <p><b>ISBN13:</b> <span id="search-metadata-google-books-isbn13">N/A</span></p>
+                        <p><b>ISBN10:</b> <span id="search-metadata-google-books-isbn10">N/A</span></p>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col col-md-12">
+                        <p><b>Description:</b> <span id="search-metadata-google-books-description">N/A</span></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="row w-100">
+                    <div id="search-metadata-google-books-page-buttons" class="col col-md-6">
+                    </div>
+                    <div class="col col-md-6 d-flex justify-content-end">
+
+                        <div id="action-button" class="btn-group bottom-button">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Apply and save</button>
+                            <div class="dropdown-menu">
+                                <button id="search-metadata-google-books-apply-everything" class="dropdown-item">Everything</button>
+                                <button id="search-metadata-google-books-apply-text" class="dropdown-item">Text</button>
+                                <button id="search-metadata-google-books-apply-cover" class="dropdown-item">Cover</button>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search Cover OpenLibrary.com -->
+<div class="modal fade" id="search-cover-open-library-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="form-group w-100">
+                    <div class="input-group">
+                        <input id="search-cover-open-library-search-query" type="search" class="form-control" placeholder="search title">
+                        <span class="input-group-btn">
+                            <button type="button" id="search-cover-open-library-search-button" class="btn btn-primary"><i class="fas fa-search"></i></button>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            <div id="search-cover-open-library-body" class="modal-body d-flex justify-content-center">
+                <img id="search-cover-open-library-img" src="/packages/book-hub/static/cover-placeholder.jpg">
+            </div>
+            <div class="modal-footer">
+                <div class="row w-100">
+                    <div id="search-cover-open-library-page-buttons" class="col col-md-6">
+                    </div>
+                    <div class="col col-md-6 d-flex justify-content-end">
+                        <button id="search-cover-open-library-apply" class="btn btn-primary">Apply and Save</button>
+                        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload -->
+<div id="files-modal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Book files</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="submit" id="files-submit" class="btn btn-primary float-right" value="Upload">
+                    <input type="file" id="files-upload-input" accept=".pdf,.epub" multiple required>
+                </div>
+
+                <div class="progress">
+                    <div class="progress-bar" id="files-progress-bar" style="width: 0%;">0%</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <table id="uploaded-files" class="table table-striped w-100">
+                    <thead>
+                        <tr>
+                            <th>Uploaded</th>
+                            <th class="button-col"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="uploaded-pdf">
+                            <td>PDF</td>
+                            <td class="button-col">
+                                <button class="btn btn-primary" onClick="Files.download('pdf')"><i class="fas fa-download"></i></button>
+                            </td>
+                            <td class="button-col">
+                                <button class="btn btn-danger" onClick="Files.remove('pdf')"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                        <tr id="uploaded-epub">
+                            <td>EPUB</td>
+                            <td class="button-col">
+                                <button class="btn btn-primary" onClick="Files.download('epub')"><i class="fas fa-download"></i></button>
+                            </td>
+                            <td class="button-col">
+                                <button class="btn btn-danger" onClick="Files.remove('epub')"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

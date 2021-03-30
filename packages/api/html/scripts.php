@@ -1,1 +1,0 @@
-<script src="<?= Packages::httpPath("api") ?>/core.js"></script>

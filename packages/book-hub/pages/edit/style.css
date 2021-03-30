@@ -1,0 +1,118 @@
+.card {
+    width: 100%;
+    max-width: 800px;
+}
+
+#read {
+    margin-right: 10px;
+}
+
+.bottom-button {
+    min-width: 100px;
+}
+
+@media only screen and (max-width: 630px) {
+    .bottom-button {
+        margin-bottom: 10px;
+        width: 100%;
+        min-width: 150px;
+    }
+
+    .dropdown-menu {
+        width: 100%;
+    }
+
+    .card-footer .col {
+        min-width: 200px;
+        margin-bottom: 5px;
+    }
+}
+
+#rowSplit .col {
+    min-width: 300px;
+}
+
+#cover {
+    object-fit: fill;
+    margin-bottom: 10px;
+    -webkit-box-shadow: 0 0 10px 0px #00000075;
+    -moz-box-shadow: 0 0 10px 0px #00000075;
+    box-shadow: 0 0 10px 0px #00000075;
+}
+
+#cover,
+#cover-root {
+    width: 100%;
+    max-width: 300px;
+}
+
+#cover-file {
+    border: none;
+    padding: 0px;
+    margin-bottom: 10px;
+}
+
+#cover-file-group {
+    margin-top: 5px;
+}
+
+#cover-file-group button {
+    width: 100%;
+}
+
+.progress {
+    margin-top: 10px;
+}
+
+#search-metadata-google-books-cover,
+#search-cover-open-library-img{
+    object-fit: fill;
+    margin-bottom: 10px;
+    -webkit-box-shadow: 0 0 10px 0px #00000075;
+    -moz-box-shadow: 0 0 10px 0px #00000075;
+    box-shadow: 0 0 10px 0px #00000075;
+}
+
+#search-metadata-google-books-cover{
+    width: 230px;
+    height: 310px;
+}
+#search-cover-open-library-img {
+    width: 345px;
+    height: 500px;
+}
+
+#search-metadata-google-books-search-button,
+#search-cover-open-library-search-button {
+    height: 37px;
+    width: 37px;
+    margin-left: 10px;
+}
+
+.search-metadata-google-books-page-button,
+.search-cover-open-library-page-button {
+    width: 35px;
+    height: 35px;
+}
+
+#search-metadata-google-books-apply,
+#search-cover-open-library-apply {
+    margin-right: 10px;
+}
+
+#search-metadata-google-books-search-language {
+    max-width: 60px;
+    margin-right: 10px;
+}
+
+.awesomplete {
+    display: block;
+}
+
+#files-upload-input{
+    white-space: normal;
+}
+.button-col{
+    width: 42px;
+    padding: 5px !important;
+}

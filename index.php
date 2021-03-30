@@ -7,5 +7,5 @@ if (session_status() != PHP_SESSION_ACTIVE)
 include($_SERVER['DOCUMENT_ROOT'] . "/framework.php");
 Packages::validate();
 Functions::collect();
-Functions::global ();
+Functions::start();
 Page::build();

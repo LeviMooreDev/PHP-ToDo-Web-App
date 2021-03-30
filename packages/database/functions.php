@@ -8,7 +8,7 @@ class Database
     {
         if (!isset(Database::$_configFile))
         {
-            Database::$_configFile = Packages::serverPath("database") . "/database-config.php";
+            Database::$_configFile = Packages::selfServerPath() . "/database-config.php";
         }
 
         return Database::$_configFile;
