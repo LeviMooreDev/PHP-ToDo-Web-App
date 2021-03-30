@@ -1,2 +1,0 @@
-<?php
-BootstrapSelect::AddCSS();
