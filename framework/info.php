@@ -1,5 +1,5 @@
 <?php
 class Info
 {
-    public const Name = "Book Hub";
+    public const Name = "NAME";
 }
