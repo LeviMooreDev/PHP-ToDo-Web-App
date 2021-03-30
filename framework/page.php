@@ -23,7 +23,7 @@ class Page
         {
             foreach (Page::HTML_HEADER_FILE_NAMES as &$fileName)
             {
-                $filePath = Packages::serverPath($package) . "/html/" . $fileName;
+                $filePath = Packages::serverPath($package) . "/" . $fileName;
                 if (file_exists($filePath))
                 {
                     include($filePath);
@@ -50,7 +50,7 @@ class Page
         {
             foreach (Page::HTML_BEFORE_CONTENT_FILE_NAMES as &$fileName)
             {
-                $filePath = Packages::serverPath($package) . "/html/" . $fileName;
+                $filePath = Packages::serverPath($package) . "/" . $fileName;
                 if (file_exists($filePath))
                 {
                     include($filePath);
@@ -73,7 +73,7 @@ class Page
         {
             foreach (Page::HTML_AFTER_CONTENT_FILE_NAMES as &$fileName)
             {
-                $filePath = Packages::serverPath($package) . "/html/" . $fileName;
+                $filePath = Packages::serverPath($package) . "/" . $fileName;
                 if (file_exists($filePath))
                 {
                     include($filePath);
@@ -86,7 +86,7 @@ class Page
         {
             foreach (Page::HTML_SCRIPTS_FILE_NAMES as &$fileName)
             {
-                $filePath = Packages::serverPath($package) . "/html/" . $fileName;
+                $filePath = Packages::serverPath($package) . "/" . $fileName;
                 if (file_exists($filePath))
                 {
                     include($filePath);
