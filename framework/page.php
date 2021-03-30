@@ -1,16 +1,13 @@
 <?php
 class Page
 {
-    private const HTML_HEADER_FILE_NAMES = ['head.html', 'head.php'];
-    private const HTML_BEFORE_CONTENT_FILE_NAMES = ['before-content.html', 'before-content.php'];
-    private const HTML_AFTER_CONTENT_FILE_NAMES = ['after-content.html', 'after-content.php'];
-    private const HTML_SCRIPTS_FILE_NAMES = ['scripts.html', 'scripts.php'];
-
-    private const PAGE_CONTENT_FILE_NAMES = ['content.html', 'content.php'];
-    private const PAGE_STYLE_FILE_NAME = 'style.css';
-    private const PAGE_CODE_FILE_NAME = 'code.js';
-    private const PAGE_HEAD_FILE_NAME = 'head.php';
-    private const PAGE_SCRIPTS_FILE_NAME = 'scripts.php';
+    private const HEADER_FILE_NAMES = ['head.html', 'head.php'];
+    private const BEFORE_CONTENT_FILE_NAMES = ['before-content.html', 'before-content.php'];
+    private const AFTER_CONTENT_FILE_NAMES = ['after-content.html', 'after-content.php'];
+    private const SCRIPTS_FILE_NAMES = ['scripts.html', 'scripts.php'];
+    private const CONTENT_FILE_NAMES = ['content.html', 'content.php'];
+    private const STYLE_FILE_NAME = 'style.css';
+    private const CODE_FILE_NAME = 'code.js';
     
     public static function build()
     {
@@ -18,10 +15,10 @@ class Page
         <html lang="en">
         <head>
 <?php
-        //html head
+        //global head
         foreach (Packages::names() as &$package)
         {
-            foreach (Page::HTML_HEADER_FILE_NAMES as &$fileName)
+            foreach (Page::HEADER_FILE_NAMES as &$fileName)
             {
                 $filePath = Packages::serverPath($package) . "/" . $fileName;
                 if (file_exists($filePath))
@@ -30,36 +27,8 @@ class Page
                 }
             }
         }
-        //page head
-        if (file_exists(Page::serverPath() . "/" . Page::PAGE_HEAD_FILE_NAME))
-        {
-            include(Page::serverPath() . "/" . Page::PAGE_HEAD_FILE_NAME);
-        }
-
-        //page style
-        if (file_exists(Page::serverPath() . "/" . Page::PAGE_STYLE_FILE_NAME))
-        {
-            echo '<link rel="stylesheet" type="text/css" href="' . Page::httpPath() . '/' . Page::PAGE_STYLE_FILE_NAME . '">';
-        }
-?>
-        </head>
-        <body>
-<?php
-        //html before content
-        foreach (Packages::names() as &$package)
-        {
-            foreach (Page::HTML_BEFORE_CONTENT_FILE_NAMES as &$fileName)
-            {
-                $filePath = Packages::serverPath($package) . "/" . $fileName;
-                if (file_exists($filePath))
-                {
-                    include($filePath);
-                }
-            }
-        }
-
-        //page content
-        foreach (Page::PAGE_CONTENT_FILE_NAMES as &$fileName)
+        //head
+        foreach (Page::HEADER_FILE_NAMES as &$fileName)
         {
             $filePath = Page::serverPath() . "/" . $fileName;
             if (file_exists($filePath))
@@ -68,10 +37,19 @@ class Page
             }
         }
 
-        //html after content
+        //style
+        if (file_exists(Page::serverPath() . "/" . Page::STYLE_FILE_NAME))
+        {
+            echo '<link rel="stylesheet" type="text/css" href="' . Page::httpPath() . '/' . Page::STYLE_FILE_NAME . '">';
+        }
+?>
+        </head>
+        <body>
+<?php
+        //before content
         foreach (Packages::names() as &$package)
         {
-            foreach (Page::HTML_AFTER_CONTENT_FILE_NAMES as &$fileName)
+            foreach (Page::BEFORE_CONTENT_FILE_NAMES as &$fileName)
             {
                 $filePath = Packages::serverPath($package) . "/" . $fileName;
                 if (file_exists($filePath))
@@ -81,10 +59,20 @@ class Page
             }
         }
 
-        //html scripts
+        //content
+        foreach (Page::CONTENT_FILE_NAMES as &$fileName)
+        {
+            $filePath = Page::serverPath() . "/" . $fileName;
+            if (file_exists($filePath))
+            {
+                include($filePath);
+            }
+        }
+
+        //after content
         foreach (Packages::names() as &$package)
         {
-            foreach (Page::HTML_SCRIPTS_FILE_NAMES as &$fileName)
+            foreach (Page::AFTER_CONTENT_FILE_NAMES as &$fileName)
             {
                 $filePath = Packages::serverPath($package) . "/" . $fileName;
                 if (file_exists($filePath))
@@ -94,14 +82,31 @@ class Page
             }
         }
 
-        //page script
-        if (file_exists(Page::serverPath() . "/" . Page::PAGE_SCRIPTS_FILE_NAME))
+        //global scripts
+        foreach (Packages::names() as &$package)
         {
-            include(Page::serverPath() . "/" . Page::PAGE_SCRIPTS_FILE_NAME);
+            foreach (Page::SCRIPTS_FILE_NAMES as &$fileName)
+            {
+                $filePath = Packages::serverPath($package) . "/" . $fileName;
+                if (file_exists($filePath))
+                {
+                    include($filePath);
+                }
+            }
         }
-        if (file_exists(Page::serverPath() . "/" . Page::PAGE_CODE_FILE_NAME))
+
+        //scripts
+        foreach (Page::SCRIPTS_FILE_NAMES as &$fileName)
         {
-            echo '<script src="' . Page::httpPath() . '/' . Page::PAGE_CODE_FILE_NAME . '"></script>';
+            $filePath = Page::serverPath() . "/" . $fileName;
+            if (file_exists($filePath))
+            {
+                include($filePath);
+            }
+        }
+        if (file_exists(Page::serverPath() . "/" . Page::CODE_FILE_NAME))
+        {
+            echo '<script src="' . Page::httpPath() . '/' . Page::CODE_FILE_NAME . '"></script>';
         }
 ?>
         </body>
