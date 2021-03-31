@@ -1,1 +1,0 @@
-<script src="<?= Packages::selfHttpPath() ?>/static/jquery.min.js"></script>
