@@ -1,0 +1,1 @@
+<script src="<?= Packages::selfHttpPath() ?>/static/core.js"></script>
