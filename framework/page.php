@@ -20,6 +20,7 @@ class Page
         {
             foreach (Page::HEADER_FILE_NAMES as &$fileName)
             {
+
                 $filePath = Packages::serverPath($package) . "/" . $fileName;
                 if (file_exists($filePath))
                 {
