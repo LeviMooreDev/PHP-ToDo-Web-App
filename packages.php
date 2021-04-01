@@ -10,6 +10,7 @@ return [
     'authentication' => "1.0",
     'user-settings' => "1.0",
     'bootstrap' => "4.6.0",
+	"aaron-checkbox" => "1.0",
     'theme' => "1.0",
     "todo" => "1.0"
 ];

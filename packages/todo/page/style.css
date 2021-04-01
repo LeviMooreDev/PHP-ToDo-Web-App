@@ -1,16 +1,113 @@
-.nav {
-	font-size: 1.2em;
+/* lists tab */
+#lists {
+	font-size: 1.1em;
+	margin-bottom: 1em;
+	text-transform: capitalize;
+	cursor: pointer;
+	font-weight: bold;
 }
 
-.nav-tabs .nav-link.active,
-.nav-tabs .nav-item.show .nav-link {
+#lists .nav-link.active,
+#lists .nav-item.show .nav-link {
 	color: #fff;
 	background-color: #00aee8;
 }
 
-.nav-tabs .nav-link,
-.nav-tabs .nav-link.disabled,
-.nav-tabs .nav-link.disabled:hover,
-.nav-tabs .nav-link.disabled:focus {
+#lists .nav-link,
+#lists .nav-link.disabled,
+#lists .nav-link.disabled:hover,
+#lists .nav-link.disabled:focus {
 	border-color: rgba(0, 0, 0, 0.24);
+
+}
+
+#lists .nav-link:hover,
+#lists .nav-link:focus {
+	border-color: rgba(0, 0, 0, 0.24);
+}
+
+#lists .nav-link:hover:not(.active) {
+	background-color: #00aee829;
+}
+
+/* tasks */
+#tasks li {
+	padding: 0px;
+	height: 60px;
+}
+
+#tasks .container,
+#tasks .row {
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+}
+
+.list-group-item {
+	border: 1px solid rgb(0 0 0 / 36%);
+}
+
+#tasks .list-group-item:nth-child(even) {
+	background-color: #cedbf729
+}
+
+#tasks .container,
+#tasks .row,
+#tasks .col,
+#tasks .col .align-items-center {
+	height: inherit;
+}
+
+#tasks .col {
+	flex-grow: 0;
+	padding-right: 10px;
+	padding-left: 10px;
+}
+
+#tasks .row .col:nth-child(1) {
+	cursor: grab;
+	padding-left: 15px;
+}
+
+#tasks .row .col:nth-child(3) {
+	flex-grow: 1;
+}
+
+.checkbox input {
+	width: 27px !important;
+	height: 27px !important;
+}
+
+label.checkbox {
+	margin: 0px;
+	padding: 0px;
+}
+
+.task-name {
+	font-size: 1.2em;
+	text-transform: capitalize;
+	font-weight: 500;
+}
+
+.task-star {
+	position: absolute;
+	right: 0px;
+}
+
+.task-star i {
+	padding: 5px;
+	font-size: 1.2em;
+}
+
+.task-time {
+	position: absolute;
+	right: 0px;
+	bottom: 0px;
+	background-color: #0000000a;
+	padding: 1px;
+	padding-left: 5px;
+	padding-right: 5px;
+	font-size: 0.82rem;
+	border-top: 1px solid #0000004d;
+	border-left: 1px solid #0000004d;
 }
