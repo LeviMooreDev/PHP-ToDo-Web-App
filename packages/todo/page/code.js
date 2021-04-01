@@ -12,8 +12,8 @@ for (let list in lists)
 	let id = list;
 
 	let tabHtml = `
-	<li class="nav-item" role="presentation">
-		<span class="nav-link ${active ? 'active' : ''}" id="${id}-tab" data-toggle="tab" href="#${id}" role="tab" aria-controls="${id}" aria-selected="true">${list}</span>
+	<li class="nav-item">
+		<a class="nav-link ${active ? 'active' : ''}" id="${id}-tab" data-toggle="tab" href="#${id}" role="tab" aria-controls="${id}" aria-selected="true">${list}</a>
 	</li>
 	`;
 	$(tabs).append(tabHtml);
@@ -29,17 +29,11 @@ for (let list in lists)
 	let tableBody = $(`#${id} ul`);
 	for (let index in lists[list])
 	{
-		let item = lists[list][index];
-		let itemId = item;
+		let text = lists[list][index];
 		let itemHtml = `
 		<li class="list-group-item">
 			<div class="container">
 				<div class="row">
-					<div class="col">
-						<div class="d-flex align-items-center">
-							<i class="fas fa-grip-vertical"></i>
-						</div>
-					</div>
 					<div class="col">
 						<div class="d-flex align-items-center">
 							<label class="checkbox path">
@@ -51,10 +45,10 @@ for (let list in lists)
 						</div>
 					</div>
 					<div class="col">
-						<div class="task-name d-flex align-items-center">${item}</div>
+						<div class="task-name d-flex align-items-center">${text}</div>
 					</div>
 					<div class="task-star"><i class="far fa-star"></i></div>
-					<span class="task-time">01/01/0101</span>
+					<span class="task-time">Today <i class="far fa-clock"></i> </span>
 				</div>
 			</div>
 		</li>
@@ -62,3 +56,40 @@ for (let list in lists)
 		$(tableBody).append(itemHtml);
 	}
 }
+
+
+$('a[data-toggle="tab"]').on('hide.bs.tab', function (e) {
+	var $old_tab = $($(e.target).attr("href"));
+	var $new_tab = $($(e.relatedTarget).attr("href"));
+
+	if($new_tab.index() < $old_tab.index()){
+		$old_tab.css('position', 'relative').css("right", "0").show();
+		$old_tab.animate({"right":"-100%"}, 300, function () {
+			$old_tab.css("right", 0).removeAttr("style");
+		});
+	}
+	else {
+		$old_tab.css('position', 'relative').css("left", "0").show();
+		$old_tab.animate({"left":"-100%"}, 300, function () {
+			$old_tab.css("left", 0).removeAttr("style");
+		});
+	}
+});
+
+$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+	var $new_tab = $($(e.target).attr("href"));
+	var $old_tab = $($(e.relatedTarget).attr("href"));
+
+	if($new_tab.index() > $old_tab.index()){
+		$new_tab.css('position', 'relative').css("right", "-2500px");
+		$new_tab.animate({"right":"0"}, 500);
+	}
+	else {
+		$new_tab.css('position', 'relative').css("left", "-2500px");
+		$new_tab.animate({"left":"0"}, 500);
+	}
+});
+
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	// your code on active tab shown
+});

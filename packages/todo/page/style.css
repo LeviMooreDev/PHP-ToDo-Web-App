@@ -1,55 +1,22 @@
 /* lists tab */
 #lists {
-	font-size: 1.1em;
-	margin-bottom: 1em;
-	text-transform: capitalize;
 	cursor: pointer;
-	font-weight: bold;
-}
-
-#lists .nav-link.active,
-#lists .nav-item.show .nav-link {
-	color: #fff;
-	background-color: #00aee8;
-}
-
-#lists .nav-link,
-#lists .nav-link.disabled,
-#lists .nav-link.disabled:hover,
-#lists .nav-link.disabled:focus {
-	border-color: rgba(0, 0, 0, 0.24);
-
-}
-
-#lists .nav-link:hover,
-#lists .nav-link:focus {
-	border-color: rgba(0, 0, 0, 0.24);
-}
-
-#lists .nav-link:hover:not(.active) {
-	background-color: #00aee829;
 }
 
 /* tasks */
 #tasks li {
 	padding: 0px;
-	height: 60px;
+    height: 60px;
+    border-radius: 6px;
+    margin-bottom: 6px;
 }
 
 #tasks .container,
 #tasks .row {
 	padding: 0px;
 	margin: 0px;
-	width: 100%;
 }
 
-.list-group-item {
-	border: 1px solid rgb(0 0 0 / 36%);
-}
-
-#tasks .list-group-item:nth-child(even) {
-	background-color: #cedbf729
-}
 
 #tasks .container,
 #tasks .row,
@@ -58,29 +25,20 @@
 	height: inherit;
 }
 
-#tasks .col {
+#tasks .row .col:nth-child(1) {
+	padding-right: 10px;
+	padding-left: 20px;
 	flex-grow: 0;
+}
+#tasks .row .col:nth-child(2) {
 	padding-right: 10px;
 	padding-left: 10px;
 }
 
-#tasks .row .col:nth-child(1) {
-	cursor: grab;
-	padding-left: 15px;
-}
-
-#tasks .row .col:nth-child(3) {
-	flex-grow: 1;
-}
 
 .checkbox input {
 	width: 27px !important;
 	height: 27px !important;
-}
-
-label.checkbox {
-	margin: 0px;
-	padding: 0px;
 }
 
 .task-name {
@@ -111,3 +69,43 @@ label.checkbox {
 	border-top: 1px solid #0000004d;
 	border-left: 1px solid #0000004d;
 }
+
+
+body{
+	background-color: var(--blue-grey);
+}
+#tasks{
+	padding: 1em;
+}
+.nav-tabs .nav-link::before {
+    height: 0.225rem;
+}
+.nav-tabs-material .nav-tabs-indicator {
+    height: 0.225rem;
+}
+
+
+.tabs-animated {
+	overflow: hidden;
+  }
+  
+  .tab-pane {
+	height: 250px;
+	width: 100%;
+  }
+  
+  #tab1 {
+	background: #dddddd;
+  }
+  
+  #tab2 {
+	background: #cccccc;
+  }
+  
+  #tab3 {
+	background: #bbbbbb;
+  }
+  
+  #tab4 {
+	background: #aaaaaa;
+  }

@@ -1,2 +1,53 @@
-<ul id="lists" class="nav nav-tabs nav-fill" role="tablist"></ul>
+<nav class="navbar navbar-dark bg-dark">
+	<a class="navbar-brand" href="/">ToDo</a>
+	<a class="btn btn-outline-light" href="auth/logout">Logout</a>
+</nav>
+<ul id="lists" class="nav nav-justified nav-tabs" id="justifiedTab" role="tablist"></ul>
 <div id="tasks" class="tab-content"></div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+	Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalCenterTitle">Edit Task</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form>
+					<div class="form-group">
+						<label for="edit-name">Name</label>
+						<input type="text" class="form-control" id="edit-name">
+					</div>
+					<div class="form-group">
+						<label for="edit-description">Description</label>
+						<textarea class="form-control" id="edit-description" rows="3"></textarea>
+					</div>
+					<div class="form-group">
+						<label for="edit-list">List</label>
+						<select class="form-control" id="edit-list">
+							<option>List 1</option>
+							<option>List 2</option>
+							<option>List 3</option>
+							<option>List 4</option>
+						</select>
+					</div>
+					<div class="form-group">
+						<label for="edit-date">Date</label>
+						<input type="date" class="form-control" id="edit-date">
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary">Save changes</button>
+			</div>
+		</div>
+	</div>
+</div>
