@@ -1,0 +1,4 @@
+<FilesMatch "get-tasks.php|delete-task.php|update-task.php">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
