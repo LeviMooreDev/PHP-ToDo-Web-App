@@ -1,4 +1,4 @@
-<FilesMatch ".*\.php$">
+<FilesMatch "login.php|logout.php|set-password.php">
     Order Allow,Deny
     Allow from all
 </FilesMatch>
