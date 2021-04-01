@@ -11,10 +11,6 @@
 	.nav-tabs .nav-link.active {
 		color: var(--secondary);
 	}
-	.list-group-item {
-		background-color: var(--blue-grey);
-		color: var(--light);
-	}
 	.nav-tabs .nav-link{
 		color: var(--dark);
 		opacity: 1;
@@ -33,7 +29,7 @@
 		color: var(--dark);
 	}
 	.list-group-item {
-		background-color: var(--light);
+		background-color: var(--light-light);
 		color: var(--dark);
 	}
 	.modal-footer .btn-primary, .modal-footer .btn-primary:active, .modal-footer .btn-primary:focus, .modal-footer .btn-primary:hover {
@@ -49,6 +45,12 @@
 	.form-control:focus, .custom-select:focus, .form-control-file:focus {
 		border-color: var(--blue);
 		box-shadow: inset 0 -2px 0 -1px var(--blue);
+	}
+	.form-control, .custom-select, .form-control-file {
+        color: var(--dark-dark);
+	}
+	label {
+		color: var(--dark-light);
 	}
 	.close {
 		color: var(--danger);

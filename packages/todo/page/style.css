@@ -7,7 +7,7 @@
 #tasks li {
 	padding: 0px;
     height: 60px;
-    border-radius: 6px;
+	border-radius: 4px;
     margin-bottom: 6px;
 }
 
@@ -26,8 +26,8 @@
 }
 
 #tasks .row .col:nth-child(1) {
-	padding-right: 10px;
-	padding-left: 20px;
+	padding-right: 7px;
+    padding-left: 17px;
 	flex-grow: 0;
 }
 #tasks .row .col:nth-child(2) {
@@ -39,6 +39,10 @@
 .checkbox input {
 	width: 27px !important;
 	height: 27px !important;
+}
+.checkbox input {
+    --s: 2px;
+    --b: var(--border-hover);
 }
 
 .task-name {
@@ -54,20 +58,16 @@
 
 .task-star i {
 	padding: 5px;
-	font-size: 1.2em;
 }
 
 .task-time {
 	position: absolute;
-	right: 0px;
+	right: 2px;
 	bottom: 0px;
-	background-color: #0000000a;
 	padding: 1px;
 	padding-left: 5px;
 	padding-right: 5px;
 	font-size: 0.82rem;
-	border-top: 1px solid #0000004d;
-	border-left: 1px solid #0000004d;
 }
 
 
