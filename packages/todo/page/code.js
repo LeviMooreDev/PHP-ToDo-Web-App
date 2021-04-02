@@ -1,3 +1,4 @@
+//add tasks
 var lists = new Array();
 lists["list1"] = new Array("hej", "med", "dig");
 lists["list2"] = new Array("hej", "med", "dig");
@@ -57,39 +58,51 @@ for (let list in lists)
 	}
 }
 
+//edit click
+$("#tasks .row .col:nth-child(2)").click(function ()
+{
+	$('#editModal').modal();
+});
 
-$('a[data-toggle="tab"]').on('hide.bs.tab', function (e) {
+//reorder
+
+//tab sliding
+$('a[data-toggle="tab"]').on('hide.bs.tab', function (e)
+{
 	var $old_tab = $($(e.target).attr("href"));
 	var $new_tab = $($(e.relatedTarget).attr("href"));
 
-	if($new_tab.index() < $old_tab.index()){
+	if ($new_tab.index() < $old_tab.index())
+	{
 		$old_tab.css('position', 'relative').css("right", "0").show();
-		$old_tab.animate({"right":"-100%"}, 300, function () {
+		$old_tab.animate({ "right": "-100%" }, 300, function ()
+		{
 			$old_tab.css("right", 0).removeAttr("style");
 		});
 	}
-	else {
+	else
+	{
 		$old_tab.css('position', 'relative').css("left", "0").show();
-		$old_tab.animate({"left":"-100%"}, 300, function () {
+		$old_tab.animate({ "left": "-100%" }, 300, function ()
+		{
 			$old_tab.css("left", 0).removeAttr("style");
 		});
 	}
 });
 
-$('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+$('a[data-toggle="tab"]').on('show.bs.tab', function (e)
+{
 	var $new_tab = $($(e.target).attr("href"));
 	var $old_tab = $($(e.relatedTarget).attr("href"));
 
-	if($new_tab.index() > $old_tab.index()){
+	if ($new_tab.index() > $old_tab.index())
+	{
 		$new_tab.css('position', 'relative').css("right", "-2500px");
-		$new_tab.animate({"right":"0"}, 500);
+		$new_tab.animate({ "right": "0" }, 500);
 	}
-	else {
+	else
+	{
 		$new_tab.css('position', 'relative').css("left", "-2500px");
-		$new_tab.animate({"left":"0"}, 500);
+		$new_tab.animate({ "left": "0" }, 500);
 	}
-});
-
-$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-	// your code on active tab shown
 });

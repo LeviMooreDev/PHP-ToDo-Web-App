@@ -3,12 +3,17 @@
 	cursor: pointer;
 }
 
-/* tasks */
+/* task group layout */
+#tasks {
+	padding: 1em;
+	overflow-x: hidden;
+}
+
 #tasks li {
 	padding: 0px;
-    height: 60px;
+	height: 60px;
 	border-radius: 4px;
-    margin-bottom: 6px;
+	margin-bottom: 6px;
 }
 
 #tasks .container,
@@ -27,24 +32,16 @@
 
 #tasks .row .col:nth-child(1) {
 	padding-right: 7px;
-    padding-left: 17px;
+	padding-left: 17px;
 	flex-grow: 0;
 }
+
 #tasks .row .col:nth-child(2) {
 	padding-right: 10px;
 	padding-left: 10px;
 }
 
-
-.checkbox input {
-	width: 27px !important;
-	height: 27px !important;
-}
-.checkbox input {
-    --s: 2px;
-    --b: var(--border-hover);
-}
-
+/* task elements */
 .task-name {
 	font-size: 1.2em;
 	text-transform: capitalize;
@@ -70,42 +67,32 @@
 	font-size: 0.82rem;
 }
 
+/* checkbox */
+.checkbox input {
+	width: 27px !important;
+	height: 27px !important;
+}
 
-body{
-	background-color: var(--blue-grey);
+.checkbox input {
+	--s: 2px;
+	--b: var(--border-hover);
 }
-#tasks{
-	padding: 1em;
-}
+
+/* lists */
 .nav-tabs .nav-link::before {
-    height: 0.225rem;
+	height: 0.225rem;
 }
+
 .nav-tabs-material .nav-tabs-indicator {
-    height: 0.225rem;
+	height: 0.225rem;
 }
 
+.nav-tabs-material.animate .nav-tabs-indicator {
+	transition-duration: 0.6s;
+}
 
-.tabs-animated {
-	overflow: hidden;
-  }
-  
-  .tab-pane {
-	height: 250px;
-	width: 100%;
-  }
-  
-  #tab1 {
-	background: #dddddd;
-  }
-  
-  #tab2 {
-	background: #cccccc;
-  }
-  
-  #tab3 {
-	background: #bbbbbb;
-  }
-  
-  #tab4 {
-	background: #aaaaaa;
-  }
+/* edit */
+.modal-backdrop.fade,
+.modal.fade {
+	transition-duration: 0.15s;
+}
