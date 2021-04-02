@@ -96,3 +96,32 @@
 .modal.fade {
 	transition-duration: 0.15s;
 }
+
+.dropdown-toggle {
+	width: 100%;
+	text-align: left;
+	border: 1px solid var(--dark-light);
+}
+
+.dropdown-toggle:after {
+	float: right;
+}
+
+.dropdown,
+.dropdown-menu {
+	width: 100%;
+}
+
+.dropdown, .dropdown button {
+	text-transform: capitalize;
+}
+
+.dropdown,
+.dropdown-menu:before,
+.dropdown-item,
+.dropdown-divider,
+.dropdown-menu,
+#edit-list-options {
+	animation-duration: 0s !important;
+	transition-duration: 0s !important;
+}

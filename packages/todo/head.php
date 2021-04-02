@@ -56,4 +56,16 @@
 		color: var(--danger);
 		font-size: 2rem;
 	}
+	.form-control:hover, .custom-select:hover, .form-control-file:hover {
+		box-shadow: inset 0 -1px 0 -1px rgb(0 0 0 / 87%);
+	}
+	.form-control:focus, .custom-select:focus, .form-control-file:focus {
+		box-shadow: inset 0 -1px 0 -1px var(--blue);
+	}
+	select.form-control:hover[multiple], select.form-control:hover[size]:not([size='1']), textarea.form-control:hover:not([rows='1']), .custom-select:hover[multiple], .custom-select:hover[size]:not([size='1']) {
+		box-shadow: inset 1px 1px 0 -1px rgb(0 0 0 / 87%), inset -1px -1px 0 -1px rgb(0 0 0 / 87%);
+	}
+	select.form-control:focus[multiple], select.form-control:focus[size]:not([size='1']), textarea.form-control:focus:not([rows='1']), .custom-select:focus[multiple], .custom-select:focus[size]:not([size='1']) {
+		box-shadow: inset 1px 1px 0 -1px var(--light-blue), inset -1px -1px 0 -1px var(--light-blue);
+	}
 </style>

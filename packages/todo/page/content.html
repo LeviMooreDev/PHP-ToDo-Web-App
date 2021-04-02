@@ -27,12 +27,23 @@
 					</div>
 					<div class="form-group">
 						<label for="edit-list">List</label>
-						<select class="form-control" id="edit-list">
-							<option>List 1</option>
-							<option>List 2</option>
-							<option>List 3</option>
-							<option>List 4</option>
-						</select>
+
+						<div id="edit-list-dropdown" class="dropdown">
+							<button class="btn btn-outline-dark dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Dropdown button
+							</button>
+							<div class="dropdown-menu">
+								<div id="edit-list-options">
+
+								</div>
+								<div class="dropdown-divider"></div>
+								<div class="dropdown-item new-list">
+									<label for="new-list">New List</label>
+									<input type="text" class="form-control" id="new-list">
+								</div>
+							</div>
+						</div>
+
 					</div>
 					<div class="form-group">
 						<label for="edit-date">Date</label>

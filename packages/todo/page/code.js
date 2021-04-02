@@ -14,6 +14,11 @@ API.simple("todo", "get-tasks", "",
 	}
 );
 
+
+let editListDropdown = $("#edit-list-dropdown");
+let editListButton = $("#edit-list-dropdown button");
+let editListNew = $("#edit-list-dropdown input");
+
 function setupTasks(lists)
 {
 	let tabsElement = $("#lists");
@@ -22,6 +27,8 @@ function setupTasks(lists)
 	{
 		let active = list == "list1";
 		let id = list.toLowerCase().replace(" ", "-");
+
+		$("#edit-list-options").append(`<a class="dropdown-item" href="#" onclick="setList('${list}')">${list}</a>`);
 
 		let tabHtml = `
 		<li class="nav-item">
@@ -75,13 +82,44 @@ function setupTasks(lists)
 			let task = tasks[id];
 			$("#edit-name").val(task["name"]);
 			$("#edit-description").val(task["description"]);
-			//$("#edit-list").val(task["list"]);
+			setList(task["list"]);
+			editListNew.val("");
 			$("#edit-date").val(task["date"]);
-			
+
 			$('#editModal').modal();
 		});
 	}
 }
+
+function setList(value)
+{
+	editListButton.html(value);
+	editListButton.attr("data-value", value);
+}
+
+editListNew.on("input", function ()
+{
+	setList(editListNew.val());
+});
+editListNew.keyup(function (e)
+{
+	if (e.keyCode == 13)
+	{
+		if (document.activeElement == editListNew[0])
+		{
+			//we give the list button focus and click it instead of using "dropdown('toggle');"
+			//this is to avoid "popper Cannot read property 'setAttribute' of null".
+			//the error occurs because the dropdown structureis not "correct". Everything should be on the same level, but I don't want to do that.
+			editListButton.focus();
+			editListButton.click();
+		}
+	}
+});
+
+$('.dropdown-item.new-list').on('click', function (e)
+{
+	e.stopPropagation();
+});
 
 //reorder
 
