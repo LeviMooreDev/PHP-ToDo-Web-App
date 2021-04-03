@@ -6,6 +6,12 @@ API.simple("todo", "get-tasks", "",
 	{
 		lists = result["lists"];
 		setupTasks(lists);
+		/*
+		setTimeout(() =>
+		{
+			setupTasks(lists);
+		}, 500);
+		*/
 	},
 	function (result)
 	{
@@ -130,6 +136,8 @@ function setupTasks(lists)
 			$('#editModal').modal();
 		});
 	}
+
+	$("#loading").remove();
 }
 
 function setList(value)
@@ -238,3 +246,9 @@ $('a[data-toggle="tab"]').on('show.bs.tab', function (e)
 		$new_tab.animate({ "left": "0" }, 500);
 	}
 });
+
+
+//eidt modal hack
+$( document ).ready(function() {
+    $("#editModal").removeAttr("style");
+})

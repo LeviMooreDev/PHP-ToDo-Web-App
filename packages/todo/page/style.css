@@ -3,6 +3,7 @@
 	cursor: pointer;
 }
 
+
 /* task group layout */
 #tasks {
 	padding: 1em;
@@ -134,26 +135,31 @@
 	border-width: 0px 0px 1px !important;
 	border-radius: 0px !important;
 }
-#editModal .container{
+
+#editModal .container {
 	padding-right: 0px;
-    padding-left: 0px;
+	padding-left: 0px;
 }
-#editModal .container:last-child .form-group{
-    margin-bottom: 1rem;
+
+#editModal .container:last-child .form-group {
+	margin-bottom: 1rem;
 }
 
 #editModal .form-group {
-    margin-bottom: 2rem;
-}
-#editModal input[type=text], #editModal textarea {
-    padding-top: 3px;
+	margin-bottom: 2rem;
 }
 
-#edit-priority-root label:first-child{
-	margin-bottom: 7px;
-    width: 100%;
+#editModal input[type=text],
+#editModal textarea {
+	padding-top: 3px;
 }
-#edit-priority-root .checkbox{
+
+#edit-priority-root label:first-child {
+	margin-bottom: 7px;
+	width: 100%;
+}
+
+#edit-priority-root .checkbox {
 	margin-left: 6px !important;
 }
 
@@ -169,7 +175,8 @@
 	float: left;
 }
 
-#edit-save, #edit-new {
+#edit-save,
+#edit-new {
 	float: right;
 }
 
@@ -181,14 +188,25 @@
 	padding-left: 0px;
 }
 
-#new-button{
-    position: absolute;
-    right: 10px;
-    bottom: 14px;
-    width: 50px;
-    height: 50px;
-    min-width: 0px;
+#new-button {
+	position: absolute;
+	right: 10px;
+	bottom: 14px;
+	width: 50px;
+	height: 50px;
+	min-width: 0px;
 	border-radius: 100%;
-    background-color: var(--light-blue);
-    color: var(--light-light);
+	background-color: var(--light-blue);
+	color: var(--light-light);
+}
+
+#loading {
+	height: 100vh;
+	width: 100%;
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	display: flex;
+	align-items: center;
+	place-content: center;
 }
