@@ -115,7 +115,7 @@ function setupTasks(lists)
 			setList(task["list"]);
 			editListNew.val("");
 			$("#edit-date").val(task["date"]);
-
+			resetDeleteButton();
 			$('#editModal').modal();
 		});
 	}
@@ -151,6 +151,26 @@ $('.dropdown-item.new-list').on('click', function (e)
 {
 	e.stopPropagation();
 });
+
+//delete
+let deleteButton = $('#edit-delete');
+deleteButton.on('click', function (e)
+{
+	if (deleteButton.attr("data-confirm"))
+	{
+		$('#editModal').modal('hide');
+	}
+	else
+	{
+		deleteButton.attr("data-confirm", true);
+		$('#edit-delete').html("Confirm deletion");
+	}
+});
+function resetDeleteButton()
+{
+	deleteButton.removeAttr("data-confirm");
+	$('#edit-delete').html("Delete");
+}
 
 //reorder
 

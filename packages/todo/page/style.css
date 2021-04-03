@@ -138,6 +138,19 @@
 .date-overdue {
 	color: var(--danger);
 }
+
+.modal-footer {
+	display: block;
+}
+
+#edit-delete {
+	float: left;
+}
+
+#edit-save {
+	float: right;
+}
+
 #edit-list-dropdown button {
 	padding-left: 0px;
 }
