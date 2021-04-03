@@ -7,7 +7,7 @@ Authentication::Auth403();
 Database::connect();
 
 $table = Database::tableName("tasks");
-$result = Database::query("SELECT * FROM `$table` ORDER BY -date DESC");
+$result = Database::query("SELECT * FROM `$table` ORDER BY priority DESC, -date DESC");
 
 $lists = [];
 if ($result->num_rows > 0)
