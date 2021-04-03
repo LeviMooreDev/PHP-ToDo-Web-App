@@ -200,6 +200,7 @@ newButton.on('click', function (e)
 	setList("");
 	editListNew.val("");
 	$("#edit-date").val("");
+	$("#edit-priority").removeAttr("checked");
 	$(".new-group").show();
 	$(".edit-group").hide();
 	$('#editModal').modal();
