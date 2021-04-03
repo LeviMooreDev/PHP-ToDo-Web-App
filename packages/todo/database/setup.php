@@ -4,7 +4,7 @@ Database::queries("
 CREATE TABLE IF NOT EXISTS `$table` (
 	`id` int(11) NOT NULL AUTO_INCREMENT,
 	`done` tinyint(1) NOT NULL DEFAULT '0',
-	`star` tinyint(1) NOT NULL DEFAULT '0',
+	`priority` tinyint(1) NOT NULL DEFAULT '0',
 	`name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
 	`description` text COLLATE utf8_unicode_ci NOT NULL,
 	`list` varchar(255) COLLATE utf8_unicode_ci NOT NULL,

@@ -15,7 +15,7 @@ if ($result->num_rows > 0)
     while ($row = $result->fetch_assoc())
     {
 		$row["done"] = $row["done"] == 1 ? true : false;
-		$row["star"] = $row["star"] == 1 ? true : false;
+		$row["priority"] = $row["priority"] == 1 ? true : false;
         $lists[$row["list"]][] = $row;
     }
 }

@@ -48,12 +48,12 @@
 	font-weight: 500;
 }
 
-.task-star {
+.task-priority {
 	position: absolute;
 	right: 0px;
 }
 
-.task-star i {
+.task-priority i {
 	padding: 5px;
 }
 
@@ -138,7 +138,7 @@
 	padding-right: 0px;
     padding-left: 0px;
 }
-#editModal .container .form-group{
+#editModal .container:last-child .form-group{
     margin-bottom: 1rem;
 }
 
@@ -149,6 +149,13 @@
     padding-top: 3px;
 }
 
+#edit-priority-root label:first-child{
+	margin-bottom: 7px;
+    width: 100%;
+}
+#edit-priority-root .checkbox{
+	margin-left: 6px !important;
+}
 
 .date-overdue {
 	color: var(--danger);

@@ -96,7 +96,7 @@ function setupTasks(lists)
 						<div class="col" data-task-id="${task["id"]}">
 							<div class="task-name d-flex align-items-center">${task["name"]}</div>
 						</div>
-						${task["star"] ? '<div class="task-star"><i class="far fa-star"></i></div>' : ""}
+						${task["priority"] ? '<div class="task-priority"><i class="far fa-star"></i></div>' : ""}
 						${date ? '<span class="task-time ' + dateClass + '">' + date + ' <i class="far fa-clock"></i> </span>' : ""}
 					</div>
 				</div>
@@ -112,9 +112,18 @@ function setupTasks(lists)
 			let task = tasks[id];
 			$("#edit-name").val(task["name"]);
 			$("#edit-description").val(task["description"]);
+			$("#edit-date").val(task["date"]);
+			if (task["priority"])
+			{
+				$("#edit-priority").attr("checked", "checked");
+			}
+			else
+			{
+				$("#edit-priority").removeAttr("checked");
+			}
 			setList(task["list"]);
 			editListNew.val("");
-			$("#edit-date").val(task["date"]);
+
 			resetDeleteButton();
 			$(".new-group").hide();
 			$(".edit-group").show();
