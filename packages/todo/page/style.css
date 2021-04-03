@@ -163,6 +163,10 @@
 	margin-left: 6px !important;
 }
 
+#edit-priority-root {
+	padding-right: 10px;
+}
+
 .date-overdue {
 	color: var(--danger);
 }
