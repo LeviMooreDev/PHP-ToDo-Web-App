@@ -114,7 +114,8 @@
 	width: 100%;
 }
 
-.dropdown, .dropdown button {
+.dropdown,
+.dropdown button {
 	text-transform: capitalize;
 }
 
@@ -132,4 +133,8 @@
 #editModal textarea {
 	border-width: 0px 0px 1px !important;
 	border-radius: 0px !important;
+}
+
+.date-overdue {
+	color: var(--danger);
 }

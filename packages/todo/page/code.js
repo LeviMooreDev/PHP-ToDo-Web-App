@@ -6,7 +6,6 @@ API.simple("todo", "get-tasks", "",
 	{
 		lists = result["lists"];
 		setupTasks(lists);
-		console.log(lists);
 	},
 	function (result)
 	{
@@ -49,6 +48,37 @@ function setupTasks(lists)
 		{
 			let task = lists[list][index];
 			tasks[task["id"]] = task;
+
+			let date = task["date"];
+			let dateClass = "";
+			if (date)
+			{
+				let daysLeft = Math.ceil((new Date(task["date"]).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
+				if (daysLeft == 0)
+				{
+					date = "Today";
+				}
+				else if (daysLeft == 1)
+				{
+					date = "Tomorrow";
+				}
+				else if (daysLeft == -1)
+				{
+					date = "Yesterday";
+				}
+				else if (daysLeft > 0)
+				{
+					date = daysLeft + " Days";
+				}
+				else
+				{
+					date = Math.abs(daysLeft) + " Days Ago";
+					dateClass = "date-overdue"
+				}
+			}
+
+
+
 			let itemHtml = `
 			<li class="list-group-item">
 				<div class="container">
@@ -67,7 +97,7 @@ function setupTasks(lists)
 							<div class="task-name d-flex align-items-center">${task["name"]}</div>
 						</div>
 						${task["star"] ? '<div class="task-star"><i class="far fa-star"></i></div>' : ""}
-						${task["date"] ? '<span class="task-time">Today <i class="far fa-clock"></i> </span>' : ""}
+						${date ? '<span class="task-time ' + dateClass + '">' + date + ' <i class="far fa-clock"></i> </span>' : ""}
 					</div>
 				</div>
 			</li>
