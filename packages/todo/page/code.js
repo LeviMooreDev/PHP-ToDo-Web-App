@@ -180,7 +180,7 @@ newButton.on('click', function (e)
 {
 	$("#edit-name").val("");
 	$("#edit-description").val("");
-	setList("None");
+	setList("");
 	editListNew.val("");
 	$("#edit-date").val("");
 	$(".new-group").show();

@@ -129,11 +129,26 @@
 	transition-duration: 0s !important;
 }
 
-
+/* edit modal */
 #editModal textarea {
 	border-width: 0px 0px 1px !important;
 	border-radius: 0px !important;
 }
+#editModal .container{
+	padding-right: 0px;
+    padding-left: 0px;
+}
+#editModal .container .form-group{
+    margin-bottom: 1rem;
+}
+
+#editModal .form-group {
+    margin-bottom: 2rem;
+}
+#editModal input[type=text], #editModal textarea {
+    padding-top: 3px;
+}
+
 
 .date-overdue {
 	color: var(--danger);
