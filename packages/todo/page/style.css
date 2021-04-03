@@ -101,6 +101,8 @@
 	width: 100%;
 	text-align: left;
 	border: 1px solid var(--dark-light);
+	border-width: 0px 0px 1px !important;
+	border-radius: 0px !important;
 }
 
 .dropdown-toggle:after {
@@ -124,4 +126,10 @@
 #edit-list-options {
 	animation-duration: 0s !important;
 	transition-duration: 0s !important;
+}
+
+
+#editModal textarea {
+	border-width: 0px 0px 1px !important;
+	border-radius: 0px !important;
 }

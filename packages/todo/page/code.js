@@ -112,6 +112,7 @@ editListNew.keyup(function (e)
 			//the error occurs because the dropdown structureis not "correct". Everything should be on the same level, but I don't want to do that.
 			editListButton.focus();
 			editListButton.click();
+			setList(editListNew.val());
 		}
 	}
 });
