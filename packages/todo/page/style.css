@@ -138,3 +138,10 @@
 .date-overdue {
 	color: var(--danger);
 }
+#edit-list-dropdown button {
+	padding-left: 0px;
+}
+
+#edit-description {
+	padding-left: 0px;
+}
