@@ -147,7 +147,7 @@
 	float: left;
 }
 
-#edit-save {
+#edit-save, #edit-new {
 	float: right;
 }
 

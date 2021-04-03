@@ -116,6 +116,8 @@ function setupTasks(lists)
 			editListNew.val("");
 			$("#edit-date").val(task["date"]);
 			resetDeleteButton();
+			$(".new-group").hide();
+			$(".edit-group").show();
 			$('#editModal').modal();
 		});
 	}
@@ -171,6 +173,20 @@ function resetDeleteButton()
 	deleteButton.removeAttr("data-confirm");
 	$('#edit-delete').html("Delete");
 }
+
+//new
+let newButton = $('#new-button');
+newButton.on('click', function (e)
+{
+	$("#edit-name").val("");
+	$("#edit-description").val("");
+	setList("None");
+	editListNew.val("");
+	$("#edit-date").val("");
+	$(".new-group").show();
+	$(".edit-group").hide();
+	$('#editModal').modal();
+});
 
 //reorder
 
