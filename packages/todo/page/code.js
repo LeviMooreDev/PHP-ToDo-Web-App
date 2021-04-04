@@ -25,7 +25,7 @@ class Core
 
 	//update page with tasks from database.
 	//all data no tsaved will be cleared.
-	static getLiveData()
+	static getLiveData(callback)
 	{
 		API.simple("todo", "get", "",
 			function (result)
@@ -42,6 +42,11 @@ class Core
 				}
 				//generate html
 				HTML.generate();
+
+				if (callback)
+				{
+					callback();
+				}
 			},
 			function (result)
 			{
@@ -55,7 +60,6 @@ class Core
 	{
 		return "list-" + list.toLowerCase().replace(" ", "-");
 	}
-
 	static isListActive(list)
 	{
 		let activeList = getCookie(Core.activeListCookieName);
@@ -72,10 +76,14 @@ class Core
 		}
 		return list == activeList;
 	}
-
-	static setActiveList(list)
+	static setActiveListCookie(list)
 	{
 		setCookie(Core.activeListCookieName, list, 9999);
+	}
+	static goToList(list)
+	{
+		$("#" + Core.getListId(list) + "-tab").click();
+		Core.setActiveListCookie(list);
 	}
 }
 
@@ -127,7 +135,7 @@ class HTML
 		let id = Core.getListId(list);
 		return `
 		<li class="nav-item">
-			<a class="nav-link ${active ? 'active' : ''}" id="${id}-tab" data-toggle="tab" href="#${id}" onclick="Core.setActiveList('${list}')" role="tab" aria-controls="${id}" aria-selected="true">${list}</a>
+			<a class="nav-link ${active ? 'active' : ''}" id="${id}-tab" data-toggle="tab" href="#${id}" onclick="Core.setActiveListCookie('${list}')" role="tab" aria-controls="${id}" aria-selected="true">${list}</a>
 		</li>
 		`;
 	}
@@ -379,8 +387,11 @@ class Update
 				if (result["success"] == true)
 				{
 					Alert.success(result["message"]);
-					Core.getLiveData();
-					Edit.hide();
+					Core.getLiveData(() =>
+					{
+						Edit.hide();
+						Core.goToList(list);
+					});
 				}
 				else if (result["success"] == false)
 				{
