@@ -28,6 +28,8 @@ if ($result->num_rows > 0)
     }
 }
 
+krsort($lists);
+
 //return
 API::result("lists", $lists);
 API::success("");
