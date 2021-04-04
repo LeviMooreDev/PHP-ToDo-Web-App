@@ -116,6 +116,7 @@ function setupTasks(lists)
 		{
 			let id = $(this).attr("data-task-id");
 			let task = tasks[id];
+			$("#edit-id").attr("data-task-id", id);
 			$("#edit-name").val(task["name"]);
 			$("#edit-description").val(task["description"]);
 			$("#edit-date").val(task["date"]);
@@ -205,6 +206,59 @@ newButton.on('click', function (e)
 	$(".edit-group").hide();
 	$('#editModal').modal();
 });
+
+//update
+let updateButton = $('#edit-update');
+updateButton.on('click', function (e)
+{
+	let id = $("#edit-id").attr("data-task-id");
+
+    var name = $('#edit-name').val().trim();
+    if (!name || name == null || name == "")
+    {
+        Alert.error("Name is missing");
+        return;
+    }
+    var list = editListButton.html().trim();
+    if (!list || list == null || list == "")
+    {
+        Alert.error("List is missing");
+        return;
+    }
+    var description = $('#edit-description').val().trim();
+    var date = $('#edit-date').val();
+    var priority = $('#edit-priority').prop('checked');
+
+    var data = {
+        id: id,
+		name: name,
+		list: list,
+		description: description,
+		date: date,
+		priority: priority
+    }
+	console.log(data);
+    API.simple("todo", "update", data,
+        function (result)
+        {
+            if (result["success"] == true)
+            {
+                Alert.success(result["message"]);
+            }
+            else if (result["success"] == false)
+            {
+				console.log(result);
+                Alert.error(result["message"]);
+            }
+        },
+        function (result)
+        {
+            Alert.error("Something went wrong. See console (F12) for more info.");
+            console.log(result);
+        }
+    );
+});
+
 
 //reorder
 
