@@ -1,86 +1,82 @@
+<!-- header -->
 <nav class="navbar navbar-dark bg-dark">
 	<a class="navbar-brand" href="/">ToDo</a>
 	<a class="btn btn-outline-light" href="auth/logout">Logout</a>
 </nav>
-<ul id="lists" class="nav nav-justified nav-tabs" id="justifiedTab" role="tablist"></ul>
+
+<!-- lists -->
+<ul id="lists" class="nav nav-justified nav-tabs" role="tablist"></ul>
+
+<!-- tasks -->
 <div id="tasks" class="tab-content"></div>
 
-<!-- new button -->
+<!-- new task button -->
 <button id="open-create-task" class="btn" type="button"><i class="fas fa-plus"></i></button>
 
 <!-- edit modal -->
-<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-hidden="true" style="display: block; opacity: 0.01;">
+<div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" style="display: block; opacity: 0.01;">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title update-modal-element" id="editModalTitle">Edit Task</h5>
-				<h5 class="modal-title create-modal-element" id="editModalTitle">New Task</h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
+				<h5 class="modal-title update-modal-element">Edit Task</h5>
+				<h5 class="modal-title create-modal-element">New Task</h5>
+				<button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
 			</div>
 			<div class="modal-body">
-				<form>
-					<div id="edit-id"></div>
-					<div class="form-group">
-						<label for="edit-name">Name</label>
-						<input type="text" class="form-control" id="edit-name">
-					</div>
-					<div class="form-group">
-						<label for="edit-description">Description</label>
-						<textarea class="form-control" id="edit-description" rows="3"></textarea>
-					</div>
-					<div class="form-group">
-						<label for="edit-list">List</label>
-						<div id="edit-list-dropdown" class="dropdown">
-							<button class="btn btn-outline-dark dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Dropdown button
-							</button>
-							<div class="dropdown-menu">
-								<div id="edit-list-options">
-
-								</div>
-								<div class="dropdown-divider"></div>
-								<div class="dropdown-item new-list">
-									<label for="new-list">New List</label>
-									<input type="text" class="form-control" id="new-list">
-								</div>
+				<div id="edit-id"></div>
+				<div class="form-group">
+					<label for="edit-name">Name</label>
+					<input type="text" class="form-control" id="edit-name">
+				</div>
+				<div class="form-group">
+					<label for="edit-description">Description</label>
+					<textarea class="form-control" id="edit-description" rows="2"></textarea>
+				</div>
+				<div class="form-group">
+					<label for="edit-list">List</label>
+					<div class="dropdown">
+						<button id="edit-list-button" class="btn btn-outline-dark dropdown-toggle" type="button" data-toggle="dropdown"></button>
+						<div class="dropdown-menu">
+							<div id="edit-list-options"></div>
+							<div class="dropdown-divider"></div>
+							<div class="dropdown-item">
+								<label for="edit-list-new">New List</label>
+								<input type="text" class="form-control" id="edit-list-new">
 							</div>
 						</div>
 					</div>
-					<div class="container">
-						<div class="row">
-							<div class="col">
-								<div class="form-group">
-									<label for="edit-date">Date</label>
-									<input type="date" class="form-control" id="edit-date">
-								</div>
-							</div>
-							<div class="col-auto">
-								<div id="edit-priority-root" class="form-group">
-									<label for="edit-priority">Priority</label>
-									<br>
-									<label class="checkbox path">
-										<input type="checkbox" id="edit-priority">
-										<svg viewBox="0 0 21 21">
-											<path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
-										</svg>
-									</label>
-								</div>
-							</div>
+				</div>
+				<div class="row">
+					<div class="col">
+						<div class="form-group">
+							<label for="edit-date">Date</label>
+							<input type="date" class="form-control" id="edit-date">
 						</div>
 					</div>
-				</form>
+					<div class="col-auto">
+						<div id="edit-priority-root" class="form-group">
+							<label for="edit-priority">Priority</label>
+							<br>
+							<label class="checkbox path">
+								<input type="checkbox" id="edit-priority">
+								<svg viewBox="0 0 21 21">
+									<path d="M5,10.75 L8.5,14.25 L19.4,2.3 C18.8333333,1.43333333 18.0333333,1 17,1 L4,1 C2.35,1 1,2.35 1,4 L1,17 C1,18.65 2.35,20 4,20 L17,20 C18.65,20 20,18.65 20,17 L20,7.99769186"></path>
+								</svg>
+							</label>
+						</div>
+					</div>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" id="edit-delete" class="btn btn-secondary update-modal-element">Delete</button>
-				<button type="button" id="edit-update" class="btn btn-primary update-modal-element">Save changes</button>
-				<button type="button" id="edit-new" class="btn btn-primary create-modal-element">Create</button>
+				<button type="button" id="edit-delete" class="btn btn-secondary update-modal-element float-left">Delete</button>
+				<button type="button" id="edit-update" class="btn btn-primary update-modal-element float-right">Save changes</button>
+				<button type="button" id="edit-create" class="btn btn-primary create-modal-element float-right">Create</button>
 			</div>
 		</div>
 	</div>
 </div>
 
+<!-- loading -->
 <div id="loading">
 	<div class="progress-circular progress-circular-light">
 		<div class="progress-circular-wrapper">

@@ -1,48 +1,52 @@
-/* lists tab */
+body {
+	overflow-x: hidden;
+}
+
+/* lists (tabs at the top)*/
 #lists {
 	cursor: pointer;
 }
 
-
-/* task group layout */
-#tasks {
-	padding: 1em;
-	overflow-x: hidden;
+#lists .nav-link::before,
+#lists .nav-tabs-indicator {
+	height: 0.225rem;
+	transition-duration: 0.6s;
 }
 
-#tasks li {
+
+/* tasks (area below tabs) */
+#tasks {
+	padding: 1em;
+}
+
+/* tasks groups (.list-group-item is a single tasks in the list) */
+#tasks .list-group-item {
 	padding: 0px;
 	height: 60px;
 	border-radius: 4px;
 	margin-bottom: 6px;
 }
 
-#tasks .container,
-#tasks .row {
-	padding: 0px;
-	margin: 0px;
-}
-
-
-#tasks .container,
-#tasks .row,
-#tasks .col,
-#tasks .col .align-items-center {
+#tasks .list-group-item div {
 	height: inherit;
 }
 
-#tasks .row .col:nth-child(1) {
+#tasks .list-group-item .row {
+	margin: 0px;
+}
+
+#tasks .list-group-item .col:nth-child(1) {
 	padding-right: 7px;
 	padding-left: 17px;
 	flex-grow: 0;
 }
 
-#tasks .row .col:nth-child(2) {
+#tasks .list-group-item .col:nth-child(2) {
 	padding-right: 10px;
 	padding-left: 10px;
 }
 
-/* task elements */
+/* task elements (the content inside a task group) */
 .task-name {
 	font-size: 1.2em;
 	text-transform: capitalize;
@@ -52,50 +56,100 @@
 .task-priority {
 	position: absolute;
 	right: 0px;
-}
-
-.task-priority i {
 	padding: 5px;
 }
 
 .task-time {
 	position: absolute;
-	right: 2px;
-	bottom: 0px;
-	padding: 1px;
-	padding-left: 5px;
-	padding-right: 5px;
+	right: 7px;
+	bottom: 2px;
 	font-size: 0.82rem;
 }
 
-/* checkbox */
-.checkbox input {
-	width: 27px !important;
-	height: 27px !important;
+.task-overdue {
+	color: var(--danger);
 }
 
-.checkbox input {
-	--s: 2px;
-	--b: var(--border-hover);
+/* create task */
+#open-create-task {
+	position: absolute;
+	right: 10px;
+	bottom: 14px;
+	width: 50px;
+	height: 50px;
+	min-width: 0px;
+	border-radius: 100%;
+	background-color: var(--light-blue);
+	color: var(--light-light);
 }
 
-/* lists */
-.nav-tabs .nav-link::before {
-	height: 0.225rem;
+/* edit modal */
+#edit-modal .modal-body {
+	padding-bottom: 0px;
 }
 
-.nav-tabs-material .nav-tabs-indicator {
-	height: 0.225rem;
+#edit-modal .modal-footer {
+	display: block;
 }
 
-.nav-tabs-material.animate .nav-tabs-indicator {
-	transition-duration: 0.6s;
+#edit-modal .container {
+	padding-right: 0px;
+	padding-left: 0px;
 }
 
-/* edit */
+#edit-modal .form-group {
+	margin-bottom: 2rem;
+}
+
+#edit-modal textarea {
+	border-width: 0px 0px 1px !important;
+	border-radius: 0px !important;
+	padding-left: 0px;
+}
+
+#edit-modal input[type=text],
+#edit-modal textarea {
+	padding-top: 3px;
+}
+
+#edit-list-button {
+	padding-left: 0px;
+	text-transform: capitalize;
+}
+
+#edit-priority-root {
+	padding-right: 10px;
+}
+
+#edit-priority-root [for="edit-priority"] {
+	margin-bottom: 7px;
+	width: 100%;
+}
+
+#edit-priority-root .checkbox {
+	margin-left: 6px !important;
+}
+
 .modal-backdrop.fade,
 .modal.fade {
 	transition-duration: 0.15s;
+}
+
+/* dropdown */
+.dropdown,
+.dropdown-menu {
+	width: 100%;
+	text-transform: capitalize;
+}
+
+.dropdown,
+.dropdown-menu:before,
+.dropdown-item,
+.dropdown-divider,
+.dropdown-menu,
+#edit-list-options {
+	animation-duration: 0s !important;
+	transition-duration: 0s !important;
 }
 
 .dropdown-toggle {
@@ -110,100 +164,18 @@
 	float: right;
 }
 
-.dropdown,
-.dropdown-menu {
-	width: 100%;
+/* checkbox */
+.checkbox input {
+	width: 27px !important;
+	height: 27px !important;
 }
 
-.dropdown,
-.dropdown button {
-	text-transform: capitalize;
+.checkbox input {
+	--s: 2px;
+	--b: var(--border-hover);
 }
 
-.dropdown,
-.dropdown-menu:before,
-.dropdown-item,
-.dropdown-divider,
-.dropdown-menu,
-#edit-list-options {
-	animation-duration: 0s !important;
-	transition-duration: 0s !important;
-}
-
-/* edit modal */
-#editModal textarea {
-	border-width: 0px 0px 1px !important;
-	border-radius: 0px !important;
-}
-
-#editModal .container {
-	padding-right: 0px;
-	padding-left: 0px;
-}
-
-#editModal .container:last-child .form-group {
-	margin-bottom: 1rem;
-}
-
-#editModal .form-group {
-	margin-bottom: 2rem;
-}
-
-#editModal input[type=text],
-#editModal textarea {
-	padding-top: 3px;
-}
-
-#edit-priority-root label:first-child {
-	margin-bottom: 7px;
-	width: 100%;
-}
-
-#edit-priority-root .checkbox {
-	margin-left: 6px !important;
-}
-
-#edit-priority-root {
-	padding-right: 10px;
-}
-
-.date-overdue {
-	color: var(--danger);
-}
-
-.modal-footer {
-	display: block;
-}
-
-#edit-delete {
-	float: left;
-}
-
-#edit-update,
-#edit-new {
-	float: right;
-}
-
-#edit-list-dropdown button {
-	padding-left: 0px;
-}
-
-#edit-description {
-	padding-left: 0px;
-}
-
-#open-create-task {
-	position: absolute;
-	right: 10px;
-	bottom: 14px;
-	width: 50px;
-	height: 50px;
-	min-width: 0px;
-	border-radius: 100%;
-	background-color: var(--light-blue);
-	color: var(--light-light);
-}
-
+/* loading */
 #loading {
 	height: 100vh;
 	width: 100%;

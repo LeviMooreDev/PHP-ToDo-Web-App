@@ -1,3 +1,4 @@
+//when the page is ready.
 $(document).ready(function ()
 {
 	Core.ready();
@@ -7,18 +8,13 @@ $(document).ready(function ()
 })
 
 /**
- * Core
+ * Handles getting tasks from database
  */
 class Core
 {
-	static taskIdAttribute = "data-task-id";
+	static taskIdAttribute = "data-task-id"; //the attribute used to store task id in.
+	static activeListCookieName = "active-list";
 
-	//elements and selectors
-	static tabsElement = $("#lists");
-	static tasksElement = $("#tasks");
-	static listOptionsElement = $("#edit-list-options");
-
-	static activeList = "list1";
 	static lists = [];
 	static tasks = [];
 
@@ -27,7 +23,8 @@ class Core
 		Core.getLiveData();
 	}
 
-	//get tasks from database
+	//update page with tasks from database.
+	//all data no tsaved will be cleared.
 	static getLiveData()
 	{
 		API.simple("todo", "get", "",
@@ -44,7 +41,7 @@ class Core
 					}
 				}
 				//generate html
-				Core.generateHtml();
+				HTML.generate();
 			},
 			function (result)
 			{
@@ -54,17 +51,73 @@ class Core
 		);
 	}
 
-	//setup html
 	static getListId(list)
 	{
 		return "list-" + list.toLowerCase().replace(" ", "-");
 	}
+
 	static isListActive(list)
 	{
-		return list == Core.activeList;;
+		let activeList = getCookie(Core.activeListCookieName);
+		if (Core.lists.length != 0)
+		{
+			if (activeList == "")
+			{
+				activeList = Object.keys(Core.lists)[0];
+			}
+			else if (!Core.lists[activeList])
+			{
+				activeList = Object.keys(Core.lists)[0];
+			}
+		}
+		return list == activeList;
 	}
 
-	static generateListOption(list)
+	static setActiveList(list)
+	{
+		setCookie(Core.activeListCookieName, list, 9999);
+	}
+}
+
+/**
+ * Handles all html generation.
+ */
+class HTML
+{
+	static listsElement = $("#lists"); //the list of lists (tabs) at the top of the page.
+	static tasksElement = $("#tasks"); //the area below the lists where all the tasks are.
+	static listOptionsElement = $("#edit-list-options"); //the list of options in the list 
+
+	static generate()
+	{
+		HTML.listsElement.html("");
+		HTML.tasksElement.html("");
+		HTML.listOptionsElement.html("");
+
+		for (let list in Core.lists)
+		{
+			//list option
+			HTML.listOptionsElement.append(HTML.generateListEditOption(list));
+
+			//list tab
+			HTML.listsElement.append(HTML.generateListTab(list));
+
+			//list content
+			HTML.tasksElement.append(HTML.generateListContent(list));
+
+			//tasks
+			let tableBody = $(`#${Core.getListId(list)} ul`);
+			for (let index in Core.lists[list])
+			{
+				$(tableBody).append(HTML.generateTask(Core.lists[list][index]));
+			}
+		}
+
+		HTML.setupSlidingTabs();
+
+		$("#loading").remove();
+	}
+	static generateListEditOption(list)
 	{
 		return `<a class="dropdown-item" href="#" onclick="Edit.setList('${list}')">${list}</a>`;
 	}
@@ -74,7 +127,7 @@ class Core
 		let id = Core.getListId(list);
 		return `
 		<li class="nav-item">
-			<a class="nav-link ${active ? 'active' : ''}" id="${id}-tab" data-toggle="tab" href="#${id}" role="tab" aria-controls="${id}" aria-selected="true">${list}</a>
+			<a class="nav-link ${active ? 'active' : ''}" id="${id}-tab" data-toggle="tab" href="#${id}" onclick="Core.setActiveList('${list}')" role="tab" aria-controls="${id}" aria-selected="true">${list}</a>
 		</li>
 		`;
 	}
@@ -115,7 +168,7 @@ class Core
 			else
 			{
 				date = Math.abs(daysLeft) + " Days Ago";
-				dateClass = "date-overdue";
+				dateClass = "task-overdue";
 			}
 		}
 
@@ -141,41 +194,56 @@ class Core
 		</li>
 		`;
 	}
-	static generateHtml()
+
+	static setupSlidingTabs()
 	{
-		Core.tabsElement.html("");
-		Core.tasksElement.html("");
-		Core.listOptionsElement.html("");
-
-		for (let list in Core.lists)
+		$('a[data-toggle="tab"]').on('hide.bs.tab', function (e)
 		{
-			//list option
-			Core.listOptionsElement.append(Core.generateListOption(list));
+			var $old_tab = $($(e.target).attr("href"));
+			var $new_tab = $($(e.relatedTarget).attr("href"));
 
-			//list tab
-			Core.tabsElement.append(Core.generateListTab(list));
-
-			//list content
-			Core.tasksElement.append(Core.generateListContent(list));
-
-			//tasks
-			let tableBody = $(`#${Core.getListId(list)} ul`);
-			for (let index in Core.lists[list])
+			if ($new_tab.index() < $old_tab.index())
 			{
-				$(tableBody).append(Core.generateTask(Core.lists[list][index]));
+				$old_tab.css('position', 'relative').css("right", "0").show();
+				$old_tab.animate({ "right": "-100%" }, 300, function ()
+				{
+					$old_tab.css("right", 0).removeAttr("style");
+				});
 			}
-		}
+			else
+			{
+				$old_tab.css('position', 'relative').css("left", "0").show();
+				$old_tab.animate({ "left": "-100%" }, 300, function ()
+				{
+					$old_tab.css("left", 0).removeAttr("style");
+				});
+			}
+		});
+		$('a[data-toggle="tab"]').on('show.bs.tab', function (e)
+		{
+			var $new_tab = $($(e.target).attr("href"));
+			var $old_tab = $($(e.relatedTarget).attr("href"));
 
-		$("#loading").remove();
+			if ($new_tab.index() > $old_tab.index())
+			{
+				$new_tab.css('position', 'relative').css("right", "-2500px");
+				$new_tab.animate({ "right": "0" }, 500);
+			}
+			else
+			{
+				$new_tab.css('position', 'relative').css("left", "-2500px");
+				$new_tab.animate({ "left": "0" }, 500);
+			}
+		});
 	}
 }
 
 /**
- * Edit Modal
+ * Handles the edit modal. Updating and creating tasks is NOT its responsibility.
  */
 class Edit
 {
-	static modal = $('#editModal');
+	static modal = $('#edit-modal');
 	static createElements = $(".create-modal-element");
 	static updateElements = $(".update-modal-element");
 	static idElement = $("#edit-id");
@@ -183,38 +251,35 @@ class Edit
 	static dateElement = $("#edit-date");
 	static descriptionElement = $("#edit-description");
 	static priorityElement = $("#edit-priority");
-
-	static listDropdown = $("#edit-list-dropdown");
-	static listButton = $("#edit-list-dropdown button");
-	static listNew = $("#edit-list-dropdown input");
-	static listNewDropdownItem = $(".dropdown-item.new-list");
+	static listButtonElement = $("#edit-list-button");
+	static listNewElement = $("#edit-list-new");
 
 	static ready()
 	{
 		Edit.modal.removeAttr("style");
-		
-		Edit.listNew.on("input", function ()
+
+		Edit.listNewElement.on("input", function ()
 		{
-			Edit.setList(Edit.listNew.val());
+			Edit.setList(Edit.listNewElement.val());
 		});
 
-		Edit.listNew.keyup(function (e)
+		Edit.listNewElement.keyup(function (e)
 		{
 			if (e.keyCode == 13)
 			{
-				if (document.activeElement == Edit.listNew[0])
+				if (document.activeElement == Edit.listNewElement[0])
 				{
 					//we give the list button focus and click it instead of using "dropdown('toggle');"
 					//this is to avoid "popper Cannot read property 'setAttribute' of null".
 					//the error occurs because the dropdown structureis not "correct". Everything should be on the same level, but I don't want to do that.
-					Edit.listButton.focus();
-					Edit.listButton.click();
-					Edit.setList(Edit.listNew.val());
+					Edit.listButtonElement.focus();
+					Edit.listButtonElement.click();
+					Edit.setList(Edit.listNewElement.val());
 				}
 			}
 		});
 
-		Edit.listNewDropdownItem.on('click', function (e)
+		Edit.listNewElement.parent().on('click', function (e)
 		{
 			e.stopPropagation();
 		});
@@ -232,7 +297,7 @@ class Edit
 			Edit.priorityElement.attr("checked", "checked");
 		}
 		Edit.setList(list);
-		Edit.listNew.val("");
+		Edit.listNewElement.val("");
 
 		Edit.modal.modal();
 	}
@@ -243,8 +308,8 @@ class Edit
 
 	static setList(value)
 	{
-		Edit.listButton.html(value);
-		Edit.listButton.attr("data-value", value);
+		Edit.listButtonElement.html(value);
+		Edit.listButtonElement.attr("data-value", value);
 	}
 }
 
@@ -274,7 +339,7 @@ class Update
 				});
 			});
 		});
-		obs.observe($("#tasks")[0], { childList: true });
+		obs.observe(HTML.tasksElement[0], { childList: true });
 
 		Update.deleteButtonElement.on('click', Update.clickDelete);
 		Update.saveButton.on('click', Update.clickSave);
@@ -290,7 +355,7 @@ class Update
 			Alert.error("Name is missing");
 			return;
 		}
-		let list = Edit.listButton.html().trim();
+		let list = Edit.listButtonElement.html().trim();
 		if (!list || list == null || list == "")
 		{
 			Alert.error("List is missing");
@@ -385,43 +450,30 @@ class Create
 	}
 }
 
-
-//tab sliding
-$('a[data-toggle="tab"]').on('hide.bs.tab', function (e)
+//https://www.w3schools.com/js/js_cookies.asp
+function setCookie(cname, cvalue, exdays)
 {
-	var $old_tab = $($(e.target).attr("href"));
-	var $new_tab = $($(e.relatedTarget).attr("href"));
-
-	if ($new_tab.index() < $old_tab.index())
-	{
-		$old_tab.css('position', 'relative').css("right", "0").show();
-		$old_tab.animate({ "right": "-100%" }, 300, function ()
-		{
-			$old_tab.css("right", 0).removeAttr("style");
-		});
-	}
-	else
-	{
-		$old_tab.css('position', 'relative').css("left", "0").show();
-		$old_tab.animate({ "left": "-100%" }, 300, function ()
-		{
-			$old_tab.css("left", 0).removeAttr("style");
-		});
-	}
-});
-$('a[data-toggle="tab"]').on('show.bs.tab', function (e)
+	var d = new Date();
+	d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+	var expires = "expires=" + d.toUTCString();
+	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+function getCookie(cname)
 {
-	var $new_tab = $($(e.target).attr("href"));
-	var $old_tab = $($(e.relatedTarget).attr("href"));
-
-	if ($new_tab.index() > $old_tab.index())
+	var name = cname + "=";
+	var decodedCookie = decodeURIComponent(document.cookie);
+	var ca = decodedCookie.split(';');
+	for (var i = 0; i < ca.length; i++)
 	{
-		$new_tab.css('position', 'relative').css("right", "-2500px");
-		$new_tab.animate({ "right": "0" }, 500);
+		var c = ca[i];
+		while (c.charAt(0) == ' ')
+		{
+			c = c.substring(1);
+		}
+		if (c.indexOf(name) == 0)
+		{
+			return c.substring(name.length, c.length);
+		}
 	}
-	else
-	{
-		$new_tab.css('position', 'relative').css("left", "-2500px");
-		$new_tab.animate({ "left": "0" }, 500);
-	}
-});
+	return "";
+}
