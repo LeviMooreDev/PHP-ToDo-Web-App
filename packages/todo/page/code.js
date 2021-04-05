@@ -12,6 +12,9 @@ $(document).ready(function ()
  */
 class Core
 {
+	static autoRefreshTime = 5000;
+	static lastUpdate = null;
+	static checkingRefreshing = false;
 	static taskIdAttribute = "data-task-id"; //the attribute used to store task id in.
 	static activeListCookieName = "active-list";
 
@@ -21,6 +24,7 @@ class Core
 	static ready()
 	{
 		Core.getLiveData();
+		Core.autoRefresh();
 	}
 
 	//update page with tasks from database.
@@ -37,7 +41,14 @@ class Core
 				{
 					for (let index in Core.lists[list])
 					{
-						Core.tasks[Core.lists[list][index]["id"]] = Core.lists[list][index];
+						let task = Core.lists[list][index];
+						Core.tasks[task["id"]] = task;
+
+						let taskUpdatedAt = new Date(task["updated_at"]);
+						if (Core.lastUpdate == null || taskUpdatedAt > Core.lastUpdate)
+						{
+							Core.lastUpdate = taskUpdatedAt;
+						}
 					}
 				}
 				//generate html
@@ -56,10 +67,42 @@ class Core
 		);
 	}
 
+	static autoRefresh()
+	{
+		setInterval(() =>
+		{
+			if (Core.checkingRefreshing)
+			{
+				return;
+			}
+
+			if ((Edit.modal.data('bs.modal') || {})._isShown)
+			{
+				console.log("is open");
+				return;
+			}
+
+			API.simple("todo", "last-updated", "",
+				function (result)
+				{
+					if (Core.lastUpdate != null && new Date(result["updated_at"]) > Core.lastUpdate)
+					{
+						Core.getLiveData();
+					}
+				},
+				function (result)
+				{
+					console.log(result);
+				}
+			);
+		}, Core.autoRefreshTime);
+	}
+
 	static getListId(list)
 	{
 		return "list-" + list.toLowerCase().replace(" ", "-");
 	}
+
 	static isListActive(list)
 	{
 		let activeList = getCookie(Core.activeListCookieName);
@@ -76,10 +119,12 @@ class Core
 		}
 		return list == activeList;
 	}
+
 	static setActiveListCookie(list)
 	{
 		setCookie(Core.activeListCookieName, list, 9999);
 	}
+
 	static goToList(list)
 	{
 		$("#" + Core.getListId(list) + "-tab").click();
@@ -307,11 +352,17 @@ class Edit
 		Edit.setList(list);
 		Edit.listNewElement.val("");
 
-		Edit.modal.modal({backdrop: 'static'})
+		Edit.modal.modal({ backdrop: 'static' })
 	}
+
 	static hide()
 	{
 		Edit.modal.modal('hide');
+	}
+
+	static isOpen()
+	{
+
 	}
 
 	static setList(value)

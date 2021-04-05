@@ -12,24 +12,17 @@ Authentication::Auth403();
 //connect to database
 Database::connect();
 
-//get tasks
+//get table name
 $table = Database::tableName("tasks");
-$result = Database::query("SELECT * FROM `$table` ORDER BY priority DESC, -date DESC");
 
-//build list of tasks
-$lists = [];
+//query
+$result = Database::query("SELECT `updated_at` FROM `$table` ORDER BY `updated_at` DESC LIMIT 1");
+
 if ($result->num_rows > 0)
 {
     while ($row = $result->fetch_assoc())
     {
-		$row["done"] = $row["done"] == 1 ? true : false;
-		$row["priority"] = $row["priority"] == 1 ? true : false;
-        $lists[$row["list"]][] = $row;
+		API::result("updated_at", $row["updated_at"]);
+		API::success("");
     }
 }
-
-ksort($lists);
-
-//return
-API::result("lists", $lists);
-API::success("");

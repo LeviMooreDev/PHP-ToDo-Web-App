@@ -1,4 +1,4 @@
-<FilesMatch "get.php|delete.php|update.php|create.php">
+<FilesMatch "get.php|delete.php|update.php|create.php|last-updated.php">
     Order Allow,Deny
     Allow from all
 </FilesMatch>
