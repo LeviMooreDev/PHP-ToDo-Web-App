@@ -319,6 +319,26 @@ class Edit
 		Edit.listButtonElement.html(value);
 		Edit.listButtonElement.attr("data-value", value);
 	}
+
+	static getData()
+	{
+		let id = Edit.idElement.attr(Core.taskIdAttribute);
+
+		let name = Edit.nameElement.val().trim();
+		let list = Edit.listButtonElement.html().trim();
+		let description = Edit.descriptionElement.val().trim();
+		let date = Edit.dateElement.val();
+		let priority = Edit.priorityElement.prop('checked');
+
+		return {
+			id: id,
+			name: name,
+			list: list,
+			description: description,
+			date: date,
+			priority: priority
+		}
+	}
 }
 
 /**
@@ -355,32 +375,19 @@ class Update
 
 	static clickSave()
 	{
-		let id = Edit.idElement.attr(Core.taskIdAttribute);
+		let data = Edit.getData();
 
-		let name = Edit.nameElement.val().trim();
-		if (!name || name == null || name == "")
+		if (!data.name || data.name == null || data.name == "")
 		{
 			Alert.error("Name is missing");
 			return;
 		}
-		let list = Edit.listButtonElement.html().trim();
-		if (!list || list == null || list == "")
+		if (!data.list || data.list == null || data.list == "")
 		{
 			Alert.error("List is missing");
 			return;
 		}
-		let description = Edit.descriptionElement.val().trim();
-		let date = Edit.dateElement.val();
-		let priority = Edit.priorityElement.prop('checked');
 
-		let data = {
-			id: id,
-			name: name,
-			list: list,
-			description: description,
-			date: date,
-			priority: priority
-		}
 		API.simple("todo", "update", data,
 			function (result)
 			{
@@ -390,7 +397,7 @@ class Update
 					Core.getLiveData(() =>
 					{
 						Edit.hide();
-						Core.goToList(list);
+						Core.goToList(data.list);
 					});
 				}
 				else if (result["success"] == false)
@@ -447,17 +454,62 @@ class Update
  */
 class Create
 {
-	static createButton = $('#open-create-task');
+	static openButton = $('#open-create-task');
+	static createButton = $('#edit-create');
 
 	static ready()
 	{
-		Create.createButton.on('click', function (e)
-		{
-			Edit.createElements.show();
-			Edit.updateElements.hide();
+		Create.openButton.on('click', Create.open);
+		Create.createButton.on('click', Create.create);
+	}
 
-			Edit.show("create", "", "", "", "", false);
-		});
+	static open()
+	{
+		Edit.createElements.show();
+		Edit.updateElements.hide();
+
+		Edit.show("create", "", "", "", "", false);
+	}
+
+	static create()
+	{
+		let data = Edit.getData();
+		
+		if (!data.name || data.name == null || data.name == "")
+		{
+			Alert.error("Name is missing");
+			return;
+		}
+		if (!data.list || data.list == null || data.list == "")
+		{
+			Alert.error("List is missing");
+			return;
+		}
+
+		API.simple("todo", "create", data,
+			function (result)
+			{
+				if (result["success"] == true)
+				{
+					Alert.success(result["message"]);
+					Core.getLiveData(() =>
+					{
+						Edit.hide();
+						Core.goToList(data.list);
+					});
+				}
+				else if (result["success"] == false)
+				{
+					console.log(result);
+					Alert.error(result["message"]);
+				}
+			},
+			function (result)
+			{
+				Alert.error("Something went wrong. See console (F12) for more info.");
+				console.log(result);
+			}
+		);
 	}
 }
 
