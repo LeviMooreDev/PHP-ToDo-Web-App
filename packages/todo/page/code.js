@@ -139,6 +139,11 @@ class Core
 				Core.lists.push(task["list"]);
 			}
 		}
+
+		Core.lists.sort(function (a, b)
+		{
+			return a.toLowerCase().localeCompare(b.toLowerCase());
+		});
 	}
 
 	static autoRefresh()
