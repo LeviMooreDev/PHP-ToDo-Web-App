@@ -181,7 +181,7 @@ class HTML
 		}
 
 		return `
-		<li class="list-group-item">
+		<li class="list-group-item" ${Core.taskIdAttribute}="${task["id"]}">
 			<div class="row">
 				<div class="col">
 					<div class="d-flex align-items-center">
@@ -193,7 +193,7 @@ class HTML
 						</label>
 					</div>
 				</div>
-				<div class="col" ${Core.taskIdAttribute}="${task["id"]}">
+				<div class="col open-edit">
 					<div class="task-name d-flex align-items-center">${task["name"]}</div>
 				</div>
 				${task["priority"] ? '<div class="task-priority"><i class="far fa-star"></i></div>' : ""}
@@ -346,6 +346,8 @@ class Edit
  */
 class Update
 {
+	static doneCheckboxSelector = ".list-group-item input[type=checkbox]";
+	static openSelector = ".open-edit";
 	static saveButton = $('#edit-update');
 	static deleteButtonElement = $('#edit-delete');
 	static deleteButtonConfirmAttribute = "data-delete-confirm";
@@ -357,13 +359,25 @@ class Update
 		//listen for new tasks being added
 		let obs = new MutationObserver(function (mutations, observer)
 		{
+			//open edit modal
 			$.each(mutations, function (i, mutation)
 			{
-				let selector = `[${Core.taskIdAttribute}]`;
-				let elements = $(mutation.addedNodes).find(selector).addBack(selector);
+				let elements = $(mutation.addedNodes).find(Update.openSelector).addBack(Update.openSelector);
 				elements.each(function ()
 				{
 					Update.open($(this));
+				});
+			});
+			//click done checbox
+			$.each(mutations, function (i, mutation)
+			{
+				let elements = $(mutation.addedNodes).find(Update.doneCheckboxSelector).addBack(Update.doneCheckboxSelector);
+				elements.each(function ()
+				{
+					$(this).click(function ()
+					{
+						Update.clickDone($(this));
+					});
 				});
 			});
 		});
@@ -449,12 +463,12 @@ class Update
 		}
 	}
 
-	static open(element)
+	static open(button)
 	{
-		element.click(function ()
+		button.click(function ()
 		{
 			//get task
-			let id = $(this).attr(Core.taskIdAttribute);
+			let id = $(this).closest(".list-group-item").attr(Core.taskIdAttribute);
 			let task = Core.tasks[id];
 
 			//reset delete button
@@ -468,6 +482,30 @@ class Update
 			//show modal
 			Edit.show(id, task["name"], task["description"], task["list"], task["date"], task["priority"]);
 		});
+	}
+
+	static clickDone(checkbox)
+	{
+		let data = {
+			id: checkbox.closest(".list-group-item").attr(Core.taskIdAttribute),
+			done: checkbox.prop('checked')
+		};
+
+		API.simple("todo", "update", data,
+			function (result)
+			{
+				if (result["success"] == false)
+				{
+					Alert.error(result["message"]);
+					console.log(result);
+				}
+			},
+			function (result)
+			{
+				Alert.error("Something went wrong. See console (F12) for more info.");
+				console.log(result);
+			}
+		);
 	}
 }
 
