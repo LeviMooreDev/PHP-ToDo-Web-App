@@ -16,7 +16,8 @@ if (password_verify($password, $result->fetch_row()[0]))
     {
         session_start();
     }
-    $_SESSION["logged_in"] = true;
+    $_SESSION["authentication_logged_in"] = true;
+    $_SESSION["authentication_hashed_id"] = hash('sha256', $password);
 
     Authentication::RegisterSuccess();
     $return["result"]["success"] = true;

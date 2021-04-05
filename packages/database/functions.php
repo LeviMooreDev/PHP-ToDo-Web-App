@@ -66,6 +66,10 @@ class Database
         }
     }
 
+    public static function insert_id()
+    {
+        return Database::$mysqli->insert_id;
+    }
     public static function escape($value)
     {
         return Database::$mysqli->real_escape_string($value);

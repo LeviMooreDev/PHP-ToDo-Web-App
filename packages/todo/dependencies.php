@@ -4,5 +4,6 @@ return [
 	'authentication' => "any",
     'jquery' => ">3",
     'font-awesome' => ">5",
-	'material' => "any"
+	'material' => "any",
+	'database' => "any"
 ];

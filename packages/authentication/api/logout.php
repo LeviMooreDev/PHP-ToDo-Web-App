@@ -4,4 +4,4 @@ if (session_status() != PHP_SESSION_ACTIVE)
 {
     session_start();
 }
-$_SESSION["logged_in"] = false;
+$_SESSION["authentication_logged_in"] = false;

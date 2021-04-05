@@ -7,8 +7,9 @@ return [
     'api' => "1.1",
     'alert' => "10.15.7",
     'database' => "1.0",
-    'authentication' => "1.0",
+    'authentication' => "1.1",
 	"aaron-checkbox" => "1.0",
     'material' => "1.0",
-    "todo" => "1.0"
+    "todo" => "1.0",
+	'encryption' => "1.0"
 ];

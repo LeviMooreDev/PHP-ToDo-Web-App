@@ -12,23 +12,33 @@ Authentication::Auth403();
 //connect to database
 Database::connect();
 
+//start encryption
+$taskEncryptionName = "todo_tasks";
+Encryption::Start($taskEncryptionName, Authentication::HashedId());
+
 //get name
 if(!isset($_POST["name"])){
 	API::fail("missing name");
 }
-$name = Database::escape($_POST["name"]);
+$name = Encryption::Encrypt($taskEncryptionName, $_POST["name"]);
+$name = Database::escape($name);
 
 //get description
 if(!isset($_POST["description"])){
 	API::fail("missing description");
 }
-$description = Database::escape($_POST["description"]);
+$description = Encryption::Encrypt($taskEncryptionName, $_POST["description"]);
+$description = Database::escape($description);
 
 //get list
 if(!isset($_POST["list"])){
 	API::fail("missing list");
 }
-$list = Database::escape($_POST["list"]);
+$list = Encryption::Encrypt($taskEncryptionName, $_POST["list"]);
+$list = Database::escape($list);
+
+//stop encryption
+Encryption::Stop();
 
 //get priority
 if(!isset($_POST["priority"])){
@@ -48,12 +58,15 @@ if($date == "''"){
 //get table name
 $table = Database::tableName("tasks");
 
+$ip = $_SERVER["REMOTE_ADDR"];
+
 //query
-$sql = "INSERT INTO `$table` (`priority`, `name`, `description`, `list`, `date`) VALUES
-							 ($priority, '$name','$description','$list',$date)";
+$sql = "INSERT INTO `$table` (`priority`, `name`, `description`, `list`, `date`, `updated_by`) VALUES
+							 ($priority, '$name','$description','$list',$date, '$ip')";
 Database::query($sql);
 
 //return
+API::result("id", Database::insert_id());
 API::success("Created");
 
 

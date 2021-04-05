@@ -14,7 +14,7 @@ class Authentication
             session_start();
         }
 
-        if (isset($_SESSION["logged_in"]) && $_SESSION["logged_in"] === true)
+        if (isset($_SESSION["authentication_logged_in"]) && $_SESSION["authentication_logged_in"] === true)
         {
             return true;
         }
@@ -79,6 +79,14 @@ class Authentication
         }
     }
 
+	static function HashedId()
+	{
+        if (Authentication::Auth())
+        {
+			return $_SESSION["authentication_hashed_id"];
+        }
+		die();
+	}
 
     static function GetIP()
     {

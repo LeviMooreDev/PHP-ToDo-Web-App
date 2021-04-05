@@ -32,28 +32,38 @@ if(isset($_POST["done"])){
 	$updateSql[] = "`done`=$done";
 }
 
+//start encryption
+$taskEncryptionName = "todo_tasks";
+Encryption::Start($taskEncryptionName, Authentication::HashedId());
+
 //get name
 if(isset($_POST["name"])){
-	$name = Database::escape($_POST["name"]);
+	$name = Encryption::Encrypt($taskEncryptionName, $_POST["name"]);
+	$name = Database::escape($name);
 	$updateSql[] = "`name`='$name'";
+}
+
+//get description
+if(isset($_POST["description"])){
+	$description = Encryption::Encrypt($taskEncryptionName, $_POST["description"]);
+	$description = Database::escape($description);
+	$updateSql[] = "`description`='$description'";
 }
 
 //get list
 if(isset($_POST["list"])){
-	$list = Database::escape($_POST["list"]);
+	$list = Encryption::Encrypt($taskEncryptionName, $_POST["list"]);
+	$list = Database::escape($list);
 	$updateSql[] = "`list`='$list'";
 }
+
+//stop encryption
+Encryption::Stop();
 
 //get priority
 if(isset($_POST["priority"])){
 	$priority = Database::escape($_POST["priority"]);
 	$updateSql[] = "`priority`=$priority";
-}
-
-//get description
-if(isset($_POST["description"])){
-	$description = Database::escape($_POST["description"]);
-	$updateSql[] = "`description`='$description'";
 }
 
 //get date
@@ -68,8 +78,12 @@ if(isset($_POST["date"])){
 	}
 }
 
+$ip = $_SERVER["REMOTE_ADDR"];
+$updateSql[] = "`updated_by`='$ip'";
+
 //join list of update sql into sql string
 $updateSql = join(", ", $updateSql);
+
 
 //query
 Database::query("UPDATE `$table` SET $updateSql WHERE `id`=$id");

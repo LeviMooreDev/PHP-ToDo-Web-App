@@ -12,14 +12,15 @@ $(document).ready(function ()
  */
 class Core
 {
-	static autoRefreshTime = 5000;
-	static lastUpdate = null;
+	static by;
 	static checkingRefreshing = false;
+	static autoRefreshTime = 2000;
+	static lastUpdate = null;
 	static taskIdAttribute = "data-task-id"; //the attribute used to store task id in.
 	static activeListCookieName = "active-list";
 
-	static lists = [];
-	static tasks = [];
+	static lists;
+	static tasks;
 
 	static ready()
 	{
@@ -34,26 +35,27 @@ class Core
 		API.simple("todo", "get", "",
 			function (result)
 			{
-				//set lists
-				Core.lists = result["lists"];
-				//set tasks
-				for (let list in Core.lists)
-				{
-					for (let index in Core.lists[list])
-					{
-						let task = Core.lists[list][index];
-						Core.tasks[task["id"]] = task;
+				Core.by = result["by"];
 
-						let taskUpdatedAt = new Date(task["updated_at"]);
-						if (Core.lastUpdate == null || taskUpdatedAt > Core.lastUpdate)
-						{
-							Core.lastUpdate = taskUpdatedAt;
-						}
+				Core.tasks = {};
+				for (let i in result["tasks"])
+				{
+					let task = result["tasks"][i];
+					Core.addTaskLocal(task, false);
+
+					let taskUpdatedAt = new Date(task["updated_at"]);
+					if (Core.lastUpdate == null || taskUpdatedAt > Core.lastUpdate)
+					{
+						Core.lastUpdate = taskUpdatedAt;
 					}
 				}
+
+				Core.updateListsArray();
+
 				//generate html
 				HTML.generate();
 
+				console.log("live data");
 				if (callback)
 				{
 					callback();
@@ -67,6 +69,78 @@ class Core
 		);
 	}
 
+	static addTaskLocal(data, updateList = true)
+	{
+		Core.tasks[data.id] = data;
+
+		if (updateList)
+		{
+			Core.updateListsArray();
+		}
+	}
+
+	static updateTaskLocal(data, updateList = true)
+	{
+		let task = Core.tasks[data.id];
+		if (data.done != undefined)
+		{
+			task.done = data.done;
+		}
+		if (data.name != undefined)
+		{
+			task.name = data.name;
+		}
+		if (data.list != undefined)
+		{
+			task.list = data.list;
+		}
+		if (data.date != undefined)
+		{
+			task.date = data.date;
+		}
+		if (data.priority != undefined)
+		{
+			task.priority = data.priority;
+		}
+		if (data.description != undefined)
+		{
+			task.description = data.description;
+		}
+
+		Core.tasks[data.id] = task;
+
+		//update list data
+		if (updateList)
+		{
+			Core.updateListsArray();
+		}
+	}
+
+	static deleteTaskLocal(id, updateList = true)
+	{
+		delete Core.tasks[id];
+
+		//update list data
+		if (updateList)
+		{
+			Core.updateListsArray();
+		}
+	}
+
+	static updateListsArray()
+	{
+		Core.lists = [];
+		for (let i in Core.tasks)
+		{
+			let task = Core.tasks[i];
+
+			if (Core.lists.indexOf(task["list"]) == -1)
+			{
+				Core.lists.push(task["list"]);
+			}
+		}
+	}
+
 	static autoRefresh()
 	{
 		setInterval(() =>
@@ -78,21 +152,31 @@ class Core
 
 			if ((Edit.modal.data('bs.modal') || {})._isShown)
 			{
-				console.log("is open");
 				return;
 			}
 
-			API.simple("todo", "last-updated", "",
+			Core.checkingRefreshing = true;
+
+			API.simple("todo", "last-updated", { by: Core.by },
 				function (result)
 				{
 					if (Core.lastUpdate != null && new Date(result["updated_at"]) > Core.lastUpdate)
 					{
-						Core.getLiveData();
+						console.log("refresh");
+						Core.getLiveData(() =>
+						{
+							Core.checkingRefreshing = false;
+						});
+					}
+					else
+					{
+						Core.checkingRefreshing = false;
 					}
 				},
 				function (result)
 				{
 					console.log(result);
+					Core.checkingRefreshing = false;
 				}
 			);
 		}, Core.autoRefreshTime);
@@ -110,11 +194,11 @@ class Core
 		{
 			if (activeList == "")
 			{
-				activeList = Object.keys(Core.lists)[0];
+				activeList = Core.lists[0];
 			}
-			else if (!Core.lists[activeList])
+			else if (Core.lists.indexOf(activeList) == -1)
 			{
-				activeList = Object.keys(Core.lists)[0];
+				activeList = Core.lists[0];
 			}
 		}
 		return list == activeList;
@@ -147,8 +231,10 @@ class HTML
 		HTML.tasksElement.html("");
 		HTML.listOptionsElement.html("");
 
-		for (let list in Core.lists)
+		for (let i in Core.lists)
 		{
+			let list = Core.lists[i];
+
 			//list option
 			HTML.listOptionsElement.append(HTML.generateListEditOption(list));
 
@@ -157,13 +243,15 @@ class HTML
 
 			//list content
 			HTML.tasksElement.append(HTML.generateListContent(list));
+		}
 
-			//tasks
-			let tableBody = $(`#${Core.getListId(list)} ul`);
-			for (let index in Core.lists[list])
-			{
-				$(tableBody).append(HTML.generateTask(Core.lists[list][index]));
-			}
+		//tasks
+		for (let i in Core.tasks)
+		{
+			let task = Core.tasks[i];
+			let tableBody = $(`#${Core.getListId(task.list)} ul`);
+
+			$(tableBody).append(HTML.generateTask(task));
 		}
 
 		HTML.setupSlidingTabs();
@@ -344,10 +432,11 @@ class Edit
 		Edit.nameElement.val(name);
 		Edit.dateElement.val(date);
 		Edit.descriptionElement.val(description);
-		Edit.priorityElement.removeAttr("checked");
+		priority.console
+		Edit.priorityElement.prop('checked', false);
 		if (priority)
 		{
-			Edit.priorityElement.attr("checked", "checked");
+			Edit.priorityElement.prop('checked', true);
 		}
 		Edit.setList(list);
 		Edit.listNewElement.val("");
@@ -438,82 +527,6 @@ class Update
 		Update.saveButton.on('click', Update.clickSave);
 	}
 
-	static clickSave()
-	{
-		let data = Edit.getData();
-
-		if (!data.name || data.name == null || data.name == "")
-		{
-			Alert.error("Name is missing");
-			return;
-		}
-		if (!data.list || data.list == null || data.list == "")
-		{
-			Alert.error("List is missing");
-			return;
-		}
-
-		API.simple("todo", "update", data,
-			function (result)
-			{
-				if (result["success"] == true)
-				{
-					Alert.success(result["message"]);
-					Core.getLiveData(() =>
-					{
-						Edit.hide();
-						Core.goToList(data.list);
-					});
-				}
-				else if (result["success"] == false)
-				{
-					console.log(result);
-					Alert.error(result["message"]);
-				}
-			},
-			function (result)
-			{
-				Alert.error("Something went wrong. See console (F12) for more info.");
-				console.log(result);
-			}
-		);
-	}
-
-	static clickDelete()
-	{
-		if (Update.deleteButtonElement.attr(Update.deleteButtonConfirmAttribute))
-		{
-			API.simple("todo", "delete", { id: Edit.getData().id },
-				function (result)
-				{
-					if (result["success"] == true)
-					{
-						Alert.success(result["message"]);
-						Core.getLiveData(() =>
-						{
-							Edit.hide();
-						});
-					}
-					else if (result["success"] == false)
-					{
-						console.log(result);
-						Alert.error(result["message"]);
-					}
-				},
-				function (result)
-				{
-					Alert.error("Something went wrong. See console (F12) for more info.");
-					console.log(result);
-				}
-			);
-		}
-		else
-		{
-			Update.deleteButtonElement.attr(Update.deleteButtonConfirmAttribute, true);
-			Update.deleteButtonElement.html(Update.deleteButtonConfirmText);
-		}
-	}
-
 	static open(button)
 	{
 		button.click(function ()
@@ -535,17 +548,103 @@ class Update
 		});
 	}
 
+	static clickSave()
+	{
+		let data = Edit.getData();
+
+		if (!data.name || data.name == null || data.name == "")
+		{
+			Alert.error("Name is missing");
+			return;
+		}
+		if (!data.list || data.list == null || data.list == "")
+		{
+			Alert.error("List is missing");
+			return;
+		}
+
+		API.simple("todo", "update", data,
+			function (result)
+			{
+				if (result["success"] == true)
+				{
+					Core.updateTaskLocal(data);
+
+					HTML.generate();
+					Edit.hide();
+					Core.goToList(data.list);
+
+					Alert.success(result["message"]);
+				}
+				else if (result["success"] == false)
+				{
+					console.log(result);
+					Alert.error(result["message"]);
+				}
+			},
+			function (result)
+			{
+				Alert.error("Something went wrong. See console (F12) for more info.");
+				console.log(result);
+			}
+		);
+	}
+
+	static clickDelete()
+	{
+		if (Update.deleteButtonElement.attr(Update.deleteButtonConfirmAttribute))
+		{
+			let id = Edit.getData().id;
+			API.simple("todo", "delete", { id: id },
+				function (result)
+				{
+					if (result["success"] == true)
+					{
+						Core.deleteTaskLocal(id);
+
+						HTML.generate();
+						Edit.hide();
+
+						Alert.success(result["message"]);
+					}
+					else if (result["success"] == false)
+					{
+						console.log(result);
+						Alert.error(result["message"]);
+					}
+				},
+				function (result)
+				{
+					Alert.error("Something went wrong. See console (F12) for more info.");
+					console.log(result);
+				}
+			);
+		}
+		else
+		{
+			Update.deleteButtonElement.attr(Update.deleteButtonConfirmAttribute, true);
+			Update.deleteButtonElement.html(Update.deleteButtonConfirmText);
+		}
+	}
+
 	static clickDone(checkbox)
 	{
+		let id = checkbox.closest(".list-group-item").attr(Core.taskIdAttribute);
+		let done = checkbox.prop('checked');
+
 		let data = {
-			id: checkbox.closest(".list-group-item").attr(Core.taskIdAttribute),
-			done: checkbox.prop('checked')
+			id: id,
+			done: done
 		};
 
 		API.simple("todo", "update", data,
 			function (result)
 			{
-				if (result["success"] == false)
+				if (result["success"] == true)
+				{
+					Core.updateTaskLocal(data);
+				}
+				else if (result["success"] == false)
 				{
 					Alert.error(result["message"]);
 					console.log(result);
@@ -602,12 +701,14 @@ class Create
 			{
 				if (result["success"] == true)
 				{
+					data.id = result["id"];
+					Core.addTaskLocal(data);
+
+					HTML.generate();
+					Edit.hide();
+					Core.goToList(data.list);
+
 					Alert.success(result["message"]);
-					Core.getLiveData(() =>
-					{
-						Edit.hide();
-						Core.goToList(data.list);
-					});
 				}
 				else if (result["success"] == false)
 				{

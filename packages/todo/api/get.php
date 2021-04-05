@@ -17,19 +17,25 @@ $table = Database::tableName("tasks");
 $result = Database::query("SELECT * FROM `$table` ORDER BY priority DESC, -date DESC");
 
 //build list of tasks
-$lists = [];
+$tasks = [];
 if ($result->num_rows > 0)
 {
     while ($row = $result->fetch_assoc())
     {
+		$taskEncryptionName = "todo_tasks";
+		Encryption::Start($taskEncryptionName, Authentication::HashedId());
+		$row["name"] = Encryption::Decrypt($taskEncryptionName, $row["name"]);
+		$row["description"] = Encryption::Decrypt($taskEncryptionName, $row["description"]);
+		$row["list"] = Encryption::Decrypt($taskEncryptionName, $row["list"]);
+		Encryption::Stop();
+
 		$row["done"] = $row["done"] == 1 ? true : false;
 		$row["priority"] = $row["priority"] == 1 ? true : false;
-        $lists[$row["list"]][] = $row;
+        $tasks[] = $row;
     }
 }
 
-ksort($lists);
-
 //return
-API::result("lists", $lists);
+API::result("by", $_SERVER["REMOTE_ADDR"]);
+API::result("tasks", $tasks);
 API::success("");
