@@ -307,7 +307,7 @@ class Edit
 		Edit.setList(list);
 		Edit.listNewElement.val("");
 
-		Edit.modal.modal();
+		Edit.modal.modal({backdrop: 'static'})
 	}
 	static hide()
 	{
