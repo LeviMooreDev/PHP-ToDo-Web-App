@@ -418,7 +418,29 @@ class Update
 	{
 		if (Update.deleteButtonElement.attr(Update.deleteButtonConfirmAttribute))
 		{
-			Edit.hide();
+			API.simple("todo", "delete", { id: Edit.getData().id },
+				function (result)
+				{
+					if (result["success"] == true)
+					{
+						Alert.success(result["message"]);
+						Core.getLiveData(() =>
+						{
+							Edit.hide();
+						});
+					}
+					else if (result["success"] == false)
+					{
+						console.log(result);
+						Alert.error(result["message"]);
+					}
+				},
+				function (result)
+				{
+					Alert.error("Something went wrong. See console (F12) for more info.");
+					console.log(result);
+				}
+			);
 		}
 		else
 		{
@@ -474,7 +496,7 @@ class Create
 	static create()
 	{
 		let data = Edit.getData();
-		
+
 		if (!data.name || data.name == null || data.name == "")
 		{
 			Alert.error("Name is missing");

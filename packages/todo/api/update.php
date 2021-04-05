@@ -15,15 +15,14 @@ Database::connect();
 //get table name
 $table = Database::tableName("tasks");
 
+//contains update part of the sql
+$updateSql = [];
+
 //check if we have an id to update
 if (!isset($_POST["id"]))
 {
 	API::fail("missing id");
 }
-
-//contains update part of the sql
-$updateSql = [];
-
 //get id
 $id = Database::escape($_POST["id"]);
 
