@@ -254,12 +254,27 @@ class HTML
 		}
 
 		//tasks
-		for (let i in Core.tasks)
+		let sortedTasks = Object.values(Core.tasks).sort(function (a, b)
 		{
-			let task = Core.tasks[i];
-			let tableBody = $(`#${Core.getListId(task.list)} ul`);
+			//sort by priority 
+			let priority = b.priority - a.priority;;
+			if (priority != 0){
+				return priority;
+			}
 
-			$(tableBody).append(HTML.generateTask(task));
+			//then by date
+			if(a.date == null){
+				return 1;
+			}
+			if(b.date == null){
+				return -1;
+			}
+			a = a.date.split('/').reverse().join('');
+			b = b.date.split('/').reverse().join('');
+			return a > b ? 1 : a < b ? -1 : 0;
+		});
+		for (let i in sortedTasks)
+		{
 		}
 
 		HTML.setupSlidingTabs();
