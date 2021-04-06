@@ -55,7 +55,6 @@ class Core
 				//generate html
 				HTML.generate();
 
-				console.log("live data");
 				if (callback)
 				{
 					callback();
@@ -167,7 +166,6 @@ class Core
 				{
 					if (Core.lastUpdate != null && new Date(result["updated_at"]) > Core.lastUpdate)
 					{
-						console.log("refresh");
 						Core.getLiveData(() =>
 						{
 							Core.checkingRefreshing = false;
@@ -194,7 +192,7 @@ class Core
 
 	static isListActive(list)
 	{
-		let activeList = getCookie(Core.activeListCookieName);
+		let activeList = Core.getActiveList();
 		if (Core.lists.length != 0)
 		{
 			if (activeList == "")
@@ -207,6 +205,11 @@ class Core
 			}
 		}
 		return list == activeList;
+	}
+	
+	static getActiveList()
+	{
+		return getCookie(Core.activeListCookieName);
 	}
 
 	static setActiveListCookie(list)
@@ -683,7 +686,7 @@ class Create
 		Edit.createElements.show();
 		Edit.updateElements.hide();
 
-		Edit.show("create", "", "", "", "", false);
+		Edit.show("create", "", "", Core.getActiveList(), "", false);
 	}
 
 	static create()
