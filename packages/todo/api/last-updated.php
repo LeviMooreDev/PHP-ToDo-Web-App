@@ -16,13 +16,13 @@ Database::connect();
 $table = Database::tableName("tasks");
 
 //get priority
-$by = "";
-if(isset($_POST["by"])){
-	$by = Database::escape($_POST["by"]);
+$ignoreBy = "";
+if(isset($_POST["ignoreBy"])){
+	$ignoreBy = Database::escape($_POST["ignoreBy"]);
 }
 
 //query
-$result = Database::query("SELECT `updated_at` FROM `$table` WHERE NOT `updated_by`= '$by' ORDER BY `updated_at` DESC LIMIT 1");
+$result = Database::query("SELECT `updated_at` FROM `$table` WHERE NOT `updated_by`= '$ignoreBy' ORDER BY `updated_at` DESC LIMIT 1");
 
 if ($result->num_rows > 0)
 {

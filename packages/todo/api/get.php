@@ -14,7 +14,7 @@ Database::connect();
 
 //get tasks
 $table = Database::tableName("tasks");
-$result = Database::query("SELECT * FROM `$table` ORDER BY priority DESC, -date DESC");
+$result = Database::query("SELECT * FROM `$table` ORDER BY `priority` DESC, -date DESC");
 
 //build list of tasks
 $tasks = [];

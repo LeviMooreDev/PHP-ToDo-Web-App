@@ -161,13 +161,14 @@ class Core
 
 			Core.checkingRefreshing = true;
 
-			API.simple("todo", "last-updated", { by: Core.by },
+			API.simple("todo", "last-updated", { ignoreBy: Core.by },
 				function (result)
 				{
 					if (Core.lastUpdate != null && new Date(result["updated_at"]) > Core.lastUpdate)
 					{
 						Core.getLiveData(() =>
 						{
+							console.log("autoRefresh");
 							Core.checkingRefreshing = false;
 						});
 					}
@@ -206,7 +207,7 @@ class Core
 		}
 		return list == activeList;
 	}
-	
+
 	static getActiveList()
 	{
 		return getCookie(Core.activeListCookieName);
@@ -232,6 +233,8 @@ class HTML
 	static listsElement = $("#lists"); //the list of lists (tabs) at the top of the page.
 	static tasksElement = $("#tasks"); //the area below the lists where all the tasks are.
 	static listOptionsElement = $("#edit-list-options"); //the list of options in the list 
+	static completedTasksUl = ".completed-tasks ul";
+	static notCompletedTasksUl = ".not-completed-tasks ul";
 
 	static generate()
 	{
@@ -275,9 +278,21 @@ class HTML
 		});
 		for (let i in sortedTasks)
 		{
+			let task = Core.tasks[sortedTasks[i].id];
+			let ul;
+			if (task.done)
+			{
+				ul = $(`#${Core.getListId(task.list)} ${HTML.completedTasksUl}`);
+			}
+			else
+			{
+				ul = $(`#${Core.getListId(task.list)} ${HTML.notCompletedTasksUl}`);
+			}
+			$(ul).append(HTML.generateTask(task));
 		}
 
 		HTML.setupSlidingTabs();
+		HTML.setupShowCompleted();
 
 		$("#loading").remove();
 	}
@@ -301,7 +316,10 @@ class HTML
 		let id = Core.getListId(list);
 		return `
 		<div id="${id}" class="tab-pane fade ${active ? 'show active' : ''}" role="tabpanel" aria-labelledby="${id}">
-			<ul class="list-group"></ul>
+			<div class="not-completed-tasks"><ul class="list-group"></ul></div>	
+			<button class="btn btn-outline-light show-completed-tasks-button" type="button" data-toggle="collapse" data-target="#show-completed-${id}" aria-expanded="false" aria-controls="show-completed-${id}">Completed Tasks</button>
+			<div class="collapse completed-tasks" id="show-completed-${id}"><ul class="list-group"></ul></div>
+
 		</div>
 		`;
 	}
@@ -398,6 +416,29 @@ class HTML
 				$new_tab.css('position', 'relative').css("left", "-2500px");
 				$new_tab.animate({ "left": "0" }, 500);
 			}
+		});
+	}
+
+	static setupShowCompleted()
+	{
+		$('.completed-tasks').each(function ()
+		{
+			let cookieName = "todo_" + $(this).parent().attr("id") + "_show_completed";
+			let show = getCookie(cookieName, 1);
+			if (show == 1)
+			{
+				$(this).addClass('show');
+				$(this).collapse('show');
+			}
+
+			$(this).on('hide.bs.collapse', function ()
+			{
+				setCookie(cookieName, 0, 99999);
+			})
+			$(this).on('show.bs.collapse', function ()
+			{
+				setCookie(cookieName, 1, 99999);
+			})
 		});
 	}
 }
@@ -666,6 +707,10 @@ class Update
 				if (result["success"] == true)
 				{
 					Core.updateTaskLocal(data);
+					HTML.generate();
+					setTimeout(() =>
+					{
+					}, 700);
 				}
 				else if (result["success"] == false)
 				{
@@ -756,7 +801,7 @@ function setCookie(cname, cvalue, exdays)
 	var expires = "expires=" + d.toUTCString();
 	document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
-function getCookie(cname)
+function getCookie(cname, defaultValue = "")
 {
 	var name = cname + "=";
 	var decodedCookie = decodeURIComponent(document.cookie);
@@ -773,5 +818,5 @@ function getCookie(cname)
 			return c.substring(name.length, c.length);
 		}
 	}
-	return "";
+	return defaultValue;
 }

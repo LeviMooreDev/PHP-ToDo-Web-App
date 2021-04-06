@@ -70,6 +70,14 @@ body {
 	color: var(--danger);
 }
 
+.list-group-item .checkbox input {
+	transition-duration: 0s;
+    transition-delay: 0s !important;
+}
+.list-group-item .checkbox svg {
+	transition-duration: 0s;
+}
+
 /* create task */
 #open-create-task {
 	position: fixed;
@@ -185,4 +193,22 @@ body {
 	display: flex;
 	align-items: center;
 	place-content: center;
+}
+
+.show-completed-tasks-button {
+	padding-top: 15px;
+	padding-left: 5px;
+}
+.show-completed-tasks-button {
+	background-color: transparent !important;
+    background-image: none !important;
+}
+.show-completed-tasks-button::before {
+	content: "\f105";
+	font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+	padding-right: 8px;
+}
+.show-completed-tasks-button[aria-expanded=true]::before {
+	content: "\f107";
 }
