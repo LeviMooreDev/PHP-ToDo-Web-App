@@ -19,6 +19,3 @@ Database::query("INSERT INTO `$table` (`priority`, `name`, `description`, `list`
 
 API::result("id", Database::insert_id());
 API::success("Created");
-
-
-

@@ -13,13 +13,12 @@ $(document).ready(function ()
  */
 class Task
 {
-	static by;
 	static checkingRefreshing = false;
 	static autoRefreshTime = 2000;
 	static lastUpdate = null;
 	static taskIdAttribute = "data-task-id"; //the attribute used to store task id in.
 
-	static tasks;
+	static all;
 
 	static ready()
 	{
@@ -34,9 +33,7 @@ class Task
 		API.simple("todo", "task/get", "",
 			function (result)
 			{
-				Task.by = result["by"];
-
-				Task.tasks = {};
+				Task.all = {};
 				for (let i in result["tasks"])
 				{
 					let task = result["tasks"][i];
@@ -69,7 +66,7 @@ class Task
 
 	static addLocal(data, updateList = true)
 	{
-		Task.tasks[data.id] = data;
+		Task.all[data.id] = data;
 
 		if (updateList)
 		{
@@ -79,7 +76,7 @@ class Task
 
 	static updateLocal(data, updateList = true)
 	{
-		let task = Task.tasks[data.id];
+		let task = Task.all[data.id];
 		if (data.done != undefined)
 		{
 			task.done = data.done;
@@ -105,7 +102,7 @@ class Task
 			task.description = data.description;
 		}
 
-		Task.tasks[data.id] = task;
+		Task.all[data.id] = task;
 
 		//update list data
 		if (updateList)
@@ -116,7 +113,7 @@ class Task
 
 	static deleteTaskLocal(id, updateList = true)
 	{
-		delete Task.tasks[id];
+		delete Task.all[id];
 
 		//update list data
 		if (updateList)
@@ -141,7 +138,7 @@ class Task
 
 			Task.checkingRefreshing = true;
 
-			API.simple("todo", "last-updated", { ignoreBy: Task.by },
+			API.simple("todo", "last-updated", "",
 				function (result)
 				{
 					if (Task.lastUpdate != null && new Date(result["updated_at"]) > Task.lastUpdate)
@@ -184,9 +181,9 @@ class HTML
 		HTML.tasksElement.html("");
 		HTML.listOptionsElement.html("");
 
-		for (let i in List.lists)
+		for (let i in List.all)
 		{
-			let list = List.lists[i];
+			let list = List.all[i];
 
 			//list option
 			HTML.listOptionsElement.append(HTML.generateListEditOption(list));
@@ -199,7 +196,7 @@ class HTML
 		}
 
 		//tasks
-		let sortedTasks = Object.values(Task.tasks).sort(function (a, b)
+		let sortedTasks = Object.values(Task.all).sort(function (a, b)
 		{
 			//sort by priority 
 			let priority = b.priority - a.priority;;
@@ -223,7 +220,7 @@ class HTML
 		});
 		for (let i in sortedTasks)
 		{
-			let task = Task.tasks[sortedTasks[i].id];
+			let task = Task.all[sortedTasks[i].id];
 			let ul;
 			if (task.done)
 			{
@@ -324,7 +321,7 @@ class HTML
 
 	static setupSlidingTabs()
 	{
-		$('a[data-toggle="tab"]').on('hide.bs.tab', function (e)
+		$('span[data-toggle="tab"]').on('hide.bs.tab', function (e)
 		{
 			var $old_tab = $($(e.target).attr("href"));
 			var $new_tab = $($(e.relatedTarget).attr("href"));
@@ -346,7 +343,7 @@ class HTML
 				});
 			}
 		});
-		$('a[data-toggle="tab"]').on('show.bs.tab', function (e)
+		$('span[data-toggle="tab"]').on('show.bs.tab', function (e)
 		{
 			var $new_tab = $($(e.target).attr("href"));
 			var $old_tab = $($(e.relatedTarget).attr("href"));
@@ -542,7 +539,7 @@ class Update
 		{
 			//get task
 			let id = $(this).closest(".list-group-item").attr(Task.taskIdAttribute);
-			let task = Task.tasks[id];
+			let task = Task.all[id];
 
 			//reset delete button
 			Update.deleteButtonElement.removeAttr(Update.deleteButtonConfirmAttribute);
@@ -755,7 +752,7 @@ class List
 	static deleteButtonNormalText = "Delete";
 
 	static active = "";
-	static lists;
+	static all;
 
 	static ready()
 	{
@@ -787,22 +784,24 @@ class List
 			});
 		});
 		obs.observe(HTML.listsElement[0], { childList: true });
+
+		List.handleSwiping();
 	}
 
 	static rebuildArray()
 	{
-		List.lists = [];
-		for (let i in Task.tasks)
+		List.all = [];
+		for (let i in Task.all)
 		{
-			let task = Task.tasks[i];
+			let task = Task.all[i];
 
-			if (List.lists.indexOf(task["list"]) == -1)
+			if (List.all.indexOf(task["list"]) == -1)
 			{
-				List.lists.push(task["list"]);
+				List.all.push(task["list"]);
 			}
 		}
 
-		List.lists.sort(function (a, b)
+		List.all.sort(function (a, b)
 		{
 			return a.toLowerCase().localeCompare(b.toLowerCase());
 		});
@@ -810,11 +809,11 @@ class List
 
 	static updateLocal(oldList, newList)
 	{
-		for (let i in Task.tasks)
+		for (let i in Task.all)
 		{
-			if (Task.tasks[i].list == oldList)
+			if (Task.all[i].list == oldList)
 			{
-				Task.tasks[i].list = newList;
+				Task.all[i].list = newList;
 			}
 		}
 
@@ -823,11 +822,11 @@ class List
 
 	static removeLocal(list)
 	{
-		for (let i in Task.tasks)
+		for (let i in Task.all)
 		{
-			if (Task.tasks[i].list == list)
+			if (Task.all[i].list == list)
 			{
-				delete Task.tasks[i];
+				delete Task.all[i];
 			}
 		}
 
@@ -836,15 +835,15 @@ class List
 
 	static isActive(list)
 	{
-		if (List.lists.length != 0)
+		if (List.all.length != 0)
 		{
 			if (List.active == "")
 			{
-				List.active = List.lists[0];
+				List.active = List.all[0];
 			}
-			else if (List.lists.indexOf(List.active) == -1)
+			else if (List.all.indexOf(List.active) == -1)
 			{
-				List.active = List.lists[0];
+				List.active = List.all[0];
 			}
 		}
 		return list == List.active;
@@ -952,6 +951,24 @@ class List
 			List.deleteButtonElement.html(List.deleteButtonConfirmText);
 		}
 	}
+
+	static handleSwiping()
+	{
+		$("body").attr("id", "body");
+		detectSwipe('body', (el, dir) =>
+		{
+			let index = List.all.indexOf(List.active);
+
+			if (dir == "right" && index > 0)
+			{
+				List.goTo(List.all[index - 1]);
+			}
+			if (dir == "left" && index < List.all.length - 1)
+			{
+				List.goTo(List.all[index + 1]);
+			}
+		});
+	}
 }
 
 //https://www.w3schools.com/js/js_cookies.asp
@@ -982,47 +999,53 @@ function getCookie(cname, defaultValue = "")
 	return defaultValue;
 }
 
-/*
-//Add custom event listener
-$(':root').on('mousedown touchstart ', '*', function ()
+//https://stackoverflow.com/questions/15084675/how-to-implement-swipe-gestures-for-mobile-devices (Ulysse BN)
+function detectSwipe(id, func, deltaMin = 90)
 {
-	let el = $(this);
-	let events = $._data(this, 'events');
-	if (events && events.clickHold)
-	{
-		el.data('clickHoldTimer',
-			setTimeout(
-				function ()
-				{
-					el.trigger('clickHold');
-				},
-				el.data('clickHoldTimeout')
-			)
-		);
+	const swipe_det = {
+		sX: 0,
+		sY: 0,
+		eX: 0,
+		eY: 0
 	}
-}).on('mouseup mouseleave mousemove touchend touchmove touchcancel', '*', function ()
-{
-	clearTimeout($(this).data('clickHoldTimer'));
-});
+	// Directions enumeration
+	const directions = Object.freeze({
+		UP: 'up',
+		DOWN: 'down',
+		RIGHT: 'right',
+		LEFT: 'left'
+	})
+	let direction = null
+	const el = document.getElementById(id)
+	el.addEventListener('touchstart', function (e)
+	{
+		const t = e.touches[0]
+		swipe_det.sX = t.screenX
+		swipe_det.sY = t.screenY
+	}, false)
+	el.addEventListener('touchmove', function (e)
+	{
+		// Prevent default will stop user from scrolling, use with care
+		// e.preventDefault();
+		const t = e.touches[0]
+		swipe_det.eX = t.screenX
+		swipe_det.eY = t.screenY
+	}, false)
+	el.addEventListener('touchend', function (e)
+	{
+		const deltaX = swipe_det.eX - swipe_det.sX
+		const deltaY = swipe_det.eY - swipe_det.sY
+		// Min swipe distance, you could use absolute value rather
+		// than square. It just felt better for personnal use
+		if (deltaX ** 2 + deltaY ** 2 < deltaMin ** 2) return
+		// horizontal
+		if (deltaY === 0 || Math.abs(deltaX / deltaY) > 1)
+			direction = deltaX > 0 ? directions.RIGHT : directions.LEFT
+		else // vertical
+			direction = deltaY > 0 ? directions.UP : directions.DOWN
 
-//Attach it to the element
+		if (direction && typeof func === 'function') func(el, direction)
 
-button.data('clickHoldTimeout', 200); //Time to hold
-button.on('clickHold', function ()
-{
-	//get task
-	let id = $(this).closest(".list-group-item").attr(Core.taskIdAttribute);
-	let task = Core.tasks[id];
-
-	//reset delete button
-	Update.deleteButtonElement.removeAttr(Update.deleteButtonConfirmAttribute);
-	Update.deleteButtonElement.html(Update.deleteButtonNormalText);
-
-	//only show elements for editing
-	Edit.createElements.hide();
-	Edit.updateElements.show();
-
-	//show modal
-	Edit.show(id, task["name"], task["description"], task["list"], task["date"], task["priority"]);
-});
-*/
+		direction = null
+	}, false)
+}
