@@ -1,4 +1,4 @@
-<FilesMatch "last-updated.php">
+<FilesMatch "delete.php|update.php">
     Order Allow,Deny
     Allow from all
 </FilesMatch>

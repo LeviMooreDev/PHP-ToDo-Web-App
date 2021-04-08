@@ -13,10 +13,34 @@ body {
 	transition-duration: 0.6s;
 }
 
+#lists .nav-item {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
 
 /* tasks (area below tabs) */
 #tasks {
 	padding: 1em;
+}
+#tasks .show-completed-tasks-button {
+	padding-top: 15px;
+	padding-left: 5px;
+}
+#tasks .show-completed-tasks-button {
+	background-color: transparent !important;
+	background-image: none !important;
+}
+#tasks .show-completed-tasks-button::before {
+	content: "\f105";
+	font-family: "Font Awesome 5 Free";
+	font-weight: 900;
+	padding-right: 8px;
+}
+#tasks .show-completed-tasks-button[aria-expanded=true]::before {
+	content: "\f107";
 }
 
 /* tasks groups (.list-group-item is a single tasks in the list) */
@@ -72,8 +96,9 @@ body {
 
 .list-group-item .checkbox input {
 	transition-duration: 0s;
-    transition-delay: 0s !important;
+	transition-delay: 0s !important;
 }
+
 .list-group-item .checkbox svg {
 	transition-duration: 0s;
 }
@@ -96,10 +121,6 @@ body {
 	padding-bottom: 0px;
 }
 
-#edit-modal .modal-footer {
-	display: block;
-}
-
 #edit-modal .container {
 	padding-right: 0px;
 	padding-left: 0px;
@@ -119,6 +140,7 @@ body {
 #edit-modal textarea {
 	padding-top: 3px;
 }
+
 
 #edit-list-button {
 	padding-left: 0px;
@@ -142,7 +164,6 @@ body {
 .modal.fade {
 	transition-duration: 0.15s;
 }
-
 /* dropdown */
 .dropdown,
 .dropdown-menu {
@@ -195,20 +216,18 @@ body {
 	place-content: center;
 }
 
-.show-completed-tasks-button {
-	padding-top: 15px;
-	padding-left: 5px;
+
+
+
+
+
+.modal .modal-footer {
+	display: block;
 }
-.show-completed-tasks-button {
-	background-color: transparent !important;
-    background-image: none !important;
+.modal .close {
+	padding-left: 15px;
 }
-.show-completed-tasks-button::before {
-	content: "\f105";
-	font-family: "Font Awesome 5 Free";
-    font-weight: 900;
-	padding-right: 8px;
-}
-.show-completed-tasks-button[aria-expanded=true]::before {
-	content: "\f107";
+.modal-footer .btn {
+    padding-right: 1rem;
+    padding-left: 1rem;
 }

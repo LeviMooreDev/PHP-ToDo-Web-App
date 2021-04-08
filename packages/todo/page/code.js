@@ -1,7 +1,8 @@
 //when the page is ready.
 $(document).ready(function ()
 {
-	Core.ready();
+	List.ready();
+	Task.ready();
 	Edit.ready();
 	Update.ready();
 	Create.ready();
@@ -10,47 +11,45 @@ $(document).ready(function ()
 /**
  * Handles getting tasks from database
  */
-class Core
+class Task
 {
 	static by;
 	static checkingRefreshing = false;
 	static autoRefreshTime = 2000;
 	static lastUpdate = null;
 	static taskIdAttribute = "data-task-id"; //the attribute used to store task id in.
-	static activeListCookieName = "active-list";
 
-	static lists;
 	static tasks;
 
 	static ready()
 	{
-		Core.getLiveData();
-		Core.autoRefresh();
+		Task.getLiveData();
+		Task.autoRefresh();
 	}
 
 	//update page with tasks from database.
 	//all data no tsaved will be cleared.
 	static getLiveData(callback)
 	{
-		API.simple("todo", "get", "",
+		API.simple("todo", "task/get", "",
 			function (result)
 			{
-				Core.by = result["by"];
+				Task.by = result["by"];
 
-				Core.tasks = {};
+				Task.tasks = {};
 				for (let i in result["tasks"])
 				{
 					let task = result["tasks"][i];
-					Core.addTaskLocal(task, false);
+					Task.addLocal(task, false);
 
 					let taskUpdatedAt = new Date(task["updated_at"]);
-					if (Core.lastUpdate == null || taskUpdatedAt > Core.lastUpdate)
+					if (Task.lastUpdate == null || taskUpdatedAt > Task.lastUpdate)
 					{
-						Core.lastUpdate = taskUpdatedAt;
+						Task.lastUpdate = taskUpdatedAt;
 					}
 				}
 
-				Core.updateListsArray();
+				List.rebuildArray();
 
 				//generate html
 				HTML.generate();
@@ -68,19 +67,19 @@ class Core
 		);
 	}
 
-	static addTaskLocal(data, updateList = true)
+	static addLocal(data, updateList = true)
 	{
-		Core.tasks[data.id] = data;
+		Task.tasks[data.id] = data;
 
 		if (updateList)
 		{
-			Core.updateListsArray();
+			List.rebuildArray();
 		}
 	}
 
-	static updateTaskLocal(data, updateList = true)
+	static updateLocal(data, updateList = true)
 	{
-		let task = Core.tasks[data.id];
+		let task = Task.tasks[data.id];
 		if (data.done != undefined)
 		{
 			task.done = data.done;
@@ -106,50 +105,31 @@ class Core
 			task.description = data.description;
 		}
 
-		Core.tasks[data.id] = task;
+		Task.tasks[data.id] = task;
 
 		//update list data
 		if (updateList)
 		{
-			Core.updateListsArray();
+			List.rebuildArray();
 		}
 	}
 
 	static deleteTaskLocal(id, updateList = true)
 	{
-		delete Core.tasks[id];
+		delete Task.tasks[id];
 
 		//update list data
 		if (updateList)
 		{
-			Core.updateListsArray();
+			List.rebuildArray();
 		}
-	}
-
-	static updateListsArray()
-	{
-		Core.lists = [];
-		for (let i in Core.tasks)
-		{
-			let task = Core.tasks[i];
-
-			if (Core.lists.indexOf(task["list"]) == -1)
-			{
-				Core.lists.push(task["list"]);
-			}
-		}
-
-		Core.lists.sort(function (a, b)
-		{
-			return a.toLowerCase().localeCompare(b.toLowerCase());
-		});
 	}
 
 	static autoRefresh()
 	{
 		setInterval(() =>
 		{
-			if (Core.checkingRefreshing)
+			if (Task.checkingRefreshing)
 			{
 				return;
 			}
@@ -159,69 +139,31 @@ class Core
 				return;
 			}
 
-			Core.checkingRefreshing = true;
+			Task.checkingRefreshing = true;
 
-			API.simple("todo", "last-updated", { ignoreBy: Core.by },
+			API.simple("todo", "last-updated", { ignoreBy: Task.by },
 				function (result)
 				{
-					if (Core.lastUpdate != null && new Date(result["updated_at"]) > Core.lastUpdate)
+					if (Task.lastUpdate != null && new Date(result["updated_at"]) > Task.lastUpdate)
 					{
-						Core.getLiveData(() =>
+						Task.getLiveData(() =>
 						{
 							console.log("autoRefresh");
-							Core.checkingRefreshing = false;
+							Task.checkingRefreshing = false;
 						});
 					}
 					else
 					{
-						Core.checkingRefreshing = false;
+						Task.checkingRefreshing = false;
 					}
 				},
 				function (result)
 				{
 					console.log(result);
-					Core.checkingRefreshing = false;
+					Task.checkingRefreshing = false;
 				}
 			);
-		}, Core.autoRefreshTime);
-	}
-
-	static getListId(list)
-	{
-		return "list-" + list.toLowerCase().replace(" ", "-");
-	}
-
-	static isListActive(list)
-	{
-		let activeList = Core.getActiveList();
-		if (Core.lists.length != 0)
-		{
-			if (activeList == "")
-			{
-				activeList = Core.lists[0];
-			}
-			else if (Core.lists.indexOf(activeList) == -1)
-			{
-				activeList = Core.lists[0];
-			}
-		}
-		return list == activeList;
-	}
-
-	static getActiveList()
-	{
-		return getCookie(Core.activeListCookieName);
-	}
-
-	static setActiveListCookie(list)
-	{
-		setCookie(Core.activeListCookieName, list, 9999);
-	}
-
-	static goToList(list)
-	{
-		$("#" + Core.getListId(list) + "-tab").click();
-		Core.setActiveListCookie(list);
+		}, Task.autoRefreshTime);
 	}
 }
 
@@ -242,9 +184,9 @@ class HTML
 		HTML.tasksElement.html("");
 		HTML.listOptionsElement.html("");
 
-		for (let i in Core.lists)
+		for (let i in List.lists)
 		{
-			let list = Core.lists[i];
+			let list = List.lists[i];
 
 			//list option
 			HTML.listOptionsElement.append(HTML.generateListEditOption(list));
@@ -257,19 +199,22 @@ class HTML
 		}
 
 		//tasks
-		let sortedTasks = Object.values(Core.tasks).sort(function (a, b)
+		let sortedTasks = Object.values(Task.tasks).sort(function (a, b)
 		{
 			//sort by priority 
 			let priority = b.priority - a.priority;;
-			if (priority != 0){
+			if (priority != 0)
+			{
 				return priority;
 			}
 
 			//then by date
-			if(a.date == null){
+			if (a.date == null)
+			{
 				return 1;
 			}
-			if(b.date == null){
+			if (b.date == null)
+			{
 				return -1;
 			}
 			a = a.date.split('/').reverse().join('');
@@ -278,15 +223,15 @@ class HTML
 		});
 		for (let i in sortedTasks)
 		{
-			let task = Core.tasks[sortedTasks[i].id];
+			let task = Task.tasks[sortedTasks[i].id];
 			let ul;
 			if (task.done)
 			{
-				ul = $(`#${Core.getListId(task.list)} ${HTML.completedTasksUl}`);
+				ul = $(`#${List.getId(task.list)} ${HTML.completedTasksUl}`);
 			}
 			else
 			{
-				ul = $(`#${Core.getListId(task.list)} ${HTML.notCompletedTasksUl}`);
+				ul = $(`#${List.getId(task.list)} ${HTML.notCompletedTasksUl}`);
 			}
 			$(ul).append(HTML.generateTask(task));
 		}
@@ -302,18 +247,18 @@ class HTML
 	}
 	static generateListTab(list)
 	{
-		let active = Core.isListActive(list);
-		let id = Core.getListId(list);
+		let active = List.isActive(list);
+		let id = List.getId(list);
 		return `
-		<li class="nav-item">
-			<a class="nav-link ${active ? 'active' : ''}" id="${id}-tab" data-toggle="tab" href="#${id}" onclick="Core.setActiveListCookie('${list}')" role="tab" aria-controls="${id}" aria-selected="true">${list}</a>
+		<li class="nav-item" data-list-name="${list}">
+			<span class="nav-link ${active ? 'active' : ''}" id="${id}-tab" data-toggle="tab" href="#${id}" role="tab" aria-controls="${id}" aria-selected="true">${list}</span>
 		</li>
 		`;
 	}
 	static generateListContent(list)
 	{
-		let active = Core.isListActive(list);
-		let id = Core.getListId(list);
+		let active = List.isActive(list);
+		let id = List.getId(list);
 		return `
 		<div id="${id}" class="tab-pane fade ${active ? 'show active' : ''}" role="tabpanel" aria-labelledby="${id}">
 			<div class="not-completed-tasks"><ul class="list-group"></ul></div>	
@@ -355,7 +300,7 @@ class HTML
 		}
 
 		return `
-		<li class="list-group-item" ${Core.taskIdAttribute}="${task["id"]}">
+		<li class="list-group-item" ${Task.taskIdAttribute}="${task["id"]}">
 			<div class="row">
 				<div class="col">
 					<div class="d-flex align-items-center">
@@ -492,7 +437,7 @@ class Edit
 
 	static show(id, name, description, list, date, priority)
 	{
-		Edit.idElement.attr(Core.taskIdAttribute, id);
+		Edit.idElement.attr(Task.taskIdAttribute, id);
 		Edit.nameElement.val(name);
 		Edit.dateElement.val(date);
 		Edit.descriptionElement.val(description);
@@ -526,7 +471,7 @@ class Edit
 
 	static getData()
 	{
-		let id = Edit.idElement.attr(Core.taskIdAttribute);
+		let id = Edit.idElement.attr(Task.taskIdAttribute);
 
 		let name = Edit.nameElement.val().trim();
 		let list = Edit.listButtonElement.html().trim();
@@ -593,11 +538,11 @@ class Update
 
 	static open(button)
 	{
-		button.click(function ()
+		button.on('click', function ()
 		{
 			//get task
-			let id = $(this).closest(".list-group-item").attr(Core.taskIdAttribute);
-			let task = Core.tasks[id];
+			let id = $(this).closest(".list-group-item").attr(Task.taskIdAttribute);
+			let task = Task.tasks[id];
 
 			//reset delete button
 			Update.deleteButtonElement.removeAttr(Update.deleteButtonConfirmAttribute);
@@ -627,16 +572,16 @@ class Update
 			return;
 		}
 
-		API.simple("todo", "update", data,
+		API.simple("todo", "task/update", data,
 			function (result)
 			{
 				if (result["success"] == true)
 				{
-					Core.updateTaskLocal(data);
+					Task.updateLocal(data);
 
 					HTML.generate();
 					Edit.hide();
-					Core.goToList(data.list);
+					List.goTo(data.list);
 
 					Alert.success(result["message"]);
 				}
@@ -659,12 +604,12 @@ class Update
 		if (Update.deleteButtonElement.attr(Update.deleteButtonConfirmAttribute))
 		{
 			let id = Edit.getData().id;
-			API.simple("todo", "delete", { id: id },
+			API.simple("todo", "task/delete", { id: id },
 				function (result)
 				{
 					if (result["success"] == true)
 					{
-						Core.deleteTaskLocal(id);
+						Task.deleteTaskLocal(id);
 
 						HTML.generate();
 						Edit.hide();
@@ -693,7 +638,7 @@ class Update
 
 	static clickDone(checkbox)
 	{
-		let id = checkbox.closest(".list-group-item").attr(Core.taskIdAttribute);
+		let id = checkbox.closest(".list-group-item").attr(Task.taskIdAttribute);
 		let done = checkbox.prop('checked');
 
 		let data = {
@@ -701,12 +646,12 @@ class Update
 			done: done
 		};
 
-		API.simple("todo", "update", data,
+		API.simple("todo", "task/update", data,
 			function (result)
 			{
 				if (result["success"] == true)
 				{
-					Core.updateTaskLocal(data);
+					Task.updateLocal(data);
 					HTML.generate();
 					setTimeout(() =>
 					{
@@ -746,7 +691,7 @@ class Create
 		Edit.createElements.show();
 		Edit.updateElements.hide();
 
-		Edit.show("create", "", "", Core.getActiveList(), "", false);
+		Edit.show("create", "", "", List.active, "", false);
 	}
 
 	static create()
@@ -764,17 +709,17 @@ class Create
 			return;
 		}
 
-		API.simple("todo", "create", data,
+		API.simple("todo", "task/create", data,
 			function (result)
 			{
 				if (result["success"] == true)
 				{
 					data.id = result["id"];
-					Core.addTaskLocal(data);
+					Task.addLocal(data);
 
 					HTML.generate();
 					Edit.hide();
-					Core.goToList(data.list);
+					List.goTo(data.list);
 
 					Alert.success(result["message"]);
 				}
@@ -790,6 +735,222 @@ class Create
 				console.log(result);
 			}
 		);
+	}
+}
+
+/**
+ * 
+ */
+class List
+{
+	static modal = $('#edit-list-modal');
+	static nameElement = $("#edit-list-name");
+	static oldNameElement = $("#edit-list-old-name");
+	static openSelector = "#lists .nav-item";
+	static activeCookieName = "active-list";
+	static updateButtonElement = $("#edit-list-update");
+	static deleteButtonElement = $("#edit-list-delete");
+	static deleteButtonConfirmAttribute = "data-delete-confirm";
+	static deleteButtonConfirmText = "Confirm deletion";
+	static deleteButtonNormalText = "Delete";
+
+	static active = "";
+	static lists;
+
+	static ready()
+	{
+		List.modal.removeAttr("style");
+		List.active = getCookie(List.activeCookieName);
+
+		List.updateButtonElement.click(function ()
+		{
+			List.clickUpdate();
+		});
+
+		List.deleteButtonElement.click(function ()
+		{
+			List.clickDelete();
+		});
+
+		let obs = new MutationObserver(function (mutations, observer)
+		{
+			$.each(mutations, function (i, mutation)
+			{
+				let elements = $(mutation.addedNodes).find(List.openSelector).addBack(List.openSelector);
+				elements.each(function ()
+				{
+					$(this).click(function ()
+					{
+						List.clickListTab($(this));
+					});
+				});
+			});
+		});
+		obs.observe(HTML.listsElement[0], { childList: true });
+	}
+
+	static rebuildArray()
+	{
+		List.lists = [];
+		for (let i in Task.tasks)
+		{
+			let task = Task.tasks[i];
+
+			if (List.lists.indexOf(task["list"]) == -1)
+			{
+				List.lists.push(task["list"]);
+			}
+		}
+
+		List.lists.sort(function (a, b)
+		{
+			return a.toLowerCase().localeCompare(b.toLowerCase());
+		});
+	}
+
+	static updateLocal(oldList, newList)
+	{
+		for (let i in Task.tasks)
+		{
+			if (Task.tasks[i].list == oldList)
+			{
+				Task.tasks[i].list = newList;
+			}
+		}
+
+		List.rebuildArray();
+	}
+
+	static removeLocal(list)
+	{
+		for (let i in Task.tasks)
+		{
+			if (Task.tasks[i].list == list)
+			{
+				delete Task.tasks[i];
+			}
+		}
+
+		List.rebuildArray();
+	}
+
+	static isActive(list)
+	{
+		if (List.lists.length != 0)
+		{
+			if (List.active == "")
+			{
+				List.active = List.lists[0];
+			}
+			else if (List.lists.indexOf(List.active) == -1)
+			{
+				List.active = List.lists[0];
+			}
+		}
+		return list == List.active;
+	}
+
+	static goTo(list)
+	{
+		$("#" + List.getId(list) + "-tab").click();
+		setCookie(List.activeCookieName, list, 9999);
+	}
+
+	static getId(list)
+	{
+		return "list-" + list.toLowerCase().replace(/\s/g, "-");
+	}
+
+	static open(name)
+	{
+		List.nameElement.val(name);
+		List.oldNameElement.val(name);
+		List.modal.modal({ backdrop: 'static' })
+	}
+
+	static hide()
+	{
+		List.modal.modal('hide');
+	}
+
+	static clickListTab(button)
+	{
+		let selectedList = button.attr("data-list-name");
+		setCookie(List.activeCookieName, selectedList, 9999);
+
+		if (selectedList == List.active)
+		{
+			List.open(selectedList);
+		}
+		List.active = selectedList;
+	}
+
+	static clickUpdate()
+	{
+		let data = {
+			new: List.nameElement.val(),
+			old: List.oldNameElement.val()
+		}
+		API.simple("todo", "list/update", data,
+			function (result)
+			{
+				if (result["success"] == true)
+				{
+					List.updateLocal(data.old, data.new);
+
+					HTML.generate();
+					List.hide();
+					List.goTo(data.new);
+
+					Alert.success(result["message"]);
+				}
+				else if (result["success"] == false)
+				{
+					console.log(result);
+					Alert.error(result["message"]);
+				}
+			},
+			function (result)
+			{
+				Alert.error("Something went wrong. See console (F12) for more info.");
+				console.log(result);
+			}
+		);
+	}
+
+	static clickDelete()
+	{
+		if (List.deleteButtonElement.attr(List.deleteButtonConfirmAttribute))
+		{
+			API.simple("todo", "list/delete", { name: List.active },
+				function (result)
+				{
+					if (result["success"] == true)
+					{
+						List.removeLocal(List.active);
+						HTML.generate();
+						List.hide();
+
+						Alert.success(result["message"]);
+					}
+					else if (result["success"] == false)
+					{
+						console.log(result);
+						Alert.error(result["message"]);
+					}
+				},
+				function (result)
+				{
+					Alert.error("Something went wrong. See console (F12) for more info.");
+					console.log(result);
+				}
+			);
+		}
+		else
+		{
+			List.deleteButtonElement.attr(List.deleteButtonConfirmAttribute, true);
+			List.deleteButtonElement.html(List.deleteButtonConfirmText);
+		}
 	}
 }
 
@@ -820,3 +981,48 @@ function getCookie(cname, defaultValue = "")
 	}
 	return defaultValue;
 }
+
+/*
+//Add custom event listener
+$(':root').on('mousedown touchstart ', '*', function ()
+{
+	let el = $(this);
+	let events = $._data(this, 'events');
+	if (events && events.clickHold)
+	{
+		el.data('clickHoldTimer',
+			setTimeout(
+				function ()
+				{
+					el.trigger('clickHold');
+				},
+				el.data('clickHoldTimeout')
+			)
+		);
+	}
+}).on('mouseup mouseleave mousemove touchend touchmove touchcancel', '*', function ()
+{
+	clearTimeout($(this).data('clickHoldTimer'));
+});
+
+//Attach it to the element
+
+button.data('clickHoldTimeout', 200); //Time to hold
+button.on('clickHold', function ()
+{
+	//get task
+	let id = $(this).closest(".list-group-item").attr(Core.taskIdAttribute);
+	let task = Core.tasks[id];
+
+	//reset delete button
+	Update.deleteButtonElement.removeAttr(Update.deleteButtonConfirmAttribute);
+	Update.deleteButtonElement.html(Update.deleteButtonNormalText);
+
+	//only show elements for editing
+	Edit.createElements.hide();
+	Edit.updateElements.show();
+
+	//show modal
+	Edit.show(id, task["name"], task["description"], task["list"], task["date"], task["priority"]);
+});
+*/
