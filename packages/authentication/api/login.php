@@ -19,12 +19,12 @@ if (password_verify($password, $result->fetch_row()[0]))
     $_SESSION["authentication_logged_in"] = true;
     $_SESSION["authentication_hashed_id"] = hash('sha256', $password);
 
-    Authentication::RegisterSuccess();
+    Authentication::LoginSuccess();
     $return["result"]["success"] = true;
 }
 else
 {
-    Authentication::RegisterFail(4);
+    Authentication::LoginFail();
     $return["result"]["success"] = false;
 }
 $return["status"] = "OK";
