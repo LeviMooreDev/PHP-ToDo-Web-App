@@ -2,6 +2,8 @@
 
 This is a simple todo web app I made to test my [PHP Lightweight Framework](https://github.com/LeviMooreDev/PHP-Lightweight-Framework). Feel free to have a look and use whatever you find helpful.
 
+[Video Demo](https://www.youtube.com/watch?v=yMe6w72SZNc)
+
 Favicon by https://www.flaticon.com/free-icon/to-do_3472580
 
 <!-- LICENSE -->
